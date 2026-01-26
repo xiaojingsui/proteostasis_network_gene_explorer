@@ -46,7 +46,7 @@ st.markdown("""
         border-radius: 12px;
         box-shadow: 0 4px 20px rgba(0,0,0,0.08);
         width: 100%;
-        margin-top: 40px;
+        margin-top: 20px;
         border-collapse: collapse;
     }
     th { background-color: #F0FBFC !important; color: #006064 !important; text-align: left !important; padding: 15px !important; }
@@ -63,9 +63,7 @@ st.markdown("""
 def load_data():
     file_path = 'Human Proteostasis Network 2.0 ~ 2024-0415.xlsx'
     try:
-        # Loading the specific sheet
         df = pd.read_excel(file_path, sheet_name='Proteostasis_Network_2024_0414')
-        # Drop rows where critical info is missing
         df = df.dropna(subset=['Gene Symbol', 'UniProt ID'])
         return df
     except Exception as e:
@@ -86,14 +84,10 @@ st.text_input(
     label_visibility="collapsed",
     key="search_key" 
 )
+st.markdown('</div>', unsafe_allow_html=True)
 
-# ... (previous code remains the same until section 5)
-
-# 5. Chip Section (Revised for tighter spacing)
-# We use more balanced ratios and a smaller lead column to pull them together
+# 5. Chip Section
 st.markdown('<div style="display: flex; justify-content: center; align-items: center; gap: 10px; margin-bottom: 20px;">', unsafe_allow_html=True)
-
-# Using columns with tighter ratios to bring buttons closer
 _, c_label, c1, c2, c3, _ = st.columns([2, 1.2, 0.5, 0.5, 0.6, 2])
 
 with c_label:
@@ -104,47 +98,12 @@ with c2:
     st.button("P0DMV8", on_click=update_search, args=("P0DMV8",))
 with c3:
     st.button("Chaperone", on_click=update_search, args=("Chaperone",))
-
 st.markdown('</div>', unsafe_allow_html=True)
 
-# 6. Results Logic (Updated to search UniProt ID and create links)
+# 6. Consolidated Results Logic
 query = st.session_state.search_key
 if query:
-    # This checks every column for the query string
-    mask = df.apply(lambda row: row.astype(str).str.contains(query, case=False).any(), axis=1)
-    results = df[mask].copy()
-    
-    if not results.empty:
-        st.markdown(f"#### {len(results)} results found for '{query}'")
-        
-        # Transform UniProt ID into a clickable hyperlink
-        if 'UniProt ID' in results.columns:
-            results['UniProt ID'] = results['UniProt ID'].apply(
-                lambda x: f'<a href="https://www.uniprot.org/uniprotkb/{x}/entry" target="_blank">{x}</a>'
-            )
-        
-        # Define the columns you want to display based on your spreadsheet
-        display_cols = ['UniProt ID', 'Gene Symbol', 'Gene Name', 'Type', 'Subtype', 'Principal Domains']
-        # Filter to only show columns that exist in the dataframe
-        final_cols = [col for col in display_cols if col in results.columns]
-        
-        # Render Table
-        st.write(
-            results[final_cols].to_html(escape=False, index=False, border=0, classes='result-container'), 
-            unsafe_allow_html=True
-        )
-    else:
-        st.error(f"No results found for '{query}'.")
-
-# ... (rest of the footer code)
-
-# 6. Results Logic
-query = st.session_state.search_key
-if query:
-    # Expanded search logic to include UniProt ID and more columns from your sheet
-    search_columns = ['Gene Symbol', 'UniProt ID', 'Gene Name', 'Type', 'Subtype', 'Principal Domains']
-    
-    # Filter the dataframe
+    # Filter the dataframe across all columns
     mask = df.apply(lambda row: row.astype(str).str.contains(query, case=False).any(), axis=1)
     results = df[mask].copy()
     
@@ -152,23 +111,19 @@ if query:
         st.markdown(f"#### {len(results)} results found for '{query}'")
         
         # TRANSFORMATION: Convert UniProt ID into a clickable link
-        # We wrap the ID in an <a> tag pointing to the UniProtKB entry
         results['UniProt ID'] = results['UniProt ID'].apply(
-            lambda x: f'<a href="https://www.uniprot.org/uniprot/{x}" target="_blank">{x}</a>'
+            lambda x: f'<a href="https://www.uniprot.org/uniprotkb/{x}/entry" target="_blank">{x}</a>'
         )
         
-        # Select columns for display (based on your Excel headers)
-        display_cols = [
-            'UniProt ID', 'Gene Symbol', 'Branch', 'Class','Group',
-            'Type', 'Subtype']
+        # Select columns for display (Check which list you prefer)
+        # Using the more comprehensive list from your second block:
+        display_cols = ['UniProt ID', 'Gene Symbol', 'Branch', 'Class', 'Group', 'Type', 'Subtype', 'Principal Domains']
         
-        # Only show columns that actually exist in the dataframe
         available_cols = [c for c in display_cols if c in results.columns]
-        display_df = results[available_cols]
         
-        # Render Table as HTML to allow the links to function
+        # Render Table as HTML
         st.write(
-            display_df.to_html(escape=False, index=False, border=0, classes='result-container'), 
+            results[available_cols].to_html(escape=False, index=False, border=0, classes='result-container'), 
             unsafe_allow_html=True
         )
     else:
