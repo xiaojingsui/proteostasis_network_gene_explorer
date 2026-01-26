@@ -4,109 +4,128 @@ import py3Dmol
 from stmol import showmol
 import requests
 
-# 1. Page Configuration
-st.set_page_config(page_title="PN Gene Explorer", layout="wide")
+# 1. Page Config
+st.set_page_config(page_title="PN Explorer", layout="wide")
 
-# 2. Load Data from Specific Tab
+# 2. Custom CSS for PhaSepDB Design
+st.markdown("""
+    <style>
+    /* Main background gradient */
+    .stApp {
+        background: linear-gradient(180deg, #1a3a8a 0%, #2563eb 40%, #ffffff 100%);
+    }
+    /* Center the search section */
+    .hero-section {
+        padding: 60px 0px;
+        text-align: center;
+        color: white;
+    }
+    .hero-title {
+        font-size: 64px !important;
+        font-weight: 800;
+        margin-bottom: 0px;
+    }
+    .hero-subtitle {
+        font-size: 24px;
+        opacity: 0.9;
+        margin-bottom: 30px;
+    }
+    /* Style the text input to look like the image */
+    div.stTextInput > div > div > input {
+        border-radius: 10px;
+        height: 50px;
+        font-size: 18px;
+    }
+    /* Style info boxes */
+    .stAlert {
+        background-color: rgba(255, 255, 255, 0.9);
+        border-radius: 10px;
+        border: none;
+        color: #1e3a8a;
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
+# 3. Load Data
 @st.cache_data
 def load_data():
-    # Ensure this filename matches your local file exactly
     file_path = 'Human Proteostasis Network 2.0 ~ 2024-0415.xlsx'
     try:
         df = pd.read_excel(file_path, sheet_name='Proteostasis_Network_2024_0414')
-        # Clean data: Keep only rows with a Gene Symbol and UniProt ID
         df = df.dropna(subset=['Gene Symbol', 'UniProt ID'])
         return df
-    except Exception as e:
-        st.error(f"Error loading Excel file: {e}")
+    except:
         return pd.DataFrame()
 
 df = load_data()
 
-# 3. Sidebar Filters
-st.sidebar.title("🧬 PN Gene Explorer")
+# 4. Hero Header (Centered Design)
+st.markdown('<div class="hero-section">', unsafe_allow_html=True)
+st.markdown('<p class="hero-title">PN Explorer</p>', unsafe_allow_html=True)
+st.markdown('<p class="hero-subtitle">The comprehensive knowledgebase for human proteostasis network genes</p>', unsafe_allow_html=True)
 
-# Filter by Branch
-branches = ["All"] + sorted(df['Branch'].unique().tolist())
-selected_branch = st.sidebar.selectbox("Filter by Branch", branches)
+# Search area mimicking the image search bar
+search_col1, search_col2, search_col3 = st.columns([1, 3, 1])
+with search_col2:
+    search_query = st.text_input("", placeholder="Search by Gene Symbol, UniProt ID, or Branch...", label_visibility="collapsed").strip().upper()
+st.markdown('</div>', unsafe_allow_html=True)
 
-# Filter by Class (dynamic based on selected branch)
-if selected_branch != "All":
-    class_list = ["All"] + sorted(df[df['Branch'] == selected_branch]['Class'].unique().tolist())
-else:
-    class_list = ["All"] + sorted(df['Class'].unique().tolist())
-selected_class = st.sidebar.selectbox("Filter by Class", class_list)
-
-# Search Box
-search_query = st.sidebar.text_input("Search by Gene Symbol", "").strip().upper()
-
-# 4. Filter Logic
-filtered_df = df.copy()
-
-if selected_branch != "All":
-    filtered_df = filtered_df[filtered_df['Branch'] == selected_branch]
-
-if selected_class != "All":
-    filtered_df = filtered_df[filtered_df['Class'] == selected_class]
-
+# 5. Filter & Display Logic
 if search_query:
-    filtered_df = filtered_df[filtered_df['Gene Symbol'].str.upper().str.contains(search_query, na=False)]
-
-# 5. Main Interface
-st.title("Proteostasis Network (PN) Gene Database")
-
-if not filtered_df.empty:
-    # Selection dropdown for the results
-    gene_list = filtered_df['Gene Symbol'].unique()
-    selected_gene = st.selectbox(f"Select a gene ({len(filtered_df)} found):", gene_list)
+    # Search across multiple columns for a "Smart Search" feel
+    results = df[
+        df['Gene Symbol'].str.upper().str.contains(search_query, na=False) | 
+        df['UniProt ID'].str.upper().str.contains(search_query, na=False) |
+        df['Branch'].str.upper().str.contains(search_query, na=False)
+    ]
     
-    selected_row = filtered_df[filtered_df['Gene Symbol'] == selected_gene].iloc[0]
-
-    # --- Layout: Information vs 3D Structure ---
-    col1, col2 = st.columns([1, 2])
-
-    with col1:
-        st.header("Gene Details")
-        st.subheader(selected_row['Gene Symbol'])
-        st.write(f"**Gene Name:** {selected_row['Gene Name']}")
-        st.write(f"**UniProt ID:** `{selected_row['UniProt ID']}`")
+    if not results.empty:
+        st.markdown(f"### Search Results for \"{search_query}\"")
+        st.write(f"Showing {len(results)} results")
         
-        st.info(f"**Branch:** {selected_row['Branch']}  \n"
-                f"**Class:** {selected_row['Class']}  \n"
-                f"**Group:** {selected_row['Group']}  \n"
-                f"**Type:** {selected_row['Type']}")
-
-        # External Links
-        uniprot_id = selected_row['UniProt ID']
-        st.markdown(f"[🔗 View on UniProt](https://www.uniprot.org/uniprotkb/{uniprot_id}/entry)")
-        st.markdown(f"[🔗 View on AlphaFold DB](https://alphafold.ebi.ac.uk/entry/{uniprot_id})")
-
-    with col2:
-        st.header("AlphaFold 3D Structure")
+        # Display Table like PhaSepDB
+        display_df = results[['UniProt ID', 'Gene Symbol', 'Gene Name', 'Branch', 'Class', 'Group']]
         
-        def render_alphafold(uid):
-            # Fetching the v4 PDB file from AlphaFold DB API
-            pdb_url = f"https://alphafold.ebi.ac.uk/files/AF-{uid}-F1-model_v4.pdb"
-            res = requests.get(pdb_url)
-            if res.status_code == 200:
-                view = py3Dmol.view(width=800, height=600)
-                view.addModel(res.text, 'pdb')
-                # Style: Rainbow spectrum (Blue to Red: N-term to C-term)
-                view.setStyle({'cartoon': {'color': 'spectrum'}})
-                view.zoomTo()
-                return view
-            return None
+        # Clicking a row is simulated by a selectbox below the table
+        selected_gene = st.selectbox("Select a gene from results to view 3D structure:", results['Gene Symbol'].unique())
+        selected_row = results[results['Gene Symbol'] == selected_gene].iloc[0]
 
-        with st.spinner(f"Loading 3D model for {selected_gene}..."):
-            view = render_alphafold(uniprot_id)
-            if view:
-                showmol(view, height=600, width=800)
-            else:
-                st.warning("Structure not found in AlphaFold DB for this ID.")
+        # --- Detail Section ---
+        st.divider()
+        col_info, col_viz = st.columns([1, 2])
+        
+        with col_info:
+            st.subheader(f"🧬 {selected_row['Gene Symbol']}")
+            st.write(f"**Full Name:** {selected_row['Gene Name']}")
+            st.write(f"**UniProt:** `{selected_row['UniProt ID']}`")
+            st.info(f"**Branch:** {selected_row['Branch']}\n\n**Class:** {selected_row['Class']}\n\n**Group:** {selected_row['Group']}")
+            
+            uniprot_id = selected_row['UniProt ID']
+            st.markdown(f"[🔗 UniProt Entry](https://www.uniprot.org/uniprotkb/{uniprot_id}/entry)")
+            st.markdown(f"[🔗 AlphaFold Structure](https://alphafold.ebi.ac.uk/entry/{uniprot_id})")
 
+        with col_viz:
+            def render_alphafold(uid):
+                pdb_url = f"https://alphafold.ebi.ac.uk/files/AF-{uid}-F1-model_v4.pdb"
+                res = requests.get(pdb_url)
+                if res.status_code == 200:
+                    view = py3Dmol.view(width=800, height=500)
+                    view.addModel(res.text, 'pdb')
+                    view.setStyle({'cartoon': {'color': 'spectrum'}})
+                    view.zoomTo()
+                    return view
+                return None
+
+            with st.spinner("Loading 3D Model..."):
+                view = render_alphafold(uniprot_id)
+                if view:
+                    showmol(view, height=500, width=800)
+                else:
+                    st.warning("3D Structure not available.")
+        
+        st.dataframe(display_df, use_container_width=True)
+    else:
+        st.error("No results found. Please try another search term.")
 else:
-    st.warning("No genes match your current filter/search criteria.")
-
-# Data Table Expanders
-with st.expander("Show table for current selection"):
-    st.dataframe(filtered_df)
+    # Default view: show a few examples like the image buttons
+    st.markdown("<p style='text-align:center; color:white;'>Try searching for: <b>HSPA1A</b>, <b>DNAJA1</b>, or <b>Chaperone</b></p>", unsafe_allow_html=True)
