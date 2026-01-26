@@ -4,24 +4,24 @@ import pandas as pd
 # 1. Page Config
 st.set_page_config(page_title="Human PN Database", layout="wide")
 
-# 2. Custom CSS for Light Pink Theme
+# 2. Custom CSS for Light Cyan Theme
 st.markdown("""
     <style>
-    /* Change background to Light Pink */
+    /* Main background: Light Cyan / Pale Turquoise */
     .stApp {
-        background-color: #FFF5F7; /* Very Light Pink / Lavender Blush */
+        background-color: #E0F7FA; 
     }
     .hero-section {
         padding: 60px 0px;
         text-align: center;
-        color: #333333; /* Dark Grey for readability */
+        color: #006064; /* Dark Cyan for text contrast */
     }
     .hero-title {
         font-size: 56px !important;
         font-weight: 800;
         margin-bottom: 10px;
         text-transform: uppercase;
-        color: #D11D5D; /* Deep Pink accent for title */
+        color: #00838F; /* Stronger Cyan accent for title */
     }
     .hero-subtitle {
         font-size: 20px;
@@ -34,27 +34,27 @@ st.markdown("""
         height: 50px;
         padding-left: 20px;
         font-size: 18px;
-        border: 2px solid #FFC0CB; /* Light Pink border */
+        border: 2px solid #80DEEA; /* Cyan border */
     }
-    /* Result Table Styling */
+    /* Result Table Container */
     .result-container {
         background-color: white;
         padding: 20px;
         border-radius: 15px;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
         color: #333333;
         width: 100%;
         border-collapse: collapse;
     }
     th {
-        background-color: #FFF0F5 !important;
-        color: #D11D5D !important;
+        background-color: #B2EBF2 !important; /* Cyan header background */
+        color: #006064 !important; /* Dark Cyan header text */
         text-align: left !important;
         padding: 12px !important;
     }
     td {
         padding: 12px !important;
-        border-bottom: 1px solid #F0F0F0;
+        border-bottom: 1px solid #E0F2F1;
     }
     </style>
     """, unsafe_allow_html=True)
@@ -100,7 +100,7 @@ if search_query:
         
         # Create Hyperlink for UniProt ID
         results['UniProt ID'] = results['UniProt ID'].apply(
-            lambda x: f'<a href="https://www.uniprot.org/uniprotkb/{x}/entry" target="_blank" style="color: #D11D5D; font-weight: bold; text-decoration: none;">{x}</a>'
+            lambda x: f'<a href="https://www.uniprot.org/uniprotkb/{x}/entry" target="_blank" style="color: #00838F; font-weight: bold; text-decoration: none;">{x}</a>'
         )
         
         # Select and order columns as per requested design
@@ -117,13 +117,13 @@ if search_query:
     else:
         st.error("No results found. Please try another search term.")
 else:
-    # Example suggestions with light pink accents
+    # Example suggestions with cyan accents
     st.markdown("""
-        <div style='text-align:center; color:#666666; margin-top:-20px;'>
+        <div style='text-align:center; color:#006064; margin-top:-20px;'>
             <p>Try searching for: 
-            <span style='background:#FFDDE4; padding:5px 15px; border-radius:15px; margin:0 5px; color:#D11D5D;'>HSPA1A</span>
-            <span style='background:#FFDDE4; padding:5px 15px; border-radius:15px; margin:0 5px; color:#D11D5D;'>P0DMV8</span>
-            <span style='background:#FFDDE4; padding:5px 15px; border-radius:15px; margin:0 5px; color:#D11D5D;'>Chaperone</span>
+            <span style='background:#B2EBF2; padding:5px 15px; border-radius:15px; margin:0 5px; color:#006064;'>HSPA1A</span>
+            <span style='background:#B2EBF2; padding:5px 15px; border-radius:15px; margin:0 5px; color:#006064;'>P0DMV8</span>
+            <span style='background:#B2EBF2; padding:5px 15px; border-radius:15px; margin:0 5px; color:#006064;'>Chaperone</span>
             </p>
         </div>
     """, unsafe_allow_html=True)
