@@ -4,16 +4,19 @@ import pandas as pd
 # 1. Page Config
 st.set_page_config(page_title="Human PN Database", layout="wide")
 
-# 2. Custom CSS for PhaSepDB-inspired Design
+# 2. Custom CSS for Pink Theme
 st.markdown("""
     <style>
+    /* Change background to Pink */
     .stApp {
-        background: linear-gradient(180deg, #1a3a8a 0%, #2563eb 40%, #ffffff 100%);
+        background-color: #FFC0CB; /* Solid Pink */
+        /* If you prefer a pink gradient, uncomment the line below: */
+        /* background: linear-gradient(180deg, #FFB6C1 0%, #FFC0CB 100%); */
     }
     .hero-section {
         padding: 60px 0px;
         text-align: center;
-        color: white;
+        color: #4A4A4A; /* Darker text for better contrast on pink */
     }
     .hero-title {
         font-size: 56px !important;
@@ -32,13 +35,14 @@ st.markdown("""
         height: 50px;
         padding-left: 20px;
         font-size: 18px;
+        border: 2px solid #FF69B4; /* Hot Pink border */
     }
     /* Result Table Container */
     .result-container {
         background-color: white;
         padding: 20px;
         border-radius: 15px;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
     }
     </style>
     """, unsafe_allow_html=True)
@@ -84,10 +88,10 @@ if search_query:
         
         # Create Hyperlink for UniProt ID
         results['UniProt ID'] = results['UniProt ID'].apply(
-            lambda x: f'<a href="https://www.uniprot.org/uniprotkb/{x}/entry" target="_blank">{x}</a>'
+            lambda x: f'<a href="https://www.uniprot.org/uniprotkb/{x}/entry" target="_blank" style="color: #FF69B4; font-weight: bold;">{x}</a>'
         )
         
-        # Select and order columns as per requested design
+        # Select and order columns
         display_df = results[['UniProt ID', 'Gene Symbol', 'Gene Name', 'Branch', 'Class', 'Group']]
         
         # Render Table without the first (index) column
@@ -101,13 +105,13 @@ if search_query:
     else:
         st.error("No results found. Please try another search term.")
 else:
-    # Example suggestions like the original design
+    # Example suggestions with a pink accent
     st.markdown("""
-        <div style='text-align:center; color:white; margin-top:-20px;'>
+        <div style='text-align:center; color:#4A4A4A; margin-top:-20px;'>
             <p>Try searching for: 
-            <span style='background:rgba(255,255,255,0.2); padding:5px 15px; border-radius:15px; margin:0 5px;'>HSPA1A</span>
-            <span style='background:rgba(255,255,255,0.2); padding:5px 15px; border-radius:15px; margin:0 5px;'>P0DMV8</span>
-            <span style='background:rgba(255,255,255,0.2); padding:5px 15px; border-radius:15px; margin:0 5px;'>Chaperone</span>
+            <span style='background:rgba(255,255,255,0.5); padding:5px 15px; border-radius:15px; margin:0 5px;'>HSPA1A</span>
+            <span style='background:rgba(255,255,255,0.5); padding:5px 15px; border-radius:15px; margin:0 5px;'>P0DMV8</span>
+            <span style='background:rgba(255,255,255,0.5); padding:5px 15px; border-radius:15px; margin:0 5px;'>Chaperone</span>
             </p>
         </div>
     """, unsafe_allow_html=True)
