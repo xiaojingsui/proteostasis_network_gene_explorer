@@ -4,15 +4,15 @@ import pandas as pd
 # 1. Page Config
 st.set_page_config(page_title="Human PN Database", layout="wide")
 
-# Initialize session state for the search bar key
+# Initialize session state for the key
 if "search_key" not in st.session_state:
     st.session_state.search_key = ""
 
-# CALLBACK FUNCTION: Safely updates the search bar text
+# CALLBACK FUNCTION: Safely updates the widget's state
 def update_search(new_query):
     st.session_state.search_key = new_query
 
-# 2. Custom CSS for Light Cyan Theme & Tightened Alignment
+# 2. Custom CSS for Layout and Cyan Theme
 st.markdown("""
     <style>
     .stApp { background-color: #E0F7FA; }
@@ -31,7 +31,7 @@ st.markdown("""
         margin-bottom: 40px;
     }
 
-    /* Tall, Centered Search Bar */
+    /* Centered Search Bar */
     div[data-testid="stTextInput"] {
         width: 50% !important; 
         margin: 0 auto !important; 
@@ -45,32 +45,21 @@ st.markdown("""
         background-color: white !important;
     }
 
-    /* TIGHT CHIP ALIGNMENT: Centers the entire group closely */
-    .chip-container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        gap: 8px; /* Tight gap between label and buttons */
-        margin-top: 15px;
-    }
-    .suggestion-label {
-        font-size: 18px;
-        color: #006064;
-        margin-right: 5px;
-    }
+    /* Suggestion Container - Tight Grouping */
+    [data-testid="column"] { width: fit-content !important; flex: unset !important; min-width: unset !important; }
+    div[data-testid="stHorizontalBlock"] { justify-content: center !important; gap: 10px !important; }
 
-    /* Button Styling to look like small chips */
+    /* Button Styling */
     .stButton>button {
         background-color: #B2EBF2 !important;
         color: #006064 !important;
         border-radius: 20px !important;
         border: none !important;
-        padding: 4px 15px !important;
-        font-size: 15px !important;
-        min-width: 80px;
+        padding: 5px 20px !important;
+        font-size: 16px !important;
     }
 
-    /* Table Styling */
+    /* Table Styling with UniProt ID Hyperlink styling */
     .result-container {
         background-color: white;
         border-radius: 12px;
@@ -82,6 +71,16 @@ st.markdown("""
     th { background-color: #F0FBFC !important; color: #006064 !important; text-align: left !important; padding: 18px !important; }
     td { padding: 18px !important; border-bottom: 1px solid #F0F0F0 !important; }
     thead tr th:first-child, tbody tr td:first-child { display: none; }
+    
+    /* Style for the link inside the table */
+    a {
+        color: #00838F !important;
+        font-weight: bold;
+        text-decoration: none;
+    }
+    a:hover {
+        text-decoration: underline;
+    }
     </style>
     """, unsafe_allow_html=True)
 
@@ -90,7 +89,6 @@ st.markdown("""
 def load_data():
     file_path = 'Human Proteostasis Network 2.0 ~ 2024-0415.xlsx'
     try:
-        # Loading the specific tab mentioned in your file
         df = pd.read_excel(file_path, sheet_name='Proteostasis_Network_2024_0414')
         df = df.dropna(subset=['Gene Symbol', 'UniProt ID'])
         return df
@@ -112,25 +110,19 @@ st.text_input(
     key="search_key" 
 )
 
-# 5. Spatially Optimized Chip Section
-# We use st.columns with specific very small ratios to keep them grouped in the center
-_, center_col, _ = st.columns([1, 4, 1])
-
-with center_col:
-    # We use a container with a tighter gap
-    inner_cols = st.columns([1.5, 0.8, 0.8, 1])
-    with inner_cols[0]:
-        st.markdown("<p style='text-align:right; font-size: 18px; color: #006064; padding-top: 5px; margin:0;'>Try searching for:</p>", unsafe_allow_html=True)
-    with inner_cols[1]:
-        st.button("HSPA1A", on_click=update_search, args=("HSPA1A",))
-    with inner_cols[2]:
-        st.button("P0DMV8", on_click=update_search, args=("P0DMV8",))
-    with inner_cols[3]:
-        st.button("Chaperone", on_click=update_search, args=("Chaperone",))
-
+# 5. Clickable Chips
+c1, c2, c3, c4 = st.columns([1.5, 0.6, 0.6, 0.8])
+with c1:
+    st.markdown("<p style='text-align:right; font-size:18px; color:#006064; padding-top:5px; margin-right:5px;'>Try searching for:</p>", unsafe_allow_html=True)
+with c2:
+    st.button("HSPA1A", on_click=update_search, args=("HSPA1A",))
+with c3:
+    st.button("P0DMV8", on_click=update_search, args=("P0DMV8",))
+with c4:
+    st.button("Chaperone", on_click=update_search, args=("Chaperone",))
 st.markdown('</div>', unsafe_allow_html=True)
 
-# 6. Search Results Logic
+# 6. Search Results & UniProt Hyperlinks
 query = st.session_state.search_key
 if query:
     results = df[
@@ -146,12 +138,18 @@ if query:
     if not results.empty:
         st.markdown(f"#### {len(results)} results found for '{query}'")
         
-        # Link UniProt ID
-        results['UniProt ID'] = results['UniProt ID'].apply(
-            lambda x: f'<a href="https://www.uniprot.org/uniprotkb/{x}/entry" target="_blank" style="color: #00838F; font-weight: bold; text-decoration: none;">{x}</a>'
+        # Create the hyperlink for the UniProt ID
+        results['UniProt ID Link'] = results['UniProt ID'].apply(
+            lambda x: f'<a href="https://www.uniprot.org/uniprotkb/{x}/entry" target="_blank">{x}</a>'
         )
         
-        display_df = results[['UniProt ID', 'Gene Symbol', 'Gene Name', 'Branch', 'Class', 'Group', 'Type', 'Subtype']]
+        # Select columns to display, placing the link column first
+        display_df = results[['UniProt ID Link', 'Gene Symbol', 'Gene Name', 'Branch', 'Class', 'Group', 'Type', 'Subtype']]
+        
+        # Rename column for the table display
+        display_df = display_df.rename(columns={'UniProt ID Link': 'UniProt ID'})
+        
+        # Render the HTML table
         st.write(
             display_df.to_html(escape=False, index=False, border=0, classes='result-container'), 
             unsafe_allow_html=True
