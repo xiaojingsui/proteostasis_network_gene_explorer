@@ -4,7 +4,7 @@ import pandas as pd
 # 1. Page Config
 st.set_page_config(page_title="Human PN Database", layout="wide")
 
-# 2. Custom CSS for Spacious, Perfectly Aligned UI
+# 2. Custom CSS for Centered, Half-Width, Tall UI
 st.markdown("""
     <style>
     /* Background */
@@ -12,7 +12,7 @@ st.markdown("""
         background-color: #E0F7FA; 
     }
     
-    /* Hero Section - Perfectly centered */
+    /* Hero Section */
     .hero-section {
         padding: 60px 0px 10px 0px;
         text-align: center;
@@ -32,24 +32,21 @@ st.markdown("""
         margin-bottom: 40px;
     }
 
-    /* Wide and Tall Search Box Fix */
+    /* Fixed Width Search Bar: 50% width and centered */
     div[data-testid="stTextInput"] {
-        width: 90% !important;
-        max-width: 1200px !important;
-        margin: 0 auto !important;
+        width: 50% !important; /* Shorter length requested */
+        margin: 0 auto !important; /* Centers it in the middle */
     }
     
-    /* Targeting the input field specifically to add internal space */
     div[data-testid="stTextInput"] > div > div > input {
         border-radius: 12px !important;
-        height: auto !important; /* Allow padding to define height */
-        padding: 25px 30px !important; /* Large vertical padding for 'Tall' look */
-        font-size: 22px !important; /* Big font that fits comfortably */
+        height: auto !important; 
+        padding: 22px 25px !important; /* Maintains the tall feel */
+        font-size: 20px !important; 
         border: 1px solid #B2EBF2 !important;
-        border-bottom: 4px solid #4DD0E1 !important; /* Thick cyan bottom line */
+        border-bottom: 4px solid #4DD0E1 !important; /* Sharp cyan bottom line */
         background-color: white !important;
         box-shadow: 0 4px 12px rgba(0,0,0,0.05) !important;
-        color: #333 !important;
     }
 
     /* Suggestion Chips */
@@ -65,13 +62,13 @@ st.markdown("""
     
     .chip {
         background: #B2EBF2;
-        padding: 8px 20px;
-        border-radius: 25px;
+        padding: 6px 18px;
+        border-radius: 20px;
         color: #006064;
         font-weight: 500;
     }
 
-    /* Clean Table Styling */
+    /* Result Table Styling */
     .result-container {
         background-color: white;
         border-radius: 12px;
@@ -85,12 +82,12 @@ st.markdown("""
         background-color: #F0FBFC !important;
         color: #006064 !important;
         text-align: left !important;
-        padding: 20px !important;
+        padding: 18px !important;
         border-bottom: 2px solid #E0F7FA !important;
     }
     
     td {
-        padding: 20px !important;
+        padding: 18px !important;
         border-bottom: 1px solid #F0F0F0 !important;
     }
 
@@ -107,6 +104,7 @@ st.markdown("""
 def load_data():
     file_path = 'Human Proteostasis Network 2.0 ~ 2024-0415.xlsx'
     try:
+        # Loading the exact sheet name from your file
         df = pd.read_excel(file_path, sheet_name='Proteostasis_Network_2024_0414')
         df = df.dropna(subset=['Gene Symbol', 'UniProt ID'])
         return df
@@ -120,7 +118,7 @@ st.markdown('<div class="hero-section">', unsafe_allow_html=True)
 st.markdown('<p class="hero-title">HUMAN Proteostasis Network Database</p>', unsafe_allow_html=True)
 st.markdown('<p class="hero-subtitle">The comprehensive knowledgebase for human proteostasis network genes</p>', unsafe_allow_html=True)
 
-# Search Input
+# Search Input (Now 50% width via CSS)
 search_query = st.text_input("", placeholder="Search by Gene Symbol, UniProt ID, or Branch...", label_visibility="collapsed").strip()
 
 # Centered Suggestions
@@ -152,6 +150,7 @@ if search_query:
         
         display_df = results[['UniProt ID', 'Gene Symbol', 'Gene Name', 'Branch', 'Class', 'Group']]
         
+        # Display the result table
         st.write(
             display_df.to_html(escape=False, index=False, border=0, classes='result-container'), 
             unsafe_allow_html=True
