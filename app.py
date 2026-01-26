@@ -88,7 +88,7 @@ st.markdown('</div>', unsafe_allow_html=True)
 
 # 5. Chip Section
 st.markdown('<div style="display: flex; justify-content: center; align-items: center; gap: 10px; margin-bottom: 20px;">', unsafe_allow_html=True)
-_, c_label, c1, c2, c3, _ = st.columns([2, 1.2, 0.5, 0.5, 0.6, 2])
+_, c_label, c1, c2, c3, _ = st.columns([1.5, 1.2, 0.5, 0.5, 0.6, 2])
 
 with c_label:
     st.markdown("<p style='text-align:right; font-size: 18px; color: #006064; margin-top: 5px;'>Try searching for:</p>", unsafe_allow_html=True)
