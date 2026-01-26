@@ -4,20 +4,19 @@ import pandas as pd
 # 1. Page Config
 st.set_page_config(page_title="Human PN Database", layout="wide")
 
-# Initialize session state for the search bar key
+# Initialize session state for the key
 if "search_key" not in st.session_state:
     st.session_state.search_key = ""
 
-# CALLBACK FUNCTION: Safely updates the search bar text
+# CALLBACK FUNCTION
 def update_search(new_query):
     st.session_state.search_key = new_query
 
-# 2. Custom CSS for Light Cyan Theme & Spacing
+# 2. Custom CSS for Light Cyan Theme
 st.markdown("""
     <style>
     .stApp { background-color: #E0F7FA; }
     .hero-section { padding: 60px 0px 10px 0px; text-align: center; }
-    
     .hero-title {
         font-size: 52px !important;
         font-weight: 800;
@@ -29,10 +28,7 @@ st.markdown("""
         font-size: 32px !important;
         color: #006064;
         margin-bottom: 40px;
-        font-weight: 400;
     }
-
-    /* Tall, Centered Search Bar */
     div[data-testid="stTextInput"] {
         width: 50% !important; 
         margin: 0 auto !important; 
@@ -45,22 +41,6 @@ st.markdown("""
         border-bottom: 4px solid #4DD0E1 !important;
         background-color: white !important;
     }
-
-    /* Suggestion Container - Tight Grouping */
-    [data-testid="column"] { width: fit-content !important; flex: unset !important; min-width: unset !important; }
-    div[data-testid="stHorizontalBlock"] { justify-content: center !important; gap: 10px !important; }
-
-    /* Button Styling */
-    .stButton>button {
-        background-color: #B2EBF2 !important;
-        color: #006064 !important;
-        border-radius: 20px !important;
-        border: none !important;
-        padding: 5px 20px !important;
-        font-size: 16px !important;
-    }
-
-    /* Table Styling */
     .result-container {
         background-color: white;
         border-radius: 12px;
@@ -72,7 +52,7 @@ st.markdown("""
     th { background-color: #F0FBFC !important; color: #006064 !important; text-align: left !important; padding: 18px !important; }
     td { padding: 18px !important; border-bottom: 1px solid #F0F0F0 !important; }
     
-    /* Hide the automatic pandas/streamlit index column */
+    /* Hide the index column */
     thead tr th:first-child, tbody tr td:first-child { display: none; }
     
     /* Link styling */
@@ -86,30 +66,29 @@ st.markdown("""
 def load_data():
     file_path = 'Human Proteostasis Network 2.0 ~ 2024-0415.xlsx'
     try:
-        # Load the sheet explicitly
         df = pd.read_excel(file_path, sheet_name='Proteostasis_Network_2024_0414')
-        # Clean based on necessary IDs
-        df = df.dropna(subset=['Gene Symbol', 'UniProt ID'])
+        # Ensure we drop rows where Gene Symbol is missing
+        df = df.dropna(subset=['Gene Symbol'])
         return df
     except:
         return pd.DataFrame()
 
 df = load_data()
 
-# 4. Interface Section
+# 4. Hero Section
 st.markdown('<div class="hero-section">', unsafe_allow_html=True)
 st.markdown('<p class="hero-title">HUMAN Proteostasis Network Database</p>', unsafe_allow_html=True)
 st.markdown('<p class="hero-subtitle">The comprehensive knowledgebase for human proteostasis network genes</p>', unsafe_allow_html=True)
 
-# Search Input tied to session state
+# Search Input
 st.text_input(
     "", 
-    placeholder="Search by Gene, ID, Branch, Class, Group, Type, or Subtype...", 
+    placeholder="Search by Gene, Branch, Class, Group, Type, or Subtype...", 
     label_visibility="collapsed",
     key="search_key" 
 )
 
-# 5. Clickable Chips Section
+# 5. Chip Section
 c1, c2, c3, c4 = st.columns([1.5, 0.6, 0.6, 0.8])
 with c1:
     st.markdown("<p style='text-align:right; font-size: 18px; color: #006064; padding-top: 5px;'>Try searching for:</p>", unsafe_allow_html=True)
@@ -121,13 +100,11 @@ with c4:
     st.button("Chaperone", on_click=update_search, args=("Chaperone",))
 st.markdown('</div>', unsafe_allow_html=True)
 
-# 6. Search Results & Explicit UniProt Display
+# 6. Results Logic with Gene-to-UniProt Link
 query = st.session_state.search_key
 if query:
-    # Expanded search logic
     results = df[
         df['Gene Symbol'].astype(str).str.contains(query, case=False, na=False) | 
-        df['UniProt ID'].astype(str).str.contains(query, case=False, na=False) |
         df['Branch'].astype(str).str.contains(query, case=False, na=False) |
         df['Class'].astype(str).str.contains(query, case=False, na=False) |
         df['Group'].astype(str).str.contains(query, case=False, na=False) |
@@ -138,17 +115,16 @@ if query:
     if not results.empty:
         st.markdown(f"#### {len(results)} results found for '{query}'")
         
-        # 1. Transform UniProt ID into a hyperlink string
-        results['UniProt ID'] = results['UniProt ID'].apply(
-            lambda x: f'<a href="https://www.uniprot.org/uniprotkb/{x}/entry" target="_blank">{x}</a>'
+        # GENERATE LINK BASED ON GENE SYMBOL
+        # This points to a search result for the gene in Human organisms
+        results['UniProt Link'] = results['Gene Symbol'].apply(
+            lambda x: f'<a href="https://www.uniprot.org/uniprotkb?query={x}+AND+taxonomy_id:9606" target="_blank">View Protein</a>'
         )
         
-        # 2. Select and order columns explicitly
-        # Ensure UniProt ID is the first visible column in the list
-        cols_to_show = ['UniProt ID', 'Gene Symbol', 'Gene Name', 'Branch', 'Class', 'Group', 'Type', 'Subtype']
-        display_df = results[cols_to_show]
+        # Display Columns
+        display_df = results[['UniProt Link', 'Gene Symbol', 'Gene Name', 'Branch', 'Class', 'Group', 'Type', 'Subtype']]
         
-        # 3. Render HTML Table
+        # Render Table
         st.write(
             display_df.to_html(escape=False, index=False, border=0, classes='result-container'), 
             unsafe_allow_html=True
