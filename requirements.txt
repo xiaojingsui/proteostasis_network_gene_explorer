@@ -1,8 +1,8 @@
 streamlit
 pandas
-numpy
-matplotlib
-py3Dmol
-requests
 openpyxl
 stmol
+py3Dmol
+requests
+ipywidgets
+ipython_genutils
