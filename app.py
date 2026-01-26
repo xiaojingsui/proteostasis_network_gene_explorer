@@ -28,7 +28,7 @@ st.markdown("""
     
     /* Subtitle: Sized bigger twice as requested */
     .hero-subtitle {
-        font-size: 36px !important; /* Doubled from previous ~18px */
+        font-size: 24px !important; /* Doubled from previous ~18px */
         color: #006064;
         margin-bottom: 50px;
         font-weight: 400;
