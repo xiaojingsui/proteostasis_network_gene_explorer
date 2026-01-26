@@ -76,7 +76,7 @@ df = load_data()
 
 # 4. Hero Header Section
 st.markdown('<div class="hero-section">', unsafe_allow_html=True)
-st.markdown('<p class="hero-title">HUMAN Proteostanis Network Database</p>', unsafe_allow_html=True)
+st.markdown('<p class="hero-title">HUMAN Proteostasis Network Database</p>', unsafe_allow_html=True)
 st.markdown('<p class="hero-subtitle">The comprehensive knowledgebase for human proteostasis network genes</p>', unsafe_allow_html=True)
 
 # Centered Search Bar
