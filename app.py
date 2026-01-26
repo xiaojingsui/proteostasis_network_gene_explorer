@@ -4,57 +4,101 @@ import pandas as pd
 # 1. Page Config
 st.set_page_config(page_title="Human PN Database", layout="wide")
 
-# 2. Custom CSS for Light Cyan Theme
+# 2. Custom CSS for Perfectly Aligned Light Cyan Theme
 st.markdown("""
     <style>
-    /* Main background: Light Cyan / Pale Turquoise */
+    /* Background and Global Styles */
     .stApp {
         background-color: #E0F7FA; 
     }
+    
+    /* Hero Section Alignment */
     .hero-section {
-        padding: 60px 0px;
+        padding: 40px 0px 20px 0px;
         text-align: center;
-        color: #006064; /* Dark Cyan for text contrast */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
     }
+    
     .hero-title {
-        font-size: 56px !important;
+        font-size: 52px !important;
         font-weight: 800;
-        margin-bottom: 10px;
+        margin-bottom: 5px;
         text-transform: uppercase;
-        color: #00838F; /* Stronger Cyan accent for title */
+        color: #00838F;
     }
+    
     .hero-subtitle {
-        font-size: 20px;
-        opacity: 0.8;
-        margin-bottom: 30px;
+        font-size: 18px;
+        color: #006064;
+        margin-bottom: 25px;
     }
-    /* Centered Search Bar styling */
+
+    /* Fixed Search Bar Alignment */
+    div.stTextInput {
+        width: 100% !important;
+        max-width: 800px !important;
+        margin: 0 auto !important;
+    }
+    
     div.stTextInput > div > div > input {
         border-radius: 25px;
         height: 50px;
-        padding-left: 20px;
-        font-size: 18px;
-        border: 2px solid #80DEEA; /* Cyan border */
+        padding-left: 25px;
+        font-size: 16px;
+        border: 2px solid #4DD0E1;
+        background-color: white;
     }
-    /* Result Table Container */
+
+    /* Suggestion Chips Alignment */
+    .suggestion-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+        margin-top: 15px;
+        font-size: 14px;
+        color: #006064;
+    }
+    
+    .chip {
+        background: #B2EBF2;
+        padding: 4px 15px;
+        border-radius: 20px;
+        color: #006064;
+        font-weight: 500;
+    }
+
+    /* Table Styling: Remove first column and borders */
     .result-container {
         background-color: white;
         padding: 20px;
-        border-radius: 15px;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-        color: #333333;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
         width: 100%;
         border-collapse: collapse;
+        border: none !important;
     }
+    
     th {
-        background-color: #B2EBF2 !important; /* Cyan header background */
-        color: #006064 !important; /* Dark Cyan header text */
+        background-color: #B2EBF2 !important;
+        color: #006064 !important;
         text-align: left !important;
-        padding: 12px !important;
+        padding: 15px !important;
+        border: none !important;
     }
+    
     td {
-        padding: 12px !important;
-        border-bottom: 1px solid #E0F2F1;
+        padding: 15px !important;
+        border-bottom: 1px solid #E0F2F1 !important;
+    }
+
+    /* Hide the automatic Streamlit Index Column */
+    thead tr th:first-child, 
+    tbody tr td:first-child {
+        display: none;
     }
     </style>
     """, unsafe_allow_html=True)
@@ -64,9 +108,9 @@ st.markdown("""
 def load_data():
     file_path = 'Human Proteostasis Network 2.0 ~ 2024-0415.xlsx'
     try:
-        # Loading the specific tab mentioned in your file
+        # Sheet name from user input
         df = pd.read_excel(file_path, sheet_name='Proteostasis_Network_2024_0414')
-        # Cleaning rows based on Gene Symbol
+        # Filter for valid entries
         df = df.dropna(subset=['Gene Symbol', 'UniProt ID'])
         return df
     except:
@@ -74,20 +118,27 @@ def load_data():
 
 df = load_data()
 
-# 4. Hero Header Section
+# 4. Main Interface
 st.markdown('<div class="hero-section">', unsafe_allow_html=True)
 st.markdown('<p class="hero-title">HUMAN Proteostasis Network Database</p>', unsafe_allow_html=True)
 st.markdown('<p class="hero-subtitle">The comprehensive knowledgebase for human proteostasis network genes</p>', unsafe_allow_html=True)
 
-# Centered Search Bar
-search_col1, search_col2, search_col3 = st.columns([1, 3, 1])
-with search_col2:
-    search_query = st.text_input("", placeholder="Search by Gene Symbol, UniProt ID, or Branch...", label_visibility="collapsed").strip()
+# Search Bar Container
+search_query = st.text_input("", placeholder="Search by Gene Symbol, UniProt ID, or Branch...", label_visibility="collapsed").strip()
+
+# Centered Suggestions
+st.markdown("""
+    <div class="suggestion-container">
+        <span>Try searching for:</span>
+        <span class="chip">HSPA1A</span>
+        <span class="chip">P0DMV8</span>
+        <span class="chip">Chaperone</span>
+    </div>
+    """, unsafe_allow_html=True)
 st.markdown('</div>', unsafe_allow_html=True)
 
-# 5. Search Logic & Table Display
+# 5. Search Results Logic
 if search_query:
-    # Fuzzy matching logic
     results = df[
         df['Gene Symbol'].str.contains(search_query, case=False, na=False) | 
         df['UniProt ID'].str.contains(search_query, case=False, na=False) |
@@ -95,39 +146,24 @@ if search_query:
     ].copy()
     
     if not results.empty:
-        st.markdown(f"### Search Results for \"{search_query}\"")
-        st.write(f"{len(results)} results found")
+        st.write(f"**{len(results)} results found for '{search_query}'**")
         
-        # Create Hyperlink for UniProt ID
+        # Hyperlink UniProt ID
         results['UniProt ID'] = results['UniProt ID'].apply(
             lambda x: f'<a href="https://www.uniprot.org/uniprotkb/{x}/entry" target="_blank" style="color: #00838F; font-weight: bold; text-decoration: none;">{x}</a>'
         )
         
-        # Select and order columns as per requested design
+        # Final Column Selection
         display_df = results[['UniProt ID', 'Gene Symbol', 'Gene Name', 'Branch', 'Class', 'Group']]
         
-        # Render Table without the first (index) column
+        # Render HTML table to enforce CSS styling and hide index
         st.write(
-            display_df.to_html(escape=False, index=False, justify='left', border=0, classes='result-container'), 
+            display_df.to_html(escape=False, index=False, border=0, classes='result-container'), 
             unsafe_allow_html=True
         )
-        
-        if st.button("Clear Search"):
-            st.rerun()
     else:
         st.error("No results found. Please try another search term.")
-else:
-    # Example suggestions with cyan accents
-    st.markdown("""
-        <div style='text-align:center; color:#006064; margin-top:-20px;'>
-            <p>Try searching for: 
-            <span style='background:#B2EBF2; padding:5px 15px; border-radius:15px; margin:0 5px; color:#006064;'>HSPA1A</span>
-            <span style='background:#B2EBF2; padding:5px 15px; border-radius:15px; margin:0 5px; color:#006064;'>P0DMV8</span>
-            <span style='background:#B2EBF2; padding:5px 15px; border-radius:15px; margin:0 5px; color:#006064;'>Chaperone</span>
-            </p>
-        </div>
-    """, unsafe_allow_html=True)
 
 # Footer info
-st.markdown("---")
+st.markdown("<br><hr>", unsafe_allow_html=True)
 st.caption("Data source: Human Proteostasis Network 2.0 ~ 2024-0415")
