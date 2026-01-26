@@ -4,19 +4,21 @@ import pandas as pd
 # 1. Page Config
 st.set_page_config(page_title="Human PN Database", layout="wide")
 
-# Initialize session state for the key if it doesn't exist
+# Initialize session state for the key
 if "search_key" not in st.session_state:
     st.session_state.search_key = ""
 
-# CALLBACK FUNCTION: This safely updates the widget's state
+# CALLBACK FUNCTION: Safely updates the widget's state
 def update_search(new_query):
     st.session_state.search_key = new_query
 
-# 2. Custom CSS (Spacious, Cyan Theme)
+# 2. Custom CSS for Tight Spacing and Cyan Theme
 st.markdown("""
     <style>
     .stApp { background-color: #E0F7FA; }
     .hero-section { padding: 60px 0px 10px 0px; text-align: center; }
+    
+    /* Title and Subtitle Sizing */
     .hero-title {
         font-size: 52px !important;
         font-weight: 800;
@@ -25,10 +27,12 @@ st.markdown("""
         color: #00838F;
     }
     .hero-subtitle {
-        font-size: 36px !important;
+        font-size: 32px !important;
         color: #006064;
-        margin-bottom: 50px;
+        margin-bottom: 40px;
     }
+
+    /* Centered Search Bar */
     div[data-testid="stTextInput"] {
         width: 50% !important; 
         margin: 0 auto !important; 
@@ -41,6 +45,29 @@ st.markdown("""
         border-bottom: 4px solid #4DD0E1 !important;
         background-color: white !important;
     }
+
+    /* Suggestion Container - Pulls elements closer */
+    [data-testid="column"] {
+        width: fit-content !important;
+        flex: unset !important;
+        min-width: unset !important;
+    }
+    div[data-testid="stHorizontalBlock"] {
+        justify-content: center !important;
+        gap: 10px !important; /* Tight gap between label and buttons */
+    }
+
+    /* Button Styling for chips */
+    .stButton>button {
+        background-color: #B2EBF2 !important;
+        color: #006064 !important;
+        border-radius: 20px !important;
+        border: none !important;
+        padding: 5px 20px !important;
+        font-size: 16px !important;
+    }
+
+    /* Table Styling */
     .result-container {
         background-color: white;
         border-radius: 12px;
@@ -52,15 +79,6 @@ st.markdown("""
     th { background-color: #F0FBFC !important; color: #006064 !important; text-align: left !important; padding: 18px !important; }
     td { padding: 18px !important; border-bottom: 1px solid #F0F0F0 !important; }
     thead tr th:first-child, tbody tr td:first-child { display: none; }
-    
-    /* Button Styling for chips */
-    .stButton>button {
-        background-color: #B2EBF2 !important;
-        color: #006064 !important;
-        border-radius: 20px !important;
-        border: none !important;
-        padding: 5px 20px !important;
-    }
     </style>
     """, unsafe_allow_html=True)
 
@@ -77,12 +95,12 @@ def load_data():
 
 df = load_data()
 
-# 4. Interface Logic
+# 4. Interface Section
 st.markdown('<div class="hero-section">', unsafe_allow_html=True)
 st.markdown('<p class="hero-title">HUMAN Proteostasis Network Database</p>', unsafe_allow_html=True)
 st.markdown('<p class="hero-subtitle">The comprehensive knowledgebase for human proteostasis network genes</p>', unsafe_allow_html=True)
 
-# Search Input tied to session_state key
+# Search Input
 st.text_input(
     "", 
     placeholder="Search by Gene Symbol, UniProt ID, or Branch...", 
@@ -90,20 +108,22 @@ st.text_input(
     key="search_key" 
 )
 
-# 5. Clickable Chips Section
-col_label, col1, col2, col3 = st.columns([2, 1, 1, 1.5])
-with col_label:
-    st.markdown("<p style='text-align:right; font-size:18px; color:#006064; padding-top:5px;'>Try searching for:</p>", unsafe_allow_html=True)
+# 5. Clickable Chips Section - Now with tighter column grouping
+# We use st.columns with specific widths to pull them to the center
+c1, c2, c3, c4 = st.columns([1.5, 0.6, 0.6, 0.8])
 
-# Buttons use the "on_click" parameter to avoid the Exception error
-with col1:
+with c1:
+    st.markdown("<p style='text-align:right; font-size:18px; color:#006064; padding-top:5px; margin-right:5px;'>Try searching for:</p>", unsafe_allow_html=True)
+
+with c2:
     st.button("HSPA1A", on_click=update_search, args=("HSPA1A",))
 
-with col2:
+with c3:
     st.button("P0DMV8", on_click=update_search, args=("P0DMV8",))
 
-with col3:
+with c4:
     st.button("Chaperone", on_click=update_search, args=("Chaperone",))
+
 st.markdown('</div>', unsafe_allow_html=True)
 
 # 6. Search and Results
