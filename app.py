@@ -1,47 +1,44 @@
 import streamlit as st
 import pandas as pd
-import py3Dmol
-from stmol import showmol
-import requests
 
 # 1. Page Config
-st.set_page_config(page_title="PN Explorer", layout="wide")
+st.set_page_config(page_title="Human PN Database", layout="wide")
 
-# 2. Custom CSS for PhaSepDB Design
+# 2. Custom CSS for PhaSepDB-inspired Design
 st.markdown("""
     <style>
-    /* Main background gradient */
     .stApp {
         background: linear-gradient(180deg, #1a3a8a 0%, #2563eb 40%, #ffffff 100%);
     }
-    /* Center the search section */
     .hero-section {
         padding: 60px 0px;
         text-align: center;
         color: white;
     }
     .hero-title {
-        font-size: 64px !important;
+        font-size: 56px !important;
         font-weight: 800;
-        margin-bottom: 0px;
+        margin-bottom: 10px;
+        text-transform: uppercase;
     }
     .hero-subtitle {
-        font-size: 24px;
+        font-size: 20px;
         opacity: 0.9;
         margin-bottom: 30px;
     }
-    /* Style the text input to look like the image */
+    /* Centered Search Bar styling */
     div.stTextInput > div > div > input {
-        border-radius: 10px;
+        border-radius: 25px;
         height: 50px;
+        padding-left: 20px;
         font-size: 18px;
     }
-    /* Style info boxes */
-    .stAlert {
-        background-color: rgba(255, 255, 255, 0.9);
-        border-radius: 10px;
-        border: none;
-        color: #1e3a8a;
+    /* Result Table Container */
+    .result-container {
+        background-color: white;
+        padding: 20px;
+        border-radius: 15px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
     }
     </style>
     """, unsafe_allow_html=True)
@@ -51,7 +48,9 @@ st.markdown("""
 def load_data():
     file_path = 'Human Proteostasis Network 2.0 ~ 2024-0415.xlsx'
     try:
+        # Loading the specific tab mentioned in your file
         df = pd.read_excel(file_path, sheet_name='Proteostasis_Network_2024_0414')
+        # Cleaning rows based on Gene Symbol
         df = df.dropna(subset=['Gene Symbol', 'UniProt ID'])
         return df
     except:
@@ -59,73 +58,60 @@ def load_data():
 
 df = load_data()
 
-# 4. Hero Header (Centered Design)
+# 4. Hero Header Section
 st.markdown('<div class="hero-section">', unsafe_allow_html=True)
-st.markdown('<p class="hero-title">PN Explorer</p>', unsafe_allow_html=True)
+st.markdown('<p class="hero-title">HUMAN Proteostanis Network Database</p>', unsafe_allow_html=True)
 st.markdown('<p class="hero-subtitle">The comprehensive knowledgebase for human proteostasis network genes</p>', unsafe_allow_html=True)
 
-# Search area mimicking the image search bar
+# Centered Search Bar
 search_col1, search_col2, search_col3 = st.columns([1, 3, 1])
 with search_col2:
-    search_query = st.text_input("", placeholder="Search by Gene Symbol, UniProt ID, or Branch...", label_visibility="collapsed").strip().upper()
+    search_query = st.text_input("", placeholder="Search by Gene Symbol, UniProt ID, or Branch...", label_visibility="collapsed").strip()
 st.markdown('</div>', unsafe_allow_html=True)
 
-# 5. Filter & Display Logic
+# 5. Search Logic & Table Display
 if search_query:
-    # Search across multiple columns for a "Smart Search" feel
+    # Fuzzy matching logic
     results = df[
-        df['Gene Symbol'].str.upper().str.contains(search_query, na=False) | 
-        df['UniProt ID'].str.upper().str.contains(search_query, na=False) |
-        df['Branch'].str.upper().str.contains(search_query, na=False)
-    ]
+        df['Gene Symbol'].str.contains(search_query, case=False, na=False) | 
+        df['UniProt ID'].str.contains(search_query, case=False, na=False) |
+        df['Branch'].str.contains(search_query, case=False, na=False)
+    ].copy()
     
     if not results.empty:
         st.markdown(f"### Search Results for \"{search_query}\"")
-        st.write(f"Showing {len(results)} results")
+        st.write(f"{len(results)} results found")
         
-        # Display Table like PhaSepDB
+        # Create Hyperlink for UniProt ID
+        results['UniProt ID'] = results['UniProt ID'].apply(
+            lambda x: f'<a href="https://www.uniprot.org/uniprotkb/{x}/entry" target="_blank">{x}</a>'
+        )
+        
+        # Select and order columns as per requested design
         display_df = results[['UniProt ID', 'Gene Symbol', 'Gene Name', 'Branch', 'Class', 'Group']]
         
-        # Clicking a row is simulated by a selectbox below the table
-        selected_gene = st.selectbox("Select a gene from results to view 3D structure:", results['Gene Symbol'].unique())
-        selected_row = results[results['Gene Symbol'] == selected_gene].iloc[0]
-
-        # --- Detail Section ---
-        st.divider()
-        col_info, col_viz = st.columns([1, 2])
+        # Render Table without the first (index) column
+        st.write(
+            display_df.to_html(escape=False, index=False, justify='left', border=0, classes='result-container'), 
+            unsafe_allow_html=True
+        )
         
-        with col_info:
-            st.subheader(f"🧬 {selected_row['Gene Symbol']}")
-            st.write(f"**Full Name:** {selected_row['Gene Name']}")
-            st.write(f"**UniProt:** `{selected_row['UniProt ID']}`")
-            st.info(f"**Branch:** {selected_row['Branch']}\n\n**Class:** {selected_row['Class']}\n\n**Group:** {selected_row['Group']}")
-            
-            uniprot_id = selected_row['UniProt ID']
-            st.markdown(f"[🔗 UniProt Entry](https://www.uniprot.org/uniprotkb/{uniprot_id}/entry)")
-            st.markdown(f"[🔗 AlphaFold Structure](https://alphafold.ebi.ac.uk/entry/{uniprot_id})")
-
-        with col_viz:
-            def render_alphafold(uid):
-                pdb_url = f"https://alphafold.ebi.ac.uk/files/AF-{uid}-F1-model_v4.pdb"
-                res = requests.get(pdb_url)
-                if res.status_code == 200:
-                    view = py3Dmol.view(width=800, height=500)
-                    view.addModel(res.text, 'pdb')
-                    view.setStyle({'cartoon': {'color': 'spectrum'}})
-                    view.zoomTo()
-                    return view
-                return None
-
-            with st.spinner("Loading 3D Model..."):
-                view = render_alphafold(uniprot_id)
-                if view:
-                    showmol(view, height=500, width=800)
-                else:
-                    st.warning("3D Structure not available.")
-        
-        st.dataframe(display_df, use_container_width=True)
+        if st.button("Clear Search"):
+            st.rerun()
     else:
         st.error("No results found. Please try another search term.")
 else:
-    # Default view: show a few examples like the image buttons
-    st.markdown("<p style='text-align:center; color:white;'>Try searching for: <b>HSPA1A</b>, <b>DNAJA1</b>, or <b>Chaperone</b></p>", unsafe_allow_html=True)
+    # Example suggestions like the original design
+    st.markdown("""
+        <div style='text-align:center; color:white; margin-top:-20px;'>
+            <p>Try searching for: 
+            <span style='background:rgba(255,255,255,0.2); padding:5px 15px; border-radius:15px; margin:0 5px;'>HSPA1A</span>
+            <span style='background:rgba(255,255,255,0.2); padding:5px 15px; border-radius:15px; margin:0 5px;'>P0DMV8</span>
+            <span style='background:rgba(255,255,255,0.2); padding:5px 15px; border-radius:15px; margin:0 5px;'>Chaperone</span>
+            </p>
+        </div>
+    """, unsafe_allow_html=True)
+
+# Footer info
+st.markdown("---")
+st.caption("Data source: Human Proteostasis Network 2.0 ~ 2024-0415")
