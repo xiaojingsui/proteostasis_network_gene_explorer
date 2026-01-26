@@ -5,3 +5,4 @@ matplotlib
 py3Dmol
 requests
 openpyxl
+stmol
