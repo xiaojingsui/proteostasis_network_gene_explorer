@@ -12,7 +12,7 @@ if "search_key" not in st.session_state:
 def update_search(new_query):
     st.session_state.search_key = new_query
 
-# 2. Custom CSS for Light Cyan Theme & Perfectly Aligned Layout
+# 2. Custom CSS for Light Cyan Theme & Tightened Alignment
 st.markdown("""
     <style>
     .stApp { background-color: #E0F7FA; }
@@ -31,7 +31,7 @@ st.markdown("""
         margin-bottom: 40px;
     }
 
-    /* Tall, Centered Search Bar (50% width) */
+    /* Tall, Centered Search Bar */
     div[data-testid="stTextInput"] {
         width: 50% !important; 
         margin: 0 auto !important; 
@@ -45,18 +45,29 @@ st.markdown("""
         background-color: white !important;
     }
 
-    /* Suggestion Container - Tight Grouping */
-    [data-testid="column"] { width: fit-content !important; flex: unset !important; min-width: unset !important; }
-    div[data-testid="stHorizontalBlock"] { justify-content: center !important; gap: 10px !important; }
+    /* TIGHT CHIP ALIGNMENT: Centers the entire group closely */
+    .chip-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 8px; /* Tight gap between label and buttons */
+        margin-top: 15px;
+    }
+    .suggestion-label {
+        font-size: 18px;
+        color: #006064;
+        margin-right: 5px;
+    }
 
-    /* Button Styling */
+    /* Button Styling to look like small chips */
     .stButton>button {
         background-color: #B2EBF2 !important;
         color: #006064 !important;
         border-radius: 20px !important;
         border: none !important;
-        padding: 5px 20px !important;
-        font-size: 16px !important;
+        padding: 4px 15px !important;
+        font-size: 15px !important;
+        min-width: 80px;
     }
 
     /* Table Styling */
@@ -81,7 +92,6 @@ def load_data():
     try:
         # Loading the specific tab mentioned in your file
         df = pd.read_excel(file_path, sheet_name='Proteostasis_Network_2024_0414')
-        # Cleaning rows based on Gene Symbol
         df = df.dropna(subset=['Gene Symbol', 'UniProt ID'])
         return df
     except:
@@ -94,7 +104,7 @@ st.markdown('<div class="hero-section">', unsafe_allow_html=True)
 st.markdown('<p class="hero-title">HUMAN Proteostasis Network Database</p>', unsafe_allow_html=True)
 st.markdown('<p class="hero-subtitle">The comprehensive knowledgebase for human proteostasis network genes</p>', unsafe_allow_html=True)
 
-# Search Input tied to session state
+# Search Input
 st.text_input(
     "", 
     placeholder="Search by Gene, ID, Branch, Class, Group, Type, or Subtype...", 
@@ -102,23 +112,27 @@ st.text_input(
     key="search_key" 
 )
 
-# 5. Clickable Chips Section
-c1, c2, c3, c4 = st.columns([1.5, 0.6, 0.6, 0.8])
-with c1:
-    st.markdown("<p style='text-align:right; font-size: 18px; color: #006064; padding-top: 5px;'>Try searching for:</p>", unsafe_allow_html=True)
-with c2:
-    st.button("HSPA1A", on_click=update_search, args=("HSPA1A",))
-with c3:
-    st.button("P0DMV8", on_click=update_search, args=("P0DMV8",))
-with c4:
-    st.button("Chaperone", on_click=update_search, args=("Chaperone",))
+# 5. Spatially Optimized Chip Section
+# We use st.columns with specific very small ratios to keep them grouped in the center
+_, center_col, _ = st.columns([1, 4, 1])
+
+with center_col:
+    # We use a container with a tighter gap
+    inner_cols = st.columns([1.5, 0.8, 0.8, 1])
+    with inner_cols[0]:
+        st.markdown("<p style='text-align:right; font-size: 18px; color: #006064; padding-top: 5px; margin:0;'>Try searching for:</p>", unsafe_allow_html=True)
+    with inner_cols[1]:
+        st.button("HSPA1A", on_click=update_search, args=("HSPA1A",))
+    with inner_cols[2]:
+        st.button("P0DMV8", on_click=update_search, args=("P0DMV8",))
+    with inner_cols[3]:
+        st.button("Chaperone", on_click=update_search, args=("Chaperone",))
+
 st.markdown('</div>', unsafe_allow_html=True)
 
 # 6. Search Results Logic
 query = st.session_state.search_key
 if query:
-    # Expanded search logic to include Class, Type, and Subtype
-    # "Principal Domains" remains excluded
     results = df[
         df['Gene Symbol'].astype(str).str.contains(query, case=False, na=False) | 
         df['UniProt ID'].astype(str).str.contains(query, case=False, na=False) |
@@ -137,7 +151,6 @@ if query:
             lambda x: f'<a href="https://www.uniprot.org/uniprotkb/{x}/entry" target="_blank" style="color: #00838F; font-weight: bold; text-decoration: none;">{x}</a>'
         )
         
-        # Display table columns including requested additions
         display_df = results[['UniProt ID', 'Gene Symbol', 'Gene Name', 'Branch', 'Class', 'Group', 'Type', 'Subtype']]
         st.write(
             display_df.to_html(escape=False, index=False, border=0, classes='result-container'), 
