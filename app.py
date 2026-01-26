@@ -4,7 +4,7 @@ import pandas as pd
 # 1. Page Config
 st.set_page_config(page_title="Human PN Database", layout="wide")
 
-# 2. Custom CSS for Centered, Half-Width, Tall UI
+# 2. Custom CSS for Centered, Tall UI with Large Subtitle
 st.markdown("""
     <style>
     /* Background */
@@ -26,16 +26,18 @@ st.markdown("""
         color: #00838F;
     }
     
+    /* Subtitle: Sized bigger twice as requested */
     .hero-subtitle {
-        font-size: 18px;
+        font-size: 36px !important; /* Doubled from previous ~18px */
         color: #006064;
-        margin-bottom: 40px;
+        margin-bottom: 50px;
+        font-weight: 400;
     }
 
     /* Fixed Width Search Bar: 50% width and centered */
     div[data-testid="stTextInput"] {
-        width: 50% !important; /* Shorter length requested */
-        margin: 0 auto !important; /* Centers it in the middle */
+        width: 50% !important; 
+        margin: 0 auto !important; 
     }
     
     div[data-testid="stTextInput"] > div > div > input {
@@ -56,7 +58,7 @@ st.markdown("""
         align-items: center;
         gap: 15px;
         margin-top: 25px;
-        font-size: 16px;
+        font-size: 18px;
         color: #006064;
     }
     
@@ -118,7 +120,7 @@ st.markdown('<div class="hero-section">', unsafe_allow_html=True)
 st.markdown('<p class="hero-title">HUMAN Proteostasis Network Database</p>', unsafe_allow_html=True)
 st.markdown('<p class="hero-subtitle">The comprehensive knowledgebase for human proteostasis network genes</p>', unsafe_allow_html=True)
 
-# Search Input (Now 50% width via CSS)
+# Search Input
 search_query = st.text_input("", placeholder="Search by Gene Symbol, UniProt ID, or Branch...", label_visibility="collapsed").strip()
 
 # Centered Suggestions
