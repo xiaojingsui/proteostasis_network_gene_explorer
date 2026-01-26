@@ -120,9 +120,8 @@ if query:
         
         # Select columns for display (based on your Excel headers)
         display_cols = [
-            'UniProt ID', 'Gene Symbol', 'Gene Name', 
-            'Type', 'Subtype', 'Principal Domains'
-        ]
+            'UniProt ID', 'Gene Symbol', 'Branch', 'Class','Group',
+            'Type', 'Subtype'
         
         # Only show columns that actually exist in the dataframe
         available_cols = [c for c in display_cols if c in results.columns]
