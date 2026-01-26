@@ -4,6 +4,14 @@ import pandas as pd
 # 1. Page Config
 st.set_page_config(page_title="Human PN Database", layout="wide")
 
+# Initialize session state for the key if it doesn't exist
+if "search_key" not in st.session_state:
+    st.session_state.search_key = ""
+
+# CALLBACK FUNCTION: This safely updates the widget's state
+def update_search(new_query):
+    st.session_state.search_key = new_query
+
 # 2. Custom CSS (Spacious, Cyan Theme)
 st.markdown("""
     <style>
@@ -21,7 +29,6 @@ st.markdown("""
         color: #006064;
         margin-bottom: 50px;
     }
-    /* Centering and sizing the search input container */
     div[data-testid="stTextInput"] {
         width: 50% !important; 
         margin: 0 auto !important; 
@@ -34,7 +41,6 @@ st.markdown("""
         border-bottom: 4px solid #4DD0E1 !important;
         background-color: white !important;
     }
-    /* Table Styling */
     .result-container {
         background-color: white;
         border-radius: 12px;
@@ -47,7 +53,7 @@ st.markdown("""
     td { padding: 18px !important; border-bottom: 1px solid #F0F0F0 !important; }
     thead tr th:first-child, tbody tr td:first-child { display: none; }
     
-    /* Button Styling to look like chips */
+    /* Button Styling for chips */
     .stButton>button {
         background-color: #B2EBF2 !important;
         color: #006064 !important;
@@ -76,38 +82,33 @@ st.markdown('<div class="hero-section">', unsafe_allow_html=True)
 st.markdown('<p class="hero-title">HUMAN Proteostasis Network Database</p>', unsafe_allow_html=True)
 st.markdown('<p class="hero-subtitle">The comprehensive knowledgebase for human proteostasis network genes</p>', unsafe_allow_html=True)
 
-# Important: The search input uses 'search_key' to stay synced
-search_query = st.text_input(
+# Search Input tied to session_state key
+st.text_input(
     "", 
     placeholder="Search by Gene Symbol, UniProt ID, or Branch...", 
     label_visibility="collapsed",
-    key="search_key"
-).strip()
+    key="search_key" 
+)
 
 # 5. Clickable Chips Section
 col_label, col1, col2, col3 = st.columns([2, 1, 1, 1.5])
 with col_label:
     st.markdown("<p style='text-align:right; font-size:18px; color:#006064; padding-top:5px;'>Try searching for:</p>", unsafe_allow_html=True)
 
+# Buttons use the "on_click" parameter to avoid the Exception error
 with col1:
-    if st.button("HSPA1A"):
-        st.session_state.search_key = "HSPA1A"
-        st.rerun()
+    st.button("HSPA1A", on_click=update_search, args=("HSPA1A",))
 
 with col2:
-    if st.button("P0DMV8"):
-        st.session_state.search_key = "P0DMV8"
-        st.rerun()
+    st.button("P0DMV8", on_click=update_search, args=("P0DMV8",))
 
 with col3:
-    if st.button("Chaperone"):
-        st.session_state.search_key = "Chaperone"
-        st.rerun()
+    st.button("Chaperone", on_click=update_search, args=("Chaperone",))
 st.markdown('</div>', unsafe_allow_html=True)
 
 # 6. Search and Results
-if st.session_state.search_key:
-    query = st.session_state.search_key
+query = st.session_state.search_key
+if query:
     results = df[
         df['Gene Symbol'].astype(str).str.contains(query, case=False, na=False) | 
         df['UniProt ID'].astype(str).str.contains(query, case=False, na=False) |
@@ -116,12 +117,9 @@ if st.session_state.search_key:
     
     if not results.empty:
         st.markdown(f"#### {len(results)} results found for '{query}'")
-        
-        # Hyperlink UniProt ID
         results['UniProt ID'] = results['UniProt ID'].apply(
             lambda x: f'<a href="https://www.uniprot.org/uniprotkb/{x}/entry" target="_blank" style="color: #00838F; font-weight: bold; text-decoration: none;">{x}</a>'
         )
-        
         display_df = results[['UniProt ID', 'Gene Symbol', 'Gene Name', 'Branch', 'Class', 'Group']]
         st.write(
             display_df.to_html(escape=False, index=False, border=0, classes='result-container'), 
