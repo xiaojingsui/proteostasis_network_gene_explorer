@@ -80,7 +80,7 @@ st.markdown('<p class="hero-subtitle">The comprehensive knowledgebase for human 
 # Search Input
 st.text_input(
     "", 
-    placeholder="Search by Gene Symbol, UniProt ID, Branch, Type, or Subtype...", 
+    placeholder="Search by Gene Symbol, UniProt ID, Branch, Class, Group, Type, or Subtype...", 
     label_visibility="collapsed",
     key="search_key" 
 )
