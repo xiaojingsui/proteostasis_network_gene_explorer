@@ -126,7 +126,7 @@ if query:
             )
         
         # Define display columns
-        display_cols = ['UniProt ID', 'Gene Symbol', 'Gene ID', 'Branch', 'Class', 'Group', 'Type', 'Subtype', 'Principal Domains']
+        display_cols = ['UniProt ID', 'Gene Symbol', 'GeneID', 'Branch', 'Class', 'Group', 'Type', 'Subtype', 'Principal Domains']
         available_cols = [c for c in display_cols if c in results.columns]
         
         # Render Table as HTML
