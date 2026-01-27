@@ -26,7 +26,7 @@ st.markdown("""
     
     .hero-title {
         font-family: Arial, Helvetica, sans-serif !important;
-        font-size: 52px !important;
+        font-size: 46px !important;
         font-weight: 800;
         margin-bottom: 20px;
         text-transform: uppercase;
