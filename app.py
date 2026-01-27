@@ -149,7 +149,7 @@ if query:
     
     if not results.empty:
         # Layout for Title and Download Button
-        col_results, col_download = st.columns([8, 1])
+        col_results, col_download = st.columns([7, 1])
         with col_results:
             st.markdown(f"#### {len(results)} results found for '{query}'")
         
@@ -157,7 +157,7 @@ if query:
             # Prepare CSV for download (using the raw data before HTML tags are added)
             csv = results.to_csv(index=False).encode('utf-8')
             st.download_button(
-                label="📥 Download CSV",
+                label="Download CSV",
                 data=csv,
                 file_name=f"search_results_{query}.csv",
                 mime="text/csv",
