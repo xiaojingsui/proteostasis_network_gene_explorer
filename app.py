@@ -103,7 +103,7 @@ st.markdown("""
     }
     .info-title {
         font-weight: bold;
-        font-size: 20px;
+        font-size: 40px;
         color: #00838F;
         margin-bottom: 10px;
     }
