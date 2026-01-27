@@ -64,6 +64,7 @@ def load_data():
     file_path = 'Human Proteostasis Network 2.0 ~ 2024-0415.xlsx'
     try:
         df = pd.read_excel(file_path, sheet_name='Proteostasis_Network_2024_0414')
+        # Clean data: drop rows where essential identifiers are missing
         df = df.dropna(subset=['Gene Symbol', 'UniProt ID'])
         return df
     except Exception as e:
@@ -103,22 +104,29 @@ st.markdown('</div>', unsafe_allow_html=True)
 # 6. Consolidated Results Logic
 query = st.session_state.search_key
 if query:
-    # Filter the dataframe across all columns
     mask = df.apply(lambda row: row.astype(str).str.contains(query, case=False).any(), axis=1)
     results = df[mask].copy()
     
     if not results.empty:
         st.markdown(f"#### {len(results)} results found for '{query}'")
         
-        # TRANSFORMATION: Convert UniProt ID into a clickable link
+        # TRANSFORMATION: UniProt Link
         results['UniProt ID'] = results['UniProt ID'].apply(
             lambda x: f'<a href="https://www.uniprot.org/uniprotkb/{x}/entry" target="_blank">{x}</a>'
         )
         
-        # Select columns for display (Check which list you prefer)
-        # Using the more comprehensive list from your second block:
-        display_cols = ['UniProt ID', 'Gene Symbol', 'Branch', 'Class', 'Group', 'Type', 'Subtype', 'Principal Domains']
+        # TRANSFORMATION: Alliance of Genome Resources Link
+        # Note: Replace 'Gene ID' with the exact column name from your Excel if different
+        gene_id_col = 'Gene ID' if 'Gene ID' in results.columns else None
         
+        if gene_id_col:
+            results[gene_id_col] = results.apply(
+                lambda row: f'<a href="https://www.alliancegenome.org/search?q={row[gene_id_col]}" target="_blank">{row[gene_id_col]}</a>' 
+                if pd.notnull(row[gene_id_col]) else "", axis=1
+            )
+        
+        # Define display columns
+        display_cols = ['UniProt ID', 'Gene Symbol', 'Gene ID', 'Branch', 'Class', 'Group', 'Type', 'Subtype', 'Principal Domains']
         available_cols = [c for c in display_cols if c in results.columns]
         
         # Render Table as HTML
