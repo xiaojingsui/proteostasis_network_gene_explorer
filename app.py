@@ -92,6 +92,21 @@ st.markdown("""
         border-bottom: 1px solid #F0F0F0 !important; 
         font-size: 14px; 
     }
+
+    .info-box {
+        background-color: white;
+        border: 1px solid #4DD0E1;
+        border-radius: 8px;
+        padding: 20px;
+        height: 180px; /* Fixed height to keep them even */
+        color: #006064;
+    }
+    .info-title {
+        font-weight: bold;
+        font-size: 20px;
+        color: #00838F;
+        margin-bottom: 10px;
+    }
     
     /* Link styling */
     a { color: #00838F !important; font-weight: bold; text-decoration: none; }
@@ -216,6 +231,24 @@ if query:
     else:
         st.error(f"No results found for '{query}'.")
 
+# 7. Contact and Citation Section
+st.markdown("<br><br><hr>", unsafe_allow_html=True)
+col_left, col_right = st.columns(2)
+
+with col_left:
+    st.markdown('<p class="section-header">Contact Us</p>', unsafe_allow_html=True)
+    st.markdown(f"""
+        <div class="info-box">
+            <p style="margin: 0;">📧 <a href="mailto:proteostasisconsortium@hsc.pku.edu.cn">proteostasisconsortium@hsc.pku.edu.cn</a></p>
+        </div>
+    """, unsafe_allow_html=True)
+with col_right:
+    st.markdown('<p class="section-header">cite us</p>', unsafe_allow_html=True)
+    st.markdown(f"""
+        <div class="info-box" style="border-left: 5px solid #00838F;">
+            <p style="margin: 0;">cite us</p>
+        </div>
+    """, unsafe_allow_html=True)
 # Footer
 st.markdown("<br><br><hr>", unsafe_allow_html=True)
 st.caption("Data source: Human Proteostasis Network 2.0 ~ 2024-0415")
