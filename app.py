@@ -183,17 +183,14 @@ if query:
     results = df[mask].copy()
     
     if not results.empty:
-        # 1. Spacer to move the "Results found" and "Download" button down from the search chips
-        st.markdown('<div style="margin-top: 50px;"></div>', unsafe_allow_html=True)
-        
-        # 2. Layout for Title and Download Button
-        # Using vertical_alignment="bottom" ensures the button and text sit on the same line
-        col_results, col_download = st.columns([7, 1], vertical_alignment="bottom")
-        
+        # Layout for Title and Download Button
+        col_results, col_download = st.columns([7, 1])
         with col_results:
             st.markdown(f"#### {len(results)} results found for '{query}'")
         
         with col_download:
+            # Prepare CSV for download (using the raw data before HTML tags are added)
+            st.markdown('<div style="margin-top: 10px;"></div>', unsafe_allow_html=True)
             csv = results.to_csv(index=False).encode('utf-8')
             st.download_button(
                 label="Download CSV",
@@ -201,16 +198,6 @@ if query:
                 file_name=f"search_results_{query}.csv",
                 mime="text/csv",
             )
-        
-        # 3. Smaller spacer BEFORE the table to keep it close to the header
-        st.markdown('<div style="margin-top: 10px;"></div>', unsafe_allow_html=True)
-
-        # --- Table rendering follows immediately ---
-        available_cols = [c for c in display_cols if c in results.columns]
-        st.write(
-            results[available_cols].to_html(escape=False, index=False, border=0, classes='result-container'), 
-            unsafe_allow_html=True
-        )
         
         # --- 1. LINK: UniProt ---
         results['UniProt ID'] = results['UniProt ID'].apply(
