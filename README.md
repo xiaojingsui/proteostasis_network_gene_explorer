@@ -10,7 +10,7 @@ This tool provides a centralized interface to explore human proteostasis network
 
 Key Features:
 
-Instant Search: Filter by Gene Symbol, UniProt ID, Branch, Class, or Domain.
+Instant Search: Filter by Gene Symbol, UniProt ID, Branch, Class, Group, Type, SubType, or Domain.
 
 Direct Linking: One-click access to UniProt, NCBI Gene, and InterPro Domain entries.
 
