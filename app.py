@@ -16,10 +16,16 @@ def update_search(new_query):
 # 2. Custom CSS
 st.markdown("""
     <style>
-    /* Set global font to Arial */
+    /* 1. Global Font Override */
     html, body, [data-testid="stAppViewContainer"], .stApp {
         font-family: Arial, Helvetica, sans-serif !important;
         background-color: #E0F7FA;
+    }
+
+    /* 2. Specific Button/Chip Font Override */
+    button, div[data-testid="stButton"] > button {
+        font-family: Arial, Helvetica, sans-serif !important;
+        font-weight: 500 !important; /* Adjust thickness if needed */
     }
 
     .hero-section { padding: 5px 0px 10px 0px; text-align: center; }
@@ -38,11 +44,6 @@ st.markdown("""
         font-size: 24px !important;
         color: #006064;
         margin-bottom: 40px;
-    }
-
-    div[data-testid="stTextInput"] {
-        width: 60% !important; 
-        margin: 0 auto !important; 
     }
 
     div[data-testid="stTextInput"] > div > div > input {
@@ -80,7 +81,6 @@ st.markdown("""
         font-size: 14px; 
     }
     
-    /* Link styling */
     a { color: #00838F !important; font-weight: bold; text-decoration: none; }
     a:hover { text-decoration: underline; }
     </style>
