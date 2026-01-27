@@ -57,7 +57,7 @@ st.markdown("""
     div[data-testid="stTextInput"] {
         width: 50% !important;      /* 50% = Half screen width. 100% = Full width. */
         min-width: 300px;
-        margin: 0 auto !important;
+        margin: 0 auto -15px !important;
     }
 
     div[data-testid="stTextInput"] > div {
