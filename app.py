@@ -40,6 +40,12 @@ st.markdown("""
         margin-bottom: 40px;
     }
 
+    div[data-testid="stTextInput"] {
+        width: 50% !important;      /* 50% = Half screen width. 100% = Full width. */
+        min-width: 300px;
+        margin: 0 auto !important;
+    }
+
     div[data-testid="stTextInput"] > div {
         height: auto !important;
         min-height: 75px !important; /* Must be larger than your input height (approx 68px) */
