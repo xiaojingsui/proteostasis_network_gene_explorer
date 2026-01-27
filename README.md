@@ -5,6 +5,7 @@ Proteostasis Network Gene Explorer
 A Streamlit-based web application for searching, visualizing, and exporting annotations from the Human Proteostasis Network (PN) Database.
 
 Project Overview
+
 This tool provides a centralized interface to explore human proteostasis network genes. It allows researchers to query specific gene symbols, UniProt IDs, or functional branches to retrieve curated annotation data.
 
 Key Features:
