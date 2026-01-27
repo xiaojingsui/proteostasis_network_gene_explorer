@@ -8,62 +8,57 @@ st.set_page_config(page_title="Human PN Database", layout="wide")
 if "search_key" not in st.session_state:
     st.session_state.search_key = ""
 
-# 2. Custom CSS (Global + Tabs Styling)
+# 2. Custom CSS (Global + Tabs + Top Search)
 st.markdown("""
     <style>
     .stApp { background-color: #E0F7FA; }
     
-    /* Hero Section Styles */
-    .hero-section { padding: 30px 0px 10px 0px; text-align: center; }
-    .hero-title {
-        font-size: 50px !important;
-        font-weight: 800;
-        margin-bottom: 10px;
-        text-transform: uppercase;
+    /* Top Header Styling */
+    .top-header {
         color: #00838F;
+        font-weight: 800;
+        font-size: 24px;
+        margin-bottom: 5px;
     }
-    .hero-subtitle {
-        font-size: 22px !important;
+    .top-sub {
         color: #006064;
-        margin-bottom: 30px;
+        font-size: 14px;
+        margin-bottom: 20px;
     }
-    
-    /* Input Styling */
+
+    /* Input Styling - Moved to Top */
     div[data-testid="stTextInput"] {
-        width: 60% !important; 
-        margin: 0 auto !important; 
+        width: 100% !important; 
     }
     div[data-testid="stTextInput"] > div > div > input {
-        border-radius: 12px !important;
-        padding: 22px 25px !important;
-        font-size: 20px !important; 
+        border-radius: 8px !important;
+        padding: 15px 20px !important;
+        font-size: 18px !important; 
         border: 1px solid #B2EBF2 !important;
-        border-bottom: 4px solid #4DD0E1 !important;
+        border-bottom: 3px solid #4DD0E1 !important;
         background-color: white !important;
     }
     
-    /* Customizing Streamlit Tabs to look like a Navbar */
+    /* Customizing Streamlit Tabs */
     .stTabs [data-baseweb="tab-list"] {
         gap: 20px;
-        justify-content: center;
-        background-color: white;
-        padding: 10px;
-        border-radius: 12px;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        justify-content: flex-start; /* Align tabs to left or center */
+        padding-bottom: 10px;
     }
     .stTabs [data-baseweb="tab"] {
-        height: 50px;
+        height: 40px;
         white-space: pre-wrap;
         background-color: transparent;
         border-radius: 5px;
         color: #006064;
-        font-size: 18px;
+        font-size: 16px;
         font-weight: 600;
     }
     .stTabs [aria-selected="true"] {
-        background-color: #E0F7FA !important;
+        background-color: white !important;
         color: #00838F !important;
         border-bottom: 3px solid #00838F;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
     }
 
     /* Table Styling */
@@ -72,11 +67,11 @@ st.markdown("""
         border-radius: 12px;
         box-shadow: 0 4px 20px rgba(0,0,0,0.08);
         width: 100%;
-        margin-top: 20px;
+        margin-top: 10px;
         border-collapse: collapse;
     }
-    th { background-color: #F0FBFC !important; color: #006064 !important; text-align: left !important; padding: 15px !important; }
-    td { padding: 15px !important; border-bottom: 1px solid #F0F0F0 !important; font-size: 14px; }
+    th { background-color: #F0FBFC !important; color: #006064 !important; text-align: left !important; padding: 12px !important; }
+    td { padding: 12px !important; border-bottom: 1px solid #F0F0F0 !important; font-size: 14px; }
     
     /* Link styling */
     a { color: #00838F !important; font-weight: bold; text-decoration: none; }
@@ -98,95 +93,88 @@ def load_data():
 
 df = load_data()
 
-# 4. Top Navigation (Tabs)
-# Using Tabs is the cleanest way to have top-level navigation in Streamlit
+# 4. App Title (Compact)
+st.markdown('<div class="top-header">HUMAN Proteostasis Network Database</div>', unsafe_allow_html=True)
+
+# 5. Navigation Tabs
 tab_search, tab_download = st.tabs(["🔍 Search Database", "📥 Download Data"])
 
 # ==========================================
 # TAB 1: SEARCH DATABASE
 # ==========================================
 with tab_search:
-    # Hero Section
-    st.markdown('<div class="hero-section">', unsafe_allow_html=True)
-    st.markdown('<p class="hero-title">HUMAN Proteostasis Network Database</p>', unsafe_allow_html=True)
-    st.markdown('<p class="hero-subtitle">The comprehensive knowledgebase for human proteostasis network genes</p>', unsafe_allow_html=True)
-
-    # Search Logic
+    # ---------------- SEARCH BAR (VERY TOP) ----------------
     def update_search(new_query):
         st.session_state.search_key = new_query
 
-    st.text_input(
-        "", 
-        placeholder="Search by Gene Symbol, UniProt ID, Branch, Class, Group, Type, Subtype, or Domain...", 
-        label_visibility="collapsed",
-        key="search_key" 
-    )
-    st.markdown('</div>', unsafe_allow_html=True)
+    # Using columns to center the search bar slightly, or keep it full width
+    c_search, _ = st.columns([1, 0.01]) 
+    with c_search:
+        st.text_input(
+            "", 
+            placeholder="Type a Gene Symbol, UniProt ID, Domain (e.g., IPR001353), or Class...", 
+            label_visibility="collapsed",
+            key="search_key" 
+        )
 
-    # Chip/Button Section
-    st.markdown('<div style="display: flex; justify-content: center; align-items: center; gap: 10px; margin-bottom: 20px;">', unsafe_allow_html=True)
-    _, c_label, c1, c2, c3, _ = st.columns([1.5, 1.2, 0.5, 0.5, 0.6, 2])
-
-    with c_label:
-        st.markdown("<p style='text-align:right; font-size: 18px; color: #006064; margin-top: 5px;'>Try searching for:</p>", unsafe_allow_html=True)
+    # ---------------- SUGGESTION CHIPS ----------------
+    # Placed immediately below search bar for quick access
+    st.markdown('<div style="display: flex; align-items: center; gap: 10px; margin-bottom: 15px; margin-top: -10px;">', unsafe_allow_html=True)
+    c1, c2, c3, c4 = st.columns([0.8, 0.5, 0.5, 4])
     with c1:
-        st.button("HSPA1A", on_click=update_search, args=("HSPA1A",))
+        st.caption("Try searching:")
     with c2:
-        st.button("P0DMV8", on_click=update_search, args=("P0DMV8",))
+        st.button("HSPA1A", on_click=update_search, args=("HSPA1A",), use_container_width=True)
     with c3:
-        st.button("Chaperone", on_click=update_search, args=("Chaperone",))
+        st.button("Chaperone", on_click=update_search, args=("Chaperone",), use_container_width=True)
     st.markdown('</div>', unsafe_allow_html=True)
 
-    # Results Logic
+    # ---------------- RESULTS LOGIC ----------------
     query = st.session_state.search_key
     if query:
+        # Filter Logic
         mask = df.apply(lambda row: row.astype(str).str.contains(query, case=False).any(), axis=1)
         results = df[mask].copy()
         
         if not results.empty:
-            st.markdown(f"#### {len(results)} results found for '{query}'")
+            st.success(f"Found {len(results)} matches for **'{query}'**")
             
-            # --- 1. LINK: UniProt ---
+            # --- 1. UniProt Link ---
             results['UniProt ID'] = results['UniProt ID'].apply(
                 lambda x: f'<a href="https://www.uniprot.org/uniprotkb/{x}/entry" target="_blank">{x}</a>'
             )
             
-            # --- 2. LINK: NCBI Gene (using GeneID) ---
+            # --- 2. NCBI Gene Link ---
             if 'GeneID' in results.columns:
                 def create_ncbi_link(val):
                     if pd.isna(val) or val == "": return ""
                     try:
-                        clean_id = str(int(float(val))) # Handle 3303.0 -> 3303
+                        clean_id = str(int(float(val))) 
                         return f'<a href="https://www.ncbi.nlm.nih.gov/gene/{clean_id}" target="_blank">{clean_id}</a>'
                     except:
                         return f'<a href="https://www.ncbi.nlm.nih.gov/gene/?term={val}" target="_blank">{val}</a>'
-                
                 results['GeneID'] = results['GeneID'].apply(create_ncbi_link)
 
-            # --- 3. LINK: InterPro Domains (Split & Link) ---
+            # --- 3. InterPro Domain Links ---
             def create_interpro_links(val):
                 if pd.isna(val) or str(val).strip() == "" or "(none noted)" in str(val):
                     return val
-                
                 domains = [d.strip() for d in str(val).split(',')]
                 linked_domains = []
-                
                 for d in domains:
                     if d.startswith('IPR'):
                         url = f"https://www.ebi.ac.uk/interpro/entry/InterPro/{d}"
                         linked_domains.append(f'<a href="{url}" target="_blank">{d}</a>')
                     else:
                         linked_domains.append(d)
-                
                 return ", ".join(linked_domains)
 
             if 'Principal Domains' in results.columns:
                 results['Principal Domains'] = results['Principal Domains'].apply(create_interpro_links)
-            
             if 'Auxiliary Domains' in results.columns:
                 results['Auxiliary Domains'] = results['Auxiliary Domains'].apply(create_interpro_links)
             
-            # Display Columns
+            # Display
             display_cols = [
                 'UniProt ID', 'Gene Symbol', 'GeneID', 'Branch', 
                 'Class', 'Group', 'Type', 'Subtype', 
@@ -194,48 +182,44 @@ with tab_search:
             ]
             available_cols = [c for c in display_cols if c in results.columns]
             
-            # Render HTML Table
             st.write(
                 results[available_cols].to_html(escape=False, index=False, border=0, classes='result-container'), 
                 unsafe_allow_html=True
             )
         else:
-            st.error(f"No results found for '{query}'.")
+            st.warning(f"No results found for '{query}'. Try a different keyword.")
+    else:
+        # Empty State - Optional instructional text
+        st.info("👆 Enter a gene symbol (e.g., DNAJB1) or ID above to start searching.")
 
 # ==========================================
 # TAB 2: DOWNLOAD DATA
 # ==========================================
 with tab_download:
-    st.markdown('<div class="hero-section">', unsafe_allow_html=True)
-    st.markdown('<p class="hero-title">Download Dataset</p>', unsafe_allow_html=True)
-    st.markdown('<p class="hero-subtitle">Access the original source file for your own analysis</p>', unsafe_allow_html=True)
-    st.markdown('</div>', unsafe_allow_html=True)
+    st.markdown("### 📥 Download Full Dataset")
+    st.write("Access the original source file for your own analysis.")
     
-    # Layout for Download Section
     c_dl_1, c_dl_2 = st.columns([2, 1])
     
     with c_dl_1:
-        st.info("Preview of the data (First 10 rows):")
-        st.dataframe(df.head(10))
+        st.dataframe(df.head(8), height=300)
+        st.caption("Preview of the first 8 rows")
         
     with c_dl_2:
-        st.write("### Get the full dataset")
-        st.write("Click the button below to download the original Excel file used to power this database.")
-        st.write(" ") # Spacer
-        
+        st.write(" ")
         file_name = 'Human Proteostasis Network 2.0 ~ 2024-0415.xlsx'
         try:
             with open(file_name, "rb") as f:
                 st.download_button(
-                    label="📥 Download Original Excel File",
+                    label="Download Excel File",
                     data=f,
                     file_name=file_name,
                     mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                     use_container_width=True
                 )
         except FileNotFoundError:
-            st.error("The source file could not be found on the server.")
+            st.error("Source file not found.")
 
-# Footer (Global)
-st.markdown("<br><br><hr>", unsafe_allow_html=True)
+# Footer
+st.markdown("<br><hr>", unsafe_allow_html=True)
 st.caption("Data source: Human Proteostasis Network 2.0 ~ 2024-0415")
