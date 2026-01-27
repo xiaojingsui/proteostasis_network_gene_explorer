@@ -22,6 +22,15 @@ st.markdown("""
         background-color: #FBFEFF;
     }
 
+    /* Hide the Streamlit header (the three dots) and footer */
+    header {visibility: hidden;}
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+    
+    /* Optional: Remove the padding at the top that the header used to occupy */
+    .stAppDeployButton {display:none;}
+    [data-testid="stHeader"] {display:none;}
+
     .section-header {
     font-family: Arial, Helvetica, sans-serif !important;
     font-size: 24px !important;
