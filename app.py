@@ -12,7 +12,7 @@ if "search_key" not in st.session_state:
 def update_search(new_query):
     st.session_state.search_key = new_query
 
-# 2. Custom CSS (Light Cyan Theme)
+# 2. Custom CSS
 st.markdown("""
     <style>
     .stApp { background-color: #E0F7FA; }
@@ -64,7 +64,6 @@ def load_data():
     file_path = 'Human Proteostasis Network 2.0 ~ 2024-0415.xlsx'
     try:
         df = pd.read_excel(file_path, sheet_name='Proteostasis_Network_2024_0414')
-        # Clean data: drop rows where essential identifiers are missing
         df = df.dropna(subset=['Gene Symbol', 'UniProt ID'])
         return df
     except Exception as e:
@@ -110,28 +109,57 @@ if query:
     if not results.empty:
         st.markdown(f"#### {len(results)} results found for '{query}'")
         
-        # 1. LINK: UniProt
+        # --- 1. LINK: UniProt ---
         results['UniProt ID'] = results['UniProt ID'].apply(
             lambda x: f'<a href="https://www.uniprot.org/uniprotkb/{x}/entry" target="_blank">{x}</a>'
         )
         
-        # 2. LINK: NCBI Gene (using GeneID)
+        # --- 2. LINK: NCBI Gene (using GeneID) ---
         if 'GeneID' in results.columns:
             def create_ncbi_link(val):
-                if pd.isna(val) or val == "":
-                    return ""
+                if pd.isna(val) or val == "": return ""
                 try:
-                    # Clean the ID: convert 3303.0 or "3303.0" to "3303"
+                    # Clean the ID: convert 3303.0 to "3303"
                     clean_id = str(int(float(val)))
                     return f'<a href="https://www.ncbi.nlm.nih.gov/gene/{clean_id}" target="_blank">{clean_id}</a>'
                 except:
-                    # Fallback if the data is a non-numeric string
                     return f'<a href="https://www.ncbi.nlm.nih.gov/gene/?term={val}" target="_blank">{val}</a>'
             
             results['GeneID'] = results['GeneID'].apply(create_ncbi_link)
+
+        # --- 3. LINK: InterPro Domains (Split & Link) ---
+        def create_interpro_links(val):
+            if pd.isna(val) or str(val).strip() == "" or "(none noted)" in str(val):
+                return val
+            
+            # Split by comma to handle multiple domains
+            domains = [d.strip() for d in str(val).split(',')]
+            linked_domains = []
+            
+            for d in domains:
+                # Check if it looks like an InterPro ID (starts with IPR)
+                if d.startswith('IPR'):
+                    url = f"https://www.ebi.ac.uk/interpro/entry/InterPro/{d}"
+                    linked_domains.append(f'<a href="{url}" target="_blank">{d}</a>')
+                else:
+                    linked_domains.append(d) # Keep text as is if not an ID
+            
+            # Join them back with comma and space
+            return ", ".join(linked_domains)
+
+        # Apply to both domain columns if they exist
+        if 'Principal Domains' in results.columns:
+            results['Principal Domains'] = results['Principal Domains'].apply(create_interpro_links)
+        
+        if 'Auxiliary Domains' in results.columns:
+            results['Auxiliary Domains'] = results['Auxiliary Domains'].apply(create_interpro_links)
         
         # Define display columns
-        display_cols = ['UniProt ID', 'Gene Symbol', 'GeneID', 'Branch', 'Class', 'Group', 'Type', 'Subtype', 'Principal Domains','Auxiliary Domains']
+        display_cols = [
+            'UniProt ID', 'Gene Symbol', 'GeneID', 'Branch', 
+            'Class', 'Group', 'Type', 'Subtype', 
+            'Principal Domains', 'Auxiliary Domains'
+        ]
         available_cols = [c for c in display_cols if c in results.columns]
         
         # Render Table as HTML
