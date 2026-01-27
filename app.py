@@ -125,13 +125,7 @@ st.markdown("""
         padding: 15px !important; 
     }
 
-    td { 
-        font-family: Arial, Helvetica, sans-serif !important;
-        padding: 15px !important; 
-        border-bottom: 1px solid #F0F0F0 !important; 
-        font-size: 14px; 
-    }
-
+    
     .info-box p {
         font-family: Arial, Helvetica, sans-serif !important;
     }
