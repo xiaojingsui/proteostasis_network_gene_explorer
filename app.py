@@ -19,7 +19,7 @@ st.markdown("""
     /* Set global font to Arial */
     html, body, [data-testid="stAppViewContainer"], .stApp {
         font-family: Arial, Helvetica, sans-serif !important;
-        background-color: #E0F7FA;
+        background-color: #FBFEFF;
     }
 
     .section-header {
@@ -88,7 +88,7 @@ st.markdown("""
         border-radius: 12px;
         box-shadow: 0 4px 20px rgba(0,0,0,0.08);
         width: 100%;
-        margin-top: 0px;
+        margin-top: 10px;
         border-collapse: collapse;
     }
 
