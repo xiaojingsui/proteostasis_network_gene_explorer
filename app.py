@@ -22,6 +22,14 @@ st.markdown("""
         background-color: #E0F7FA;
     }
 
+    .section-header {
+    font-family: Arial, Helvetica, sans-serif !important;
+    font-size: 24px !important;
+    font-weight: bold !important;
+    color: #006064 !important;
+    margin-bottom: 10px !important;
+}
+
     .hero-section { padding: 5px 0px 10px 0px; text-align: center; }
     
     .hero-title {
@@ -91,6 +99,10 @@ st.markdown("""
         padding: 15px !important; 
         border-bottom: 1px solid #F0F0F0 !important; 
         font-size: 14px; 
+    }
+
+    .info-box p {
+        font-family: Arial, Helvetica, sans-serif !important;
     }
 
     .info-box {
@@ -238,15 +250,17 @@ st.markdown("<br><br><hr>", unsafe_allow_html=True)
 col_left, col_right = st.columns(2)
 
 with col_left:
+    # This now uses the .section-header class defined in your CSS
     st.markdown('<p class="section-header">Contact</p>', unsafe_allow_html=True)
-    st.markdown(f"""
+    st.markdown("""
         <div class="info-box">
             <p style="margin: 0;">📧 <a href="mailto:proteostasisconsortium@xx.edu">proteostasisconsortium@xx.edu</a></p>
         </div>
     """, unsafe_allow_html=True)
+
 with col_right:
     st.markdown('<p class="section-header">Cite</p>', unsafe_allow_html=True)
-    st.markdown(f"""
+    st.markdown("""
         <div class="info-box" style="border-left: 5px solid #00838F;">
             <p style="margin: 0;">cite us</p>
         </div>
