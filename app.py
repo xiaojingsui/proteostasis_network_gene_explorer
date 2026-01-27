@@ -17,7 +17,7 @@ def update_search(new_query):
 st.markdown("""
     <style>
     .stApp { background-color: #E0F7FA; }
-    .hero-section { padding: 20px 0px 10px 0px; text-align: center; }
+    .hero-section { padding: 10px 0px 10px 0px; text-align: center; }
     .hero-title {
         font-size: 52px !important;
         font-weight: 800;
