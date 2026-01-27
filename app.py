@@ -16,25 +16,37 @@ def update_search(new_query):
 # 2. Custom CSS
 st.markdown("""
     <style>
-    .stApp { background-color: #E0F7FA; }
+    /* Set global font to Arial */
+    html, body, [data-testid="stAppViewContainer"], .stApp {
+        font-family: Arial, Helvetica, sans-serif !important;
+        background-color: #E0F7FA;
+    }
+
     .hero-section { padding: 5px 0px 10px 0px; text-align: center; }
+    
     .hero-title {
+        font-family: Arial, Helvetica, sans-serif !important;
         font-size: 52px !important;
         font-weight: 800;
         margin-bottom: 20px;
         text-transform: uppercase;
         color: #00838F;
     }
+    
     .hero-subtitle {
+        font-family: Arial, Helvetica, sans-serif !important;
         font-size: 24px !important;
         color: #006064;
         margin-bottom: 40px;
     }
+
     div[data-testid="stTextInput"] {
         width: 60% !important; 
         margin: 0 auto !important; 
     }
+
     div[data-testid="stTextInput"] > div > div > input {
+        font-family: Arial, Helvetica, sans-serif !important;
         border-radius: 12px !important;
         padding: 22px 25px !important;
         font-size: 20px !important; 
@@ -42,7 +54,9 @@ st.markdown("""
         border-bottom: 4px solid #4DD0E1 !important;
         background-color: white !important;
     }
+
     .result-container {
+        font-family: Arial, Helvetica, sans-serif !important;
         background-color: white;
         border-radius: 12px;
         box-shadow: 0 4px 20px rgba(0,0,0,0.08);
@@ -50,8 +64,21 @@ st.markdown("""
         margin-top: 20px;
         border-collapse: collapse;
     }
-    th { background-color: #F0FBFC !important; color: #006064 !important; text-align: left !important; padding: 15px !important; }
-    td { padding: 15px !important; border-bottom: 1px solid #F0F0F0 !important; font-size: 14px; }
+
+    th { 
+        font-family: Arial, Helvetica, sans-serif !important;
+        background-color: #F0FBFC !important; 
+        color: #006064 !important; 
+        text-align: left !important; 
+        padding: 15px !important; 
+    }
+
+    td { 
+        font-family: Arial, Helvetica, sans-serif !important;
+        padding: 15px !important; 
+        border-bottom: 1px solid #F0F0F0 !important; 
+        font-size: 14px; 
+    }
     
     /* Link styling */
     a { color: #00838F !important; font-weight: bold; text-decoration: none; }
