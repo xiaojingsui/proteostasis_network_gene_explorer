@@ -190,7 +190,7 @@ if query:
         
         with col_download:
             # Prepare CSV for download (using the raw data before HTML tags are added)
-            st.markdown('<div style="margin-top: 35px;"></div>', unsafe_allow_html=True)
+            st.markdown('<div style="margin-top: 10px;"></div>', unsafe_allow_html=True)
             csv = results.to_csv(index=False).encode('utf-8')
             st.download_button(
                 label="Download CSV",
