@@ -51,7 +51,7 @@ st.markdown("""
         font-family: Arial, Helvetica, sans-serif !important;
         font-size: 24px !important;
         color: #006064;
-        margin-bottom: 40px;
+        margin-bottom: 10px;
     }
 
     div[data-testid="stTextInput"] {
