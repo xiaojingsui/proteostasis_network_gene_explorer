@@ -167,7 +167,7 @@ st.markdown('<div style="display: flex; justify-content: center; align-items: ce
 _, c_label, c1, c2, c3, _ = st.columns([1.5, 1.2, 0.5, 0.5, 0.6, 2])
 
 with c_label:
-    st.markdown("<p style='text-align:right; font-size: 18px; color: #006064; margin-top: 5px;'>Try searching for:</p>", unsafe_allow_html=True)
+    st.markdown("<p style='text-align:right; font-size: 18px; color: #006064; margin-top: 0px;'>Try searching for:</p>", unsafe_allow_html=True)
 with c1:
     st.button("HSPA1A", on_click=update_search, args=("HSPA1A",))
 with c2:
