@@ -40,19 +40,26 @@ st.markdown("""
         margin-bottom: 40px;
     }
 
-    div[data-testid="stTextInput"] {
-        width: 60% !important; 
-        margin: 0 auto !important; 
+    div[data-testid="stTextInput"] > div {
+        height: auto !important;
+        min-height: 75px !important; /* Must be larger than your input height (approx 68px) */
     }
 
     div[data-testid="stTextInput"] > div > div > input {
         font-family: Arial, Helvetica, sans-serif !important;
         border-radius: 12px !important;
+        
+        /* Box sizing prevents math errors with padding */
+        box-sizing: border-box !important; 
+        
         padding: 22px 25px !important;
-        font-size: 20px !important; 
-        /* CHANGE 2: Make border uniform on all sides */
+        font-size: 20px !important;
+        
+        /* Your uniform border */
         border: 2px solid #4DD0E1 !important; 
+        
         background-color: white !important;
+        color: #006064 !important; /* Optional: Makes typed text match your theme */
     }
 
     .result-container {
