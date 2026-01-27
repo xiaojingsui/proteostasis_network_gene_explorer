@@ -59,7 +59,7 @@ st.markdown("""
         box-sizing: border-box !important; 
         
         padding: 22px 25px !important;
-        font-size: 20px !important;
+        font-size: 15px !important;
         
         /* Your uniform border */
         border: 2px solid #4DD0E1 !important; 
