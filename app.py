@@ -1,6 +1,5 @@
 import streamlit as st
 import pandas as pd
-import os
 
 # 1. Page Config
 st.set_page_config(page_title="Human PN Database", layout="wide")
@@ -9,24 +8,24 @@ st.set_page_config(page_title="Human PN Database", layout="wide")
 if "search_key" not in st.session_state:
     st.session_state.search_key = ""
 
-# 2. Custom CSS (Global)
+# 2. Custom CSS (Global + Tabs Styling)
 st.markdown("""
     <style>
     .stApp { background-color: #E0F7FA; }
     
     /* Hero Section Styles */
-    .hero-section { padding: 40px 0px 10px 0px; text-align: center; }
+    .hero-section { padding: 30px 0px 10px 0px; text-align: center; }
     .hero-title {
-        font-size: 52px !important;
+        font-size: 50px !important;
         font-weight: 800;
         margin-bottom: 10px;
         text-transform: uppercase;
         color: #00838F;
     }
     .hero-subtitle {
-        font-size: 24px !important;
+        font-size: 22px !important;
         color: #006064;
-        margin-bottom: 40px;
+        margin-bottom: 30px;
     }
     
     /* Input Styling */
@@ -43,6 +42,30 @@ st.markdown("""
         background-color: white !important;
     }
     
+    /* Customizing Streamlit Tabs to look like a Navbar */
+    .stTabs [data-baseweb="tab-list"] {
+        gap: 20px;
+        justify-content: center;
+        background-color: white;
+        padding: 10px;
+        border-radius: 12px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    }
+    .stTabs [data-baseweb="tab"] {
+        height: 50px;
+        white-space: pre-wrap;
+        background-color: transparent;
+        border-radius: 5px;
+        color: #006064;
+        font-size: 18px;
+        font-weight: 600;
+    }
+    .stTabs [aria-selected="true"] {
+        background-color: #E0F7FA !important;
+        color: #00838F !important;
+        border-bottom: 3px solid #00838F;
+    }
+
     /* Table Styling */
     .result-container {
         background-color: white;
@@ -66,9 +89,7 @@ st.markdown("""
 def load_data():
     file_path = 'Human Proteostasis Network 2.0 ~ 2024-0415.xlsx'
     try:
-        # Load specific sheet
         df = pd.read_excel(file_path, sheet_name='Proteostasis_Network_2024_0414')
-        # Clean data: drop rows where essential identifiers are missing
         df = df.dropna(subset=['Gene Symbol', 'UniProt ID'])
         return df
     except Exception as e:
@@ -77,15 +98,14 @@ def load_data():
 
 df = load_data()
 
-# 4. Navigation Sidebar
-st.sidebar.title("Navigation")
-page = st.sidebar.radio("Go to", ["Search Database", "Download Data"])
+# 4. Top Navigation (Tabs)
+# Using Tabs is the cleanest way to have top-level navigation in Streamlit
+tab_search, tab_download = st.tabs(["🔍 Search Database", "📥 Download Data"])
 
 # ==========================================
-# PAGE 1: SEARCH DATABASE
+# TAB 1: SEARCH DATABASE
 # ==========================================
-if page == "Search Database":
-    
+with tab_search:
     # Hero Section
     st.markdown('<div class="hero-section">', unsafe_allow_html=True)
     st.markdown('<p class="hero-title">HUMAN Proteostasis Network Database</p>', unsafe_allow_html=True)
@@ -120,7 +140,6 @@ if page == "Search Database":
     # Results Logic
     query = st.session_state.search_key
     if query:
-        # Global Search Mask
         mask = df.apply(lambda row: row.astype(str).str.contains(query, case=False).any(), axis=1)
         results = df[mask].copy()
         
@@ -137,8 +156,7 @@ if page == "Search Database":
                 def create_ncbi_link(val):
                     if pd.isna(val) or val == "": return ""
                     try:
-                        # Clean ID: convert 3303.0 -> 3303 -> "3303"
-                        clean_id = str(int(float(val)))
+                        clean_id = str(int(float(val))) # Handle 3303.0 -> 3303
                         return f'<a href="https://www.ncbi.nlm.nih.gov/gene/{clean_id}" target="_blank">{clean_id}</a>'
                     except:
                         return f'<a href="https://www.ncbi.nlm.nih.gov/gene/?term={val}" target="_blank">{val}</a>'
@@ -150,7 +168,6 @@ if page == "Search Database":
                 if pd.isna(val) or str(val).strip() == "" or "(none noted)" in str(val):
                     return val
                 
-                # Split by comma
                 domains = [d.strip() for d in str(val).split(',')]
                 linked_domains = []
                 
@@ -163,7 +180,6 @@ if page == "Search Database":
                 
                 return ", ".join(linked_domains)
 
-            # Apply domain linking
             if 'Principal Domains' in results.columns:
                 results['Principal Domains'] = results['Principal Domains'].apply(create_interpro_links)
             
@@ -187,33 +203,35 @@ if page == "Search Database":
             st.error(f"No results found for '{query}'.")
 
 # ==========================================
-# PAGE 2: DOWNLOAD DATA
+# TAB 2: DOWNLOAD DATA
 # ==========================================
-elif page == "Download Data":
+with tab_download:
     st.markdown('<div class="hero-section">', unsafe_allow_html=True)
     st.markdown('<p class="hero-title">Download Dataset</p>', unsafe_allow_html=True)
     st.markdown('<p class="hero-subtitle">Access the original source file for your own analysis</p>', unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
     
-    c1, c2 = st.columns([2, 1])
+    # Layout for Download Section
+    c_dl_1, c_dl_2 = st.columns([2, 1])
     
-    with c1:
+    with c_dl_1:
         st.info("Preview of the data (First 10 rows):")
         st.dataframe(df.head(10))
         
-    with c2:
+    with c_dl_2:
         st.write("### Get the full dataset")
         st.write("Click the button below to download the original Excel file used to power this database.")
+        st.write(" ") # Spacer
         
-        # Read the original file into bytes
         file_name = 'Human Proteostasis Network 2.0 ~ 2024-0415.xlsx'
         try:
             with open(file_name, "rb") as f:
-                btn = st.download_button(
+                st.download_button(
                     label="📥 Download Original Excel File",
                     data=f,
                     file_name=file_name,
-                    mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                    mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                    use_container_width=True
                 )
         except FileNotFoundError:
             st.error("The source file could not be found on the server.")
