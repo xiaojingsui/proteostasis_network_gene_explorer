@@ -50,8 +50,8 @@ st.markdown("""
         border-radius: 12px !important;
         padding: 22px 25px !important;
         font-size: 20px !important; 
-        border: 1px solid #B2EBF2 !important;
-        border-bottom: 4px solid #4DD0E1 !important;
+        /* CHANGE 2: Make border uniform on all sides */
+        border: 2px solid #4DD0E1 !important; 
         background-color: white !important;
     }
 
