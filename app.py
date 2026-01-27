@@ -28,7 +28,13 @@ st.markdown("""
     font-weight: bold !important;
     color: #006064 !important;
     margin-bottom: 10px !important;
-}
+    }
+
+    h4 {
+    font-family: Arial, Helvetica, sans-serif !important;
+    font-weight: 700 !important;
+    color: #333333 !important;
+    } 
 
     .hero-section { padding: 5px 0px 10px 0px; text-align: center; }
     
