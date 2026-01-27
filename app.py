@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+import io
 
 # 1. Page Config
 st.set_page_config(page_title="Human PN Database", layout="wide")
@@ -107,7 +108,20 @@ if query:
     results = df[mask].copy()
     
     if not results.empty:
-        st.markdown(f"#### {len(results)} results found for '{query}'")
+        # Layout for Title and Download Button
+        col_results, col_download = st.columns([3, 1])
+        with col_results:
+            st.markdown(f"#### {len(results)} results found for '{query}'")
+        
+        with col_download:
+            # Prepare CSV for download (using the raw data before HTML tags are added)
+            csv = results.to_csv(index=False).encode('utf-8')
+            st.download_button(
+                label="📥 Download results as CSV",
+                data=csv,
+                file_name=f"search_results_{query}.csv",
+                mime="text/csv",
+            )
         
         # --- 1. LINK: UniProt ---
         results['UniProt ID'] = results['UniProt ID'].apply(
@@ -119,7 +133,6 @@ if query:
             def create_ncbi_link(val):
                 if pd.isna(val) or val == "": return ""
                 try:
-                    # Clean the ID: convert 3303.0 to "3303"
                     clean_id = str(int(float(val)))
                     return f'<a href="https://www.ncbi.nlm.nih.gov/gene/{clean_id}" target="_blank">{clean_id}</a>'
                 except:
@@ -131,23 +144,16 @@ if query:
         def create_interpro_links(val):
             if pd.isna(val) or str(val).strip() == "" or "(none noted)" in str(val):
                 return val
-            
-            # Split by comma to handle multiple domains
             domains = [d.strip() for d in str(val).split(',')]
             linked_domains = []
-            
             for d in domains:
-                # Check if it looks like an InterPro ID (starts with IPR)
                 if d.startswith('IPR'):
                     url = f"https://www.ebi.ac.uk/interpro/entry/InterPro/{d}"
                     linked_domains.append(f'<a href="{url}" target="_blank">{d}</a>')
                 else:
-                    linked_domains.append(d) # Keep text as is if not an ID
-            
-            # Join them back with comma and space
+                    linked_domains.append(d)
             return ", ".join(linked_domains)
 
-        # Apply to both domain columns if they exist
         if 'Principal Domains' in results.columns:
             results['Principal Domains'] = results['Principal Domains'].apply(create_interpro_links)
         
