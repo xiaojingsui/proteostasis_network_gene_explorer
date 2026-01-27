@@ -44,7 +44,7 @@ st.markdown("""
         font-weight: 800;
         margin-bottom: 20px;
         text-transform: uppercase;
-        color: #00838F;
+        color: #000000;
     }
     
     .hero-subtitle {
