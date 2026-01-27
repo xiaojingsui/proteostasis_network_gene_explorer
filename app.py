@@ -22,14 +22,30 @@ st.markdown("""
         background-color: #FBFEFF;
     }
 
-    /* Hide the Streamlit header (the three dots) and footer */
-    header {visibility: hidden;}
-    #MainMenu {visibility: hidden;}
-    footer {visibility: hidden;}
-    
-    /* Optional: Remove the padding at the top that the header used to occupy */
-    .stAppDeployButton {display:none;}
-    [data-testid="stHeader"] {display:none;}
+    /* 1. Hide the entire top header bar (three dots, deploy button, etc) */
+    [data-testid="stHeader"] {
+        display: none !important;
+    }
+
+    /* 2. Hide the main menu specifically just in case */
+    #MainMenu {
+        visibility: hidden;
+    }
+
+    /* 3. Hide the footer "Made with Streamlit" */
+    footer {
+        visibility: hidden;
+    }
+
+    /* 4. Fix for the 'Light Text' issue on Windows/Edge */
+    td { 
+        font-family: Arial, Helvetica, sans-serif !important;
+        padding: 15px !important; 
+        border-bottom: 1px solid #F0F0F0 !important; 
+        font-size: 14px !important; 
+        color: #212121 !important; /* Forces dark grey text */
+        background-color: #FFFFFF !important; /* Forces white background */
+    }
 
     .section-header {
     font-family: Arial, Helvetica, sans-serif !important;
