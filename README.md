@@ -1,6 +1,7 @@
 # proteostasis_network_gene_explorer
 
 Proteostasis Network Gene Explorer
+
 A Streamlit-based web application for searching, visualizing, and exporting annotations from the Human Proteostasis Network (PN) Database.
 
 Project Overview
