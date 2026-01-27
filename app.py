@@ -149,7 +149,7 @@ if query:
     
     if not results.empty:
         # Layout for Title and Download Button
-        col_results, col_download = st.columns([3, 1])
+        col_results, col_download = st.columns([8, 1])
         with col_results:
             st.markdown(f"#### {len(results)} results found for '{query}'")
         
