@@ -88,7 +88,7 @@ st.markdown("""
         border-radius: 12px;
         box-shadow: 0 4px 20px rgba(0,0,0,0.08);
         width: 100%;
-        margin-top: 30px;
+        margin-top: 20px;
         border-collapse: collapse;
     }
 
