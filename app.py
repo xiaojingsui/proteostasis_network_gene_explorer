@@ -110,20 +110,25 @@ if query:
     if not results.empty:
         st.markdown(f"#### {len(results)} results found for '{query}'")
         
-        # TRANSFORMATION: UniProt Link
+        # 1. LINK: UniProt
         results['UniProt ID'] = results['UniProt ID'].apply(
             lambda x: f'<a href="https://www.uniprot.org/uniprotkb/{x}/entry" target="_blank">{x}</a>'
         )
         
-        # TRANSFORMATION: Alliance of Genome Resources Link
-        # Note: Replace 'Gene ID' with the exact column name from your Excel if different
-        gene_id_col = 'GeneID' if 'GeneID' in results.columns else None
-        
-        if gene_id_col:
-            results[gene_id_col] = results.apply(
-                lambda row: f'<a href="https://www.alliancegenome.org/search?q={row[gene_id_col]}" target="_blank">{row[gene_id_col]}</a>' 
-                if pd.notnull(row[gene_id_col]) else "", axis=1
-            )
+        # 2. LINK: NCBI Gene (using GeneID)
+        if 'GeneID' in results.columns:
+            def create_ncbi_link(val):
+                if pd.isna(val) or val == "":
+                    return ""
+                try:
+                    # Clean the ID: convert 3303.0 or "3303.0" to "3303"
+                    clean_id = str(int(float(val)))
+                    return f'<a href="https://www.ncbi.nlm.nih.gov/gene/{clean_id}" target="_blank">{clean_id}</a>'
+                except:
+                    # Fallback if the data is a non-numeric string
+                    return f'<a href="https://www.ncbi.nlm.nih.gov/gene/?term={val}" target="_blank">{val}</a>'
+            
+            results['GeneID'] = results['GeneID'].apply(create_ncbi_link)
         
         # Define display columns
         display_cols = ['UniProt ID', 'Gene Symbol', 'GeneID', 'Branch', 'Class', 'Group', 'Type', 'Subtype', 'Principal Domains']
