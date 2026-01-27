@@ -117,7 +117,7 @@ if query:
             # Prepare CSV for download (using the raw data before HTML tags are added)
             csv = results.to_csv(index=False).encode('utf-8')
             st.download_button(
-                label="📥 Download results as CSV",
+                label="📥 Download CSV",
                 data=csv,
                 file_name=f"search_results_{query}.csv",
                 mime="text/csv",
