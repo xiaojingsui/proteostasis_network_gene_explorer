@@ -131,7 +131,7 @@ if query:
             results['GeneID'] = results['GeneID'].apply(create_ncbi_link)
         
         # Define display columns
-        display_cols = ['UniProt ID', 'Gene Symbol', 'GeneID', 'Branch', 'Class', 'Group', 'Type', 'Subtype', 'Principal Domains']
+        display_cols = ['UniProt ID', 'Gene Symbol', 'GeneID', 'Branch', 'Class', 'Group', 'Type', 'Subtype', 'Principal Domains','Auxiliary Domains']
         available_cols = [c for c in display_cols if c in results.columns]
         
         # Render Table as HTML
