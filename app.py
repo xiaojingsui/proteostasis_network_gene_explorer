@@ -117,7 +117,7 @@ if query:
         
         # TRANSFORMATION: Alliance of Genome Resources Link
         # Note: Replace 'Gene ID' with the exact column name from your Excel if different
-        gene_id_col = 'Gene ID' if 'Gene ID' in results.columns else None
+        gene_id_col = 'GeneID' if 'GeneID' in results.columns else None
         
         if gene_id_col:
             results[gene_id_col] = results.apply(
