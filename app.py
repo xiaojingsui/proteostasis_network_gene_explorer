@@ -239,7 +239,7 @@ with col_left:
     st.markdown('<p class="section-header">Contact Us</p>', unsafe_allow_html=True)
     st.markdown(f"""
         <div class="info-box">
-            <p style="margin: 0;">📧 <a href="mailto:proteostasisconsortium@hsc.pku.edu.cn">proteostasisconsortium@hsc.pku.edu.cn</a></p>
+            <p style="margin: 0;">📧 <a href="mailto:proteostasisconsortium@xx.edu">proteostasisconsortium@xx.edu</a></p>
         </div>
     """, unsafe_allow_html=True)
 with col_right:
