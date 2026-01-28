@@ -59,6 +59,10 @@ st.markdown("""
     
     display: flex !important;
     justify-content: center !important; /* 7. CENTERS the Search/About buttons */
+    padding: 30px 0 !important; /* increased from 15px */
+    
+    align-items: center !important; /* Ensures text stays vertically centered */
+    border-bottom: 1px solid #E0E0E0;
     }
 
     /* 2. Hide the actual radio bubbles/circles */
