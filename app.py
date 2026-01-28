@@ -91,6 +91,44 @@ st.markdown("""
         color: #006064 !important;
     }
 
+
+    /* --- EXTERNAL LINK STYLING (The New "Laboratory" Link) --- */
+    .nav-external-link {
+        position: fixed !important;
+        top: 35px !important;       /* Adjusts vertical position */
+        right: 40px !important;     /* Adjusts distance from right edge */
+        z-index: 100000 !important; /* Ensures it sits on top of everything */
+        
+        font-family: Arial, Helvetica, sans-serif !important;
+        font-size: 16px !important;
+        font-weight: 600 !important;
+        color: #445550 !important;
+        text-decoration: none !important;
+        
+        display: flex !important;
+        align-items: center !important;
+        gap: 8px !important;        /* Space between icon and text */
+        
+        padding: 8px 15px !important;
+        transition: all 0.3s ease !important;
+    }
+
+    .nav-external-link:hover {
+        background-color: #D3E8E0 !important; /* Hover effect */
+        color: #004D40 !important;
+        border-radius: 20px !important;
+    }
+    
+    /* Style the SVG Icon */
+    .nav-external-link svg {
+        width: 18px;
+        height: 18px;
+        fill: currentColor;
+    }
+
+
+
+
     /* --- TABLE & GENERAL STYLING --- */
     td { 
         font-family: Arial, Helvetica, sans-serif !important;
@@ -189,6 +227,17 @@ st.markdown("""
     a:hover { text-decoration: underline; }
     </style>
     """, unsafe_allow_html=True)
+
+
+# --- INJECT EXTERNAL LINK ---
+st.markdown("""
+    <a href="https://www.proteostasisconsortium.com/pn-annotation/" target="_blank" class="nav-external-link">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3M5 5h4v2H5v12h12v-4h2v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2Z"></path>
+        </svg>
+        Laboratory
+    </a>
+""", unsafe_allow_html=True)
 
 
 # --- TOP NAVBAR (Using st.radio styled with CSS) ---
