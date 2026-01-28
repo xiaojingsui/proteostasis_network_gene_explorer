@@ -288,7 +288,7 @@ with col_left:
     </div>
 
     <div style="margin-bottom: 15px;">
-        <strong>UPS</strong><br>
+        <strong>UPS Branch</strong><br>
         <span style="font-size: 0.9em; color: #555;">
             Suzanne Elsasser: <a href="mailto:suzanne_elsasser@hms.harvard.edu">suzanne_elsasser@hms.harvard.edu</a>
         </span><br>
@@ -298,7 +298,7 @@ with col_left:
     </div>
 
     <div>
-        <strong>APP support</strong><br>
+        <strong>APP Support</strong><br>
         <span style="font-size: 0.9em; color: #555;">
             Xiaojing Sui: <a href="mailto:xiaojing.sui@northwestern.edu">xiaojing.sui@northwestern.edu</a>
         </span>
