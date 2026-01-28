@@ -423,64 +423,112 @@ if selected_page == "Search":
 # PAGE 2: ABOUT
 # ==========================================
 elif selected_page == "About":
-    # 1. Title Section
-    st.title("About the Project")
+    st.markdown('<div class="hero-section">', unsafe_allow_html=True)
+    st.markdown('<p class="hero-title">About the Project</p>', unsafe_allow_html=True)
+    st.markdown('</div>', unsafe_allow_html=True)
     
-    # 2. Intro Link and Description
     st.markdown("""
-    A more extensive description of the project can be found on the 
-    [Human Proteostasis Network Annotation website](https://www.proteostasisconsortium.com/pn-annotation/).
+    <style>
+        .about-container {
+            max-width: 900px; 
+            margin: 0 auto; 
+            font-family: Arial, Helvetica, sans-serif; 
+            font-size: 16px; 
+            line-height: 1.6; 
+            color: #212121;
+        }
+        .about-header {
+            font-size: 20px;
+            font-weight: bold;
+            color: #006064;
+            margin-top: 30px;
+            margin-bottom: 10px;
+            border-bottom: 2px solid #E0F7FA;
+            padding-bottom: 5px;
+        }
+        .term-highlight {
+            font-weight: bold;
+            color: #00838F;
+        }
+        .red-highlight {
+            font-weight: bold;
+            color: #B71C1C;
+        }
+        .about-list {
+            padding-left: 20px;
+            margin-bottom: 15px;
+        }
+        .about-list li {
+            margin-bottom: 8px;
+        }
+    </style>
 
-    The proteostasis network is a fundamental entity in biology with direct relevance to many diseases of protein conformation. 
-    However, it has not been well defined or annotated, which has hindered its functional characterization in health and disease. 
-    Here, we operationally define the human proteostasis network by providing a comprehensive, annotated list of its components.
+    <div class="about-container">
+        
+        <p>
+            A more extensive description of the project can be found on the 
+            <a href="https://www.proteostasisconsortium.com/pn-annotation/" target="_blank">Human Proteostasis Network Annotation website</a>.
+        </p>
 
-    To organize the proteostasis network components, we use a taxonomic scheme consisting of five levels: 
-    **Branch, Class, Group, Type, and Subtype**. We find that five levels are sufficient to convey a general sense of 
-    each component’s localization and function while minimizing the number of descriptors.
-    """)
+        <p>
+            The proteostasis network is a fundamental entity in biology with direct relevance to many diseases of protein conformation. 
+            However, it has not been well defined or annotated, which has hindered its functional characterization in health and disease. 
+            Here, we operationally define the human proteostasis network by providing a comprehensive, annotated list of its components.
+        </p>
 
-    # 3. Definitions Box (Using st.info for the highlighted background effect)
-    st.info("""
-    **Branch** refers to a component’s localization or membership in an overarching pathway. 
-    There are nine Branch categories: cytonuclear proteostasis (CY), ER proteostasis (ER), mitochondrial proteostasis (MI), 
-    nuclear proteostasis (NU), PN regulation (PN), translation (TR), extracellular proteostasis (EX), 
-    the autophagy-lysosome pathway (ALP), and the ubiquitin-proteasome system (UPS).
+        <p>
+            To organize the proteostasis network components, we use a taxonomic scheme consisting of five levels: 
+            <b>Branch, Class, Group, Type, and Subtype</b>. We find that five levels are sufficient to convey a general sense of 
+            each component’s localization and function while minimizing the number of descriptors.
+        </p>
 
-    **Class** refers to a component’s function in proteostasis (e.g., chaperones, protein transport, etc.) 
-    in most Branches of the PN. In the ALP it refers to the stage of autophagy in which the component participates.
+        <div style="background-color: #F9FDFD; padding: 20px; border-radius: 8px; border: 1px solid #E0F7FA; margin: 20px 0;">
+            <p style="margin-bottom: 15px;">
+                <span class="term-highlight">Branch</span> refers to a component’s localization or membership in an overarching pathway. 
+                There are nine Branch categories: cytonuclear proteostasis (CY), ER proteostasis (ER), mitochondrial proteostasis (MI), 
+                nuclear proteostasis (NU), PN regulation (PN), translation (TR), extracellular proteostasis (EX), 
+                the autophagy-lysosome pathway (ALP), and the ubiquitin-proteasome system (UPS).
+            </p>
+            <p style="margin-bottom: 15px;">
+                <span class="term-highlight">Class</span> refers to a component’s function in proteostasis (e.g., chaperones, protein transport, etc.) 
+                in most Branches of the PN. In the ALP it refers to the stage of autophagy in which the component participates.
+            </p>
+            <p style="margin-bottom: 0px;">
+                <span class="term-highlight">Group, Type, and Subtype</span> provide increasingly specific descriptors of proteostasis functions within a Class.
+            </p>
+        </div>
 
-    **Group, Type, and Subtype** provide increasingly specific descriptors of proteostasis functions within a Class.
-    """)
+        <p>
+            Our goal was to use only as many descriptors as are minimally necessary to give a basic understanding of a component’s role in proteostasis. 
+            Thus, not every component has Type or Subtype annotations. Also, some components have multiple roles in the proteostasis network. 
+            These are given multiple entries in our list to reflect each separate role.
+        </p>
 
-    # 4. Methodology Explanation
-    st.markdown("""
-    Our goal was to use only as many descriptors as are minimally necessary to give a basic understanding of a component’s role in proteostasis. 
-    Thus, not every component has Type or Subtype annotations. Also, some components have multiple roles in the proteostasis network. 
-    These are given multiple entries in our list to reflect each separate role.
-    """)
+        <div class="about-header">Indexing values for this catalog</div>
+        <p>
+            Individual entries in the <b>MAIN</b> tab are indexed by <span class="red-highlight">Gene ID</span>, 
+            <span class="red-highlight">Uniprot ID</span>, and official <span class="red-highlight">Gene Symbol</span>. 
+            <span class="red-highlight">Gene Synonyms</span> are additionally listed.
+            RNA genes are given arbitrary but unique designations in the <b>Uniprot ID</b> field to assist with data analysis.
+            Entries in the <b>UNIQUE</b> tab also include ENSG and HGNC designations.
+        </p>
+        <p>
+            The core <b>Proteostasis Network Annotation</b> can be found in the 
+            <span class="red-highlight">Branch, Class, Group, Type</span>, and <span class="red-highlight">Subtype</span> designations. 
+            Explanatory details about the fine structure of the annotation will be published in a forthcoming paper.
+        </p>
 
-    # 5. Indexing Section
-    st.subheader("Indexing values for this catalog")
-    st.markdown("""
-    Individual entries in the **MAIN** tab are indexed by **Gene ID**, **Uniprot ID**, and official **Gene Symbol**. 
-    **Gene Synonyms** are additionally listed. RNA genes are given arbitrary but unique designations in the **Uniprot ID** field to assist with data analysis. 
-    Entries in the **UNIQUE** tab also include ENSG and HGNC designations.
+        <div class="about-header">Branch-specific notes</div>
+        <ul class="about-list">
+            <li><b>“Cytonuclear”</b> refers to components that support proteostasis in both the cytosol and the nucleus.</li>
+            <li><b>“Nuclear”</b> refers to components that primarily support nuclear proteostasis (e.g., histone chaperones).</li>
+            <li><b>“Proteostasis regulation”</b> refers to components that control transcription or translation of proteostasis network components.</li>
+            <li>For the <b>ALP Branch</b>, Class annotations are based on the temporal progression of autophagy; see the Tallies tab for a terse list. Each component in the ALP Branch has a note explaining why it was included (see Notes column).</li>
+            <li>For the <b>UPS Branch</b>, annotations rely heavily on shared or characteristic Interpro domains, and these will be described in detail in the forthcoming paper.</li>
+        </ul>
 
-    The core **Proteostasis Network Annotation** can be found in the **Branch, Class, Group, Type**, and **Subtype** designations. 
-    Explanatory details about the fine structure of the annotation will be published in a forthcoming paper.
-    """)
-
-    # 6. Branch-specific Notes
-    st.subheader("Branch-specific notes")
-    st.markdown("""
-    * **“Cytonuclear”** refers to components that support proteostasis in both the cytosol and the nucleus.
-    * **“Nuclear”** refers to components that primarily support nuclear proteostasis (e.g., histone chaperones).
-    * **“Proteostasis regulation”** refers to components that control transcription or translation of proteostasis network components.
-    * For the **ALP Branch**, Class annotations are based on the temporal progression of autophagy; see the Tallies tab for a terse list. Each component in the ALP Branch has a note explaining why it was included (see Notes column).
-    * For the **UPS Branch**, annotations rely heavily on shared or characteristic Interpro domains, and these will be described in detail in the forthcoming paper.
-    """)
-
-    # 7. Footer
-    st.divider()
+    </div>
+    """, unsafe_allow_html=True)
+    
+    st.markdown("<br><br><hr>", unsafe_allow_html=True)
     st.caption("Data source: Human Proteostasis Network v4.1")
