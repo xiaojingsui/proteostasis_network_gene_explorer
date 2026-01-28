@@ -77,7 +77,7 @@ st.markdown("""
 
     div[role="radiogroup"] p {
         font-family: Arial, Helvetica, sans-serif !important;  /* <--- ADD THIS LINE */
-        font-size: 21px !important;
+        font-size: 22px !important;
         font-weight: 600 !important;
         color: #445550 !important; 
         cursor: pointer;
