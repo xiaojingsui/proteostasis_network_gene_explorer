@@ -276,11 +276,36 @@ st.markdown("<br><br><hr>", unsafe_allow_html=True)
 col_left, col_right = st.columns(2)
 
 with col_left:
-    # This now uses the .section-header class defined in your CSS
     st.markdown('<p class="section-header">Contact</p>', unsafe_allow_html=True)
+    
     st.markdown("""
         <div class="info-box">
-            <p style="margin: 0;">📧 <a href="mailto:proteostasisconsortium@xx.edu">proteostasisconsortium@xx.edu</a></p>
+            <div style="margin-bottom: 15px;">
+                <strong>General Inquiries</strong><br>
+                <span style="margin-right: 5px;">📧</span> 
+                <a href="mailto:proteostasisconsortium@xx.edu" style="text-decoration: none; color: inherit;">
+                    proteostasisconsortium@xx.edu
+                </a>
+            </div>
+
+            <hr style="margin: 10px 0; border: 0; border-top: 1px solid #eee;">
+
+            <div style="margin-bottom: 12px;">
+                <strong>ALP, Chaperones, Trafficking & Organelle-specific</strong><br>
+                <span style="font-size: 0.9em; color: #555;">
+                    Evan Powers: <a href="mailto:PNAnnotation@gmail.com">PNAnnotation@gmail.com</a>
+                </span>
+            </div>
+
+            <div>
+                <strong>UPS Branch</strong><br>
+                <span style="font-size: 0.9em; color: #555;">
+                    Suzanne Elsasser: <a href="mailto:suzanne_elsasser@hms.harvard.edu">suzanne_elsasser@hms.harvard.edu</a>
+                </span><br>
+                <span style="font-size: 0.9em; color: #555;">
+                    Daniel Finley: <a href="mailto:daniel_finley@hms.harvard.edu">daniel_finley@hms.harvard.edu</a>
+                </span>
+            </div>
         </div>
     """, unsafe_allow_html=True)
 
