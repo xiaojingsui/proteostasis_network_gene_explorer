@@ -158,9 +158,9 @@ st.markdown("""
 # 3. Load Data
 @st.cache_data
 def load_data():
-    file_path = 'Human Proteostasis Network 2.0 ~ 2024-0415.xlsx'
+    file_path = 'Human Proteostasis Network 4.1 - 2026-0127.xlsx'
     try:
-        df = pd.read_excel(file_path, sheet_name='Proteostasis_Network_2024_0414')
+        df = pd.read_excel(file_path, sheet_name='MAIN')
         df = df.dropna(subset=['Gene Symbol', 'UniProt ID'])
         return df
     except Exception as e:
@@ -226,7 +226,7 @@ if query:
         )
         
         # --- 2. LINK: NCBI Gene (using GeneID) ---
-        if 'GeneID' in results.columns:
+        if 'Gene ID' in results.columns:
             def create_ncbi_link(val):
                 if pd.isna(val) or val == "": return ""
                 try:
@@ -235,7 +235,7 @@ if query:
                 except:
                     return f'<a href="https://www.ncbi.nlm.nih.gov/gene/?term={val}" target="_blank">{val}</a>'
             
-            results['GeneID'] = results['GeneID'].apply(create_ncbi_link)
+            results['Gene ID'] = results['Gene ID'].apply(create_ncbi_link)
 
         # --- 3. LINK: InterPro Domains (Split & Link) ---
         def create_interpro_links(val):
@@ -251,17 +251,20 @@ if query:
                     linked_domains.append(d)
             return ", ".join(linked_domains)
 
-        if 'Principal Domains' in results.columns:
-            results['Principal Domains'] = results['Principal Domains'].apply(create_interpro_links)
+        if 'Interpro Domains' in results.columns:
+            results['Interpro Domains'] = results['Interpro Domains'].apply(create_interpro_links)
+
+        #if 'Principal Domains' in results.columns:
+            #results['Principal Domains'] = results['Principal Domains'].apply(create_interpro_links)
         
-        if 'Auxiliary Domains' in results.columns:
-            results['Auxiliary Domains'] = results['Auxiliary Domains'].apply(create_interpro_links)
+        #if 'Auxiliary Domains' in results.columns:
+            #results['Auxiliary Domains'] = results['Auxiliary Domains'].apply(create_interpro_links)
         
         # Define display columns
         display_cols = [
-            'UniProt ID', 'Gene Symbol', 'GeneID', 'Branch', 
+            'UniProt ID', 'Gene ID', 'Gene Symbol', 'Branch', 
             'Class', 'Group', 'Type', 'Subtype', 
-            'Principal Domains', 'Auxiliary Domains'
+            'Interpro Domains'
         ]
         available_cols = [c for c in display_cols if c in results.columns]
         
@@ -326,4 +329,4 @@ with col_right:
     """, unsafe_allow_html=True)
 # Footer
 st.markdown("<br><br><hr>", unsafe_allow_html=True)
-st.caption("Data source: Human Proteostasis Network 2.0 ~ 2024-0415")
+st.caption("Data source: Human Proteostasis Network 4.1 - 2026-0127")
