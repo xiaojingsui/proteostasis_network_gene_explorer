@@ -441,7 +441,7 @@ line-height: 1.6;
 color: #212121;
 }
 .about-header {
-font-size: 20px;
+font-size: 16px;
 font-weight: bold;
 color: #006064;
 margin-top: 30px;
