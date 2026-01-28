@@ -241,7 +241,7 @@ if query:
         def create_interpro_links(val):
             if pd.isna(val) or str(val).strip() == "" or "(none noted)" in str(val):
                 return val
-            domains = [d.strip() for d in str(val).split(',')]
+            domains = [d.strip() for d in str(val).split(';')]
             linked_domains = []
             for d in domains:
                 if d.startswith('IPR'):
