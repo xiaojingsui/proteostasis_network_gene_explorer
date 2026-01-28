@@ -93,37 +93,45 @@ st.markdown("""
 
 
     /* --- EXTERNAL LINK STYLING (The New "Laboratory" Link) --- */
+    /* --- EXTERNAL LINK STYLING (REVISED) --- */
     .nav-external-link {
         position: fixed !important;
-        top: 35px !important;       /* Adjusts vertical position */
-        right: 40px !important;     /* Adjusts distance from right edge */
-        z-index: 100000 !important; /* Ensures it sits on top of everything */
+        
+        /* CHANGE 1: Set top to 10px to match navbar padding */
+        top: 10px !important;       
+        
+        right: 40px !important;     
+        z-index: 100000 !important; 
         
         font-family: Arial, Helvetica, sans-serif !important;
-        font-size: 16px !important;
+        
+        /* CHANGE 2: Increase size to 18px to match nav buttons */
+        font-size: 18px !important; 
+        
         font-weight: 600 !important;
         color: #445550 !important;
         text-decoration: none !important;
         
         display: flex !important;
         align-items: center !important;
-        gap: 8px !important;        /* Space between icon and text */
+        gap: 8px !important;       
         
+        /* Keeps the pill shape consistent */
         padding: 8px 15px !important;
+        border-radius: 20px !important; /* Added base border-radius here too */
         transition: all 0.3s ease !important;
     }
 
     .nav-external-link:hover {
-        background-color: #D3E8E0 !important; /* Hover effect */
+        background-color: #D3E8E0 !important; 
         color: #004D40 !important;
-        border-radius: 20px !important;
     }
     
-    /* Style the SVG Icon */
     .nav-external-link svg {
-        width: 18px;
-        height: 18px;
+        width: 20px !important;   /* Slightly larger icon to match 18px text */
+        height: 20px !important;
         fill: currentColor;
+        margin-bottom: -2px;      /* Micro-adjustment for visual alignment */
     }
 
 
