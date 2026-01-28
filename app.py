@@ -2,19 +2,31 @@ import streamlit as st
 import pandas as pd
 import io
 
-
-# 1. Page Config
+# 1. Page Config (Must be the first command)
 st.set_page_config(page_title="Human PN Database", layout="wide")
 
 # Initialize session state for the key
 if "search_key" not in st.session_state:
     st.session_state.search_key = ""
 
-# CALLBACK FUNCTION
+# CALLBACK FUNCTION (Moved to top scope so it is accessible)
 def update_search(new_query):
     st.session_state.search_key = new_query
 
-# 2. Custom CSS
+# 2. LOAD DATA (Moved to top scope for efficiency)
+@st.cache_data
+def load_data():
+    file_path = 'Human Proteostasis Network 4.1 - 2026-0127.xlsx'
+    try:
+        df = pd.read_excel(file_path, sheet_name='MAIN')
+        df = df.dropna(subset=['Gene Symbol', 'UniProt ID'])
+        return df
+    except Exception as e:
+        # Display error only if on Search page or needed
+        return pd.DataFrame()
+
+# 3. GLOBAL CSS
+# Applied globally so both pages share the font, background, and hidden header style
 st.markdown("""
     <style>
     /* Set global font to Arial */
@@ -155,178 +167,221 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-# 3. Load Data
-@st.cache_data
-def load_data():
-    file_path = 'Human Proteostasis Network 4.1 - 2026-0127.xlsx'
-    try:
-        df = pd.read_excel(file_path, sheet_name='MAIN')
-        df = df.dropna(subset=['Gene Symbol', 'UniProt ID'])
-        return df
-    except Exception as e:
-        st.error(f"Error loading file: {e}")
-        return pd.DataFrame()
 
-df = load_data()
+# --- NAVIGATION MENU ---
+# Since standard header is hidden, we use a top radio button for navigation
+nav_col1, nav_col2, nav_col3 = st.columns([1, 8, 1])
+with nav_col2:
+    selected_page = st.radio(
+        "Navigation", 
+        ["Search", "About"], 
+        horizontal=True, 
+        label_visibility="collapsed",
+        key="nav_radio"
+    )
 
-# 4. Hero Section
-st.markdown('<div class="hero-section">', unsafe_allow_html=True)
-st.markdown('<p class="hero-title">HUMAN Proteostasis Network Database</p>', unsafe_allow_html=True)
-st.markdown('<p class="hero-subtitle">The comprehensive knowledgebase for human proteostasis network genes</p>', unsafe_allow_html=True)
+st.markdown("<div style='margin-bottom: 20px;'></div>", unsafe_allow_html=True)
 
-# Search Input
-st.text_input(
-    "", 
-    placeholder="Search by Gene Symbol, UniProt ID, Branch, Class, Group, Type, Subtype, or Domain...", 
-    label_visibility="collapsed",
-    key="search_key" 
-)
-st.markdown('</div>', unsafe_allow_html=True)
 
-# 5. Chip Section
-st.markdown('<div style="display: flex; justify-content: center; align-items: center; gap: 10px; margin-bottom: 0px;">', unsafe_allow_html=True)
-_, c_label, c1, c2, c3, _ = st.columns([1.5, 1.2, 0.5, 0.5, 0.6, 2])
+# ==========================================
+# PAGE 1: SEARCH (Your Original Code)
+# ==========================================
+if selected_page == "Search":
 
-with c_label:
-    st.markdown("<p style='text-align:right; font-size: 18px; color: #006064; margin-top: 5px;'>Try searching for:</p>", unsafe_allow_html=True)
-with c1:
-    st.button("HSPA1A", on_click=update_search, args=("HSPA1A",))
-with c2:
-    st.button("P0DMV8", on_click=update_search, args=("P0DMV8",))
-with c3:
-    st.button("Chaperone", on_click=update_search, args=("Chaperone",))
-st.markdown('</div>', unsafe_allow_html=True)
+    df = load_data()
 
-# 6. Consolidated Results Logic
-query = st.session_state.search_key
-if query:
-    mask = df.apply(lambda row: row.astype(str).str.contains(query, case=False).any(), axis=1)
-    results = df[mask].copy()
-    
-    if not results.empty:
-        # Layout for Title and Download Button
-        col_results, col_download = st.columns([7, 1])
-        with col_results:
-            st.markdown(f"#### {len(results)} results found for '{query}'")
-        
-        with col_download:
-            # Prepare CSV for download (using the raw data before HTML tags are added)
-            st.markdown('<div style="margin-top: 10px;"></div>', unsafe_allow_html=True)
-            csv = results.to_csv(index=False).encode('utf-8')
-            st.download_button(
-                label="Download CSV",
-                data=csv,
-                file_name=f"search_results_{query}.csv",
-                mime="text/csv",
-            )
-        
-        # --- 1. LINK: UniProt ---
-        results['UniProt ID'] = results['UniProt ID'].apply(
-            lambda x: f'<a href="https://www.uniprot.org/uniprotkb/{x}/entry" target="_blank">{x}</a>'
-        )
-        
-        # --- 2. LINK: NCBI Gene (using GeneID) ---
-        if 'Gene ID' in results.columns:
-            def create_ncbi_link(val):
-                if pd.isna(val) or val == "": return ""
-                try:
-                    clean_id = str(int(float(val)))
-                    return f'<a href="https://www.ncbi.nlm.nih.gov/gene/{clean_id}" target="_blank">{clean_id}</a>'
-                except:
-                    return f'<a href="https://www.ncbi.nlm.nih.gov/gene/?term={val}" target="_blank">{val}</a>'
+    # 4. Hero Section
+    st.markdown('<div class="hero-section">', unsafe_allow_html=True)
+    st.markdown('<p class="hero-title">HUMAN Proteostasis Network Database</p>', unsafe_allow_html=True)
+    st.markdown('<p class="hero-subtitle">The comprehensive knowledgebase for human proteostasis network genes</p>', unsafe_allow_html=True)
+
+    # Search Input
+    st.text_input(
+        "", 
+        placeholder="Search by Gene Symbol, UniProt ID, Branch, Class, Group, Type, Subtype, or Domain...", 
+        label_visibility="collapsed",
+        key="search_key" 
+    )
+    st.markdown('</div>', unsafe_allow_html=True)
+
+    # 5. Chip Section
+    st.markdown('<div style="display: flex; justify-content: center; align-items: center; gap: 10px; margin-bottom: 0px;">', unsafe_allow_html=True)
+    _, c_label, c1, c2, c3, _ = st.columns([1.5, 1.2, 0.5, 0.5, 0.6, 2])
+
+    with c_label:
+        st.markdown("<p style='text-align:right; font-size: 18px; color: #006064; margin-top: 5px;'>Try searching for:</p>", unsafe_allow_html=True)
+    with c1:
+        st.button("HSPA1A", on_click=update_search, args=("HSPA1A",))
+    with c2:
+        st.button("P0DMV8", on_click=update_search, args=("P0DMV8",))
+    with c3:
+        st.button("Chaperone", on_click=update_search, args=("Chaperone",))
+    st.markdown('</div>', unsafe_allow_html=True)
+
+    # 6. Consolidated Results Logic
+    query = st.session_state.search_key
+    if query:
+        # Check if df is empty before processing
+        if df.empty:
+             st.error("Database could not be loaded. Please check the source file.")
+        else:
+            mask = df.apply(lambda row: row.astype(str).str.contains(query, case=False).any(), axis=1)
+            results = df[mask].copy()
             
-            results['Gene ID'] = results['Gene ID'].apply(create_ncbi_link)
+            if not results.empty:
+                # Layout for Title and Download Button
+                col_results, col_download = st.columns([7, 1])
+                with col_results:
+                    st.markdown(f"#### {len(results)} results found for '{query}'")
+                
+                with col_download:
+                    # Prepare CSV for download (using the raw data before HTML tags are added)
+                    st.markdown('<div style="margin-top: 10px;"></div>', unsafe_allow_html=True)
+                    csv = results.to_csv(index=False).encode('utf-8')
+                    st.download_button(
+                        label="Download CSV",
+                        data=csv,
+                        file_name=f"search_results_{query}.csv",
+                        mime="text/csv",
+                    )
+                
+                # --- 1. LINK: UniProt ---
+                results['UniProt ID'] = results['UniProt ID'].apply(
+                    lambda x: f'<a href="https://www.uniprot.org/uniprotkb/{x}/entry" target="_blank">{x}</a>'
+                )
+                
+                # --- 2. LINK: NCBI Gene (using GeneID) ---
+                if 'Gene ID' in results.columns:
+                    def create_ncbi_link(val):
+                        if pd.isna(val) or val == "": return ""
+                        try:
+                            clean_id = str(int(float(val)))
+                            return f'<a href="https://www.ncbi.nlm.nih.gov/gene/{clean_id}" target="_blank">{clean_id}</a>'
+                        except:
+                            return f'<a href="https://www.ncbi.nlm.nih.gov/gene/?term={val}" target="_blank">{val}</a>'
+                    
+                    results['Gene ID'] = results['Gene ID'].apply(create_ncbi_link)
 
-        # --- 3. LINK: InterPro Domains (Split & Link) ---
-        def create_interpro_links(val):
-            if pd.isna(val) or str(val).strip() == "" or "(none noted)" in str(val):
-                return val
-            domains = [d.strip() for d in str(val).split(';')]
-            linked_domains = []
-            for d in domains:
-                if d.startswith('IPR'):
-                    url = f"https://www.ebi.ac.uk/interpro/entry/InterPro/{d}"
-                    linked_domains.append(f'<a href="{url}" target="_blank">{d}</a>')
-                else:
-                    linked_domains.append(d)
-            return ", ".join(linked_domains)
+                # --- 3. LINK: InterPro Domains (Split & Link) ---
+                def create_interpro_links(val):
+                    if pd.isna(val) or str(val).strip() == "" or "(none noted)" in str(val):
+                        return val
+                    domains = [d.strip() for d in str(val).split(';')]
+                    linked_domains = []
+                    for d in domains:
+                        if d.startswith('IPR'):
+                            url = f"https://www.ebi.ac.uk/interpro/entry/InterPro/{d}"
+                            linked_domains.append(f'<a href="{url}" target="_blank">{d}</a>')
+                        else:
+                            linked_domains.append(d)
+                    return ", ".join(linked_domains)
 
-        if 'Interpro Domains' in results.columns:
-            results['Interpro Domains'] = results['Interpro Domains'].apply(create_interpro_links)
+                if 'Interpro Domains' in results.columns:
+                    results['Interpro Domains'] = results['Interpro Domains'].apply(create_interpro_links)
+                
+                # Define display columns
+                display_cols = [
+                    'UniProt ID', 'Gene ID', 'Gene Symbol', 'Branch', 
+                    'Class', 'Group', 'Type', 'Subtype', 
+                    'Interpro Domains'
+                ]
+                available_cols = [c for c in display_cols if c in results.columns]
+                
+                # Render Table as HTML
+                st.write(
+                    results[available_cols].to_html(escape=False, index=False, border=0, classes='result-container'), 
+                    unsafe_allow_html=True
+                )
+            else:
+                st.error(f"No results found for '{query}'.")
 
-        #if 'Principal Domains' in results.columns:
-            #results['Principal Domains'] = results['Principal Domains'].apply(create_interpro_links)
+    # 7. Contact and Citation Section
+    st.markdown("<br><br><hr>", unsafe_allow_html=True)
+    col_left, col_right = st.columns(2)
+
+    with col_left:
+        st.markdown('<p class="section-header">Contact</p>', unsafe_allow_html=True)
         
-        #if 'Auxiliary Domains' in results.columns:
-            #results['Auxiliary Domains'] = results['Auxiliary Domains'].apply(create_interpro_links)
-        
-        # Define display columns
-        display_cols = [
-            'UniProt ID', 'Gene ID', 'Gene Symbol', 'Branch', 
-            'Class', 'Group', 'Type', 'Subtype', 
-            'Interpro Domains'
-        ]
-        available_cols = [c for c in display_cols if c in results.columns]
-        
-        # Render Table as HTML
-        st.write(
-            results[available_cols].to_html(escape=False, index=False, border=0, classes='result-container'), 
-            unsafe_allow_html=True
-        )
-    else:
-        st.error(f"No results found for '{query}'.")
+        # NOTICE: The HTML below is flushed to the far left to prevent Markdown code blocking
+        st.markdown("""
+    <div class="info-box" style="border-left: 5px solid #00838F;">
+    <div style="margin-bottom: 15px;">
+    <strong>ALP, Chaperones, Trafficking & Organelle-specific</strong><br>
+    <span style="font-size: 0.9em; color: #555;">
+    Evan Powers: <a href="mailto:PNAnnotation@gmail.com">PNAnnotation@gmail.com</a>
+    </span>
+    </div>
 
-# 7. Contact and Citation Section
-st.markdown("<br><br><hr>", unsafe_allow_html=True)
-col_left, col_right = st.columns(2)
+    <div style="margin-bottom: 15px;">
+    <strong>UPS</strong><br>
+    <span style="font-size: 0.9em; color: #555;">
+    Suzanne Elsasser: <a href="mailto:suzanne_elsasser@hms.harvard.edu">suzanne_elsasser@hms.harvard.edu</a>
+    </span><br>
+    <span style="font-size: 0.9em; color: #555;">
+    Daniel Finley: <a href="mailto:daniel_finley@hms.harvard.edu">daniel_finley@hms.harvard.edu</a>
+    </span>
+    </div>
 
-with col_left:
-    st.markdown('<p class="section-header">Contact</p>', unsafe_allow_html=True)
-    
-    # NOTICE: The HTML below is flushed to the far left to prevent Markdown code blocking
-    st.markdown("""
-<div class="info-box" style="border-left: 5px solid #00838F;">
-<div style="margin-bottom: 15px;">
-<strong>ALP, Chaperones, Trafficking & Organelle-specific</strong><br>
-<span style="font-size: 0.9em; color: #555;">
-Evan Powers: <a href="mailto:PNAnnotation@gmail.com">PNAnnotation@gmail.com</a>
-</span>
-</div>
-
-<div style="margin-bottom: 15px;">
-<strong>UPS</strong><br>
-<span style="font-size: 0.9em; color: #555;">
-Suzanne Elsasser: <a href="mailto:suzanne_elsasser@hms.harvard.edu">suzanne_elsasser@hms.harvard.edu</a>
-</span><br>
-<span style="font-size: 0.9em; color: #555;">
-Daniel Finley: <a href="mailto:daniel_finley@hms.harvard.edu">daniel_finley@hms.harvard.edu</a>
-</span>
-</div>
-
-<div>
-<strong>APP Support</strong><br>
-<span style="font-size: 0.9em; color: #555;">
-Xiaojing Sui: <a href="mailto:xiaojing.sui@northwestern.edu">xiaojing.sui@northwestern.edu</a>
-</span>
-</div>
-</div>
-""", unsafe_allow_html=True)
-
-with col_right:
-    st.markdown('<p class="section-header">Cite</p>', unsafe_allow_html=True)
-    st.markdown("""
-        <div class="info-box" style="border-left: 5px solid #00838F; padding: 15px;  border-radius: 5px;">
-            <p style="margin-bottom: 10px; font-weight: bold;">If you use this resource, please cite:</p>
-            <p style="margin-bottom: 10px; font-size: 0.9em;">
-                1. A Comprehensive Enumeration of the Human Proteostasis Network. 1. Components of Translation, Protein Folding, and Organelle-Specific Systems 
-                <a href="https://doi.org/10.1101/2022.08.30.505920" target="_blank">doi:10.1101/2022.08.30.505920</a>
-            </p>
-            <p style="margin-bottom: 0; font-size: 0.9em;">
-                2. A Comprehensive Enumeration of the Human Proteostasis Network. 2. Components of the Autophagy-Lysosome Pathway 
-                <a href="https://doi.org/10.1101/2023.03.22.533675" target="_blank">doi:10.1101/2023.03.22.533675</a>
-            </p>
-        </div>
+    <div>
+    <strong>APP Support</strong><br>
+    <span style="font-size: 0.9em; color: #555;">
+    Xiaojing Sui: <a href="mailto:xiaojing.sui@northwestern.edu">xiaojing.sui@northwestern.edu</a>
+    </span>
+    </div>
+    </div>
     """, unsafe_allow_html=True)
-# Footer
-st.markdown("<br><br><hr>", unsafe_allow_html=True)
-st.caption("Data source: Human Proteostasis Network v4.1")
+
+    with col_right:
+        st.markdown('<p class="section-header">Cite</p>', unsafe_allow_html=True)
+        st.markdown("""
+            <div class="info-box" style="border-left: 5px solid #00838F; padding: 15px;  border-radius: 5px;">
+                <p style="margin-bottom: 10px; font-weight: bold;">If you use this resource, please cite:</p>
+                <p style="margin-bottom: 10px; font-size: 0.9em;">
+                    1. A Comprehensive Enumeration of the Human Proteostasis Network. 1. Components of Translation, Protein Folding, and Organelle-Specific Systems 
+                    <a href="https://doi.org/10.1101/2022.08.30.505920" target="_blank">doi:10.1101/2022.08.30.505920</a>
+                </p>
+                <p style="margin-bottom: 0; font-size: 0.9em;">
+                    2. A Comprehensive Enumeration of the Human Proteostasis Network. 2. Components of the Autophagy-Lysosome Pathway 
+                    <a href="https://doi.org/10.1101/2023.03.22.533675" target="_blank">doi:10.1101/2023.03.22.533675</a>
+                </p>
+            </div>
+        """, unsafe_allow_html=True)
+    # Footer
+    st.markdown("<br><br><hr>", unsafe_allow_html=True)
+    st.caption("Data source: Human Proteostasis Network v4.1")
+
+
+# ==========================================
+# PAGE 2: ABOUT (New Page)
+# ==========================================
+elif selected_page == "About":
+    st.markdown('<div class="hero-section">', unsafe_allow_html=True)
+    st.markdown('<p class="hero-title">About the Project</p>', unsafe_allow_html=True)
+    st.markdown('</div>', unsafe_allow_html=True)
+    
+    # You can customize the About content here using standard Streamlit markdown
+    st.markdown("""
+    <div style="max-width: 800px; margin: 0 auto; font-size: 18px; line-height: 1.6;">
+        <p>
+            The <strong>Human Proteostasis Network (PN) Database</strong> is a comprehensive knowledgebase 
+            dedicated to the curation and classification of genes involved in the maintenance of proteostasis.
+        </p>
+        <p>
+            This resource categorizes components involved in:
+        </p>
+        <ul>
+            <li>Translation and Protein Folding</li>
+            <li>Autophagy-Lysosome Pathway (ALP)</li>
+            <li>Ubiquitin-Proteasome System (UPS)</li>
+            <li>Organelle-Specific Systems</li>
+        </ul>
+        <br>
+        <p class="section-header">Methodology</p>
+        <p>
+            The data presented here is the result of extensive literature review and manual annotation 
+            to ensure high-fidelity classification of protein functions.
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    # Optional: Reuse the footer for consistency
