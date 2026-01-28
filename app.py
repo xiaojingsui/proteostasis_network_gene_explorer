@@ -429,39 +429,39 @@ elif selected_page == "About":
     
     st.markdown("""
     <style>
-        .about-container {
-            max-width: 900px; 
-            margin: 0 auto; 
-            font-family: Arial, Helvetica, sans-serif; 
-            font-size: 16px; 
-            line-height: 1.6; 
-            color: #212121;
-        }
-        .about-header {
-            font-size: 20px;
-            font-weight: bold;
-            color: #006064;
-            margin-top: 30px;
-            margin-bottom: 10px;
-            border-bottom: 2px solid #E0F7FA;
-            padding-bottom: 5px;
-        }
-        .term-highlight {
-            font-weight: bold;
-            color: #00838F;
-        }
-        .red-highlight {
-            font-weight: bold;
-            color: #B71C1C;
-        }
-        .about-list {
-            padding-left: 20px;
-            margin-bottom: 15px;
-        }
-        .about-list li {
-            margin-bottom: 8px;
-        }
-    </style>
+    .about-container {
+        max-width: 900px; 
+        margin: 0 auto; 
+        font-family: Arial, Helvetica, sans-serif; 
+        font-size: 16px; 
+        line-height: 1.6; 
+        color: #212121;
+    }
+    .about-header {
+        font-size: 20px;
+        font-weight: bold;
+        color: #006064;
+        margin-top: 30px;
+        margin-bottom: 10px;
+        border-bottom: 2px solid #E0F7FA;
+        padding-bottom: 5px;
+    }
+    .term-highlight {
+        font-weight: bold;
+        color: #00838F;
+    }
+    .red-highlight {
+        font-weight: bold;
+        color: #B71C1C;
+    }
+    .about-list {
+        padding-left: 20px;
+        margin-bottom: 15px;
+    }
+    .about-list li {
+        margin-bottom: 8px;
+    }
+</style>
 
     <div class="about-container">
         
