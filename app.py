@@ -76,13 +76,14 @@ st.markdown("""
     }
 
     div[role="radiogroup"] p {
-        font-size: 18px !important;
+        font-family: Arial, Helvetica, sans-serif !important;  /* <--- ADD THIS LINE */
+        font-size: 24px !important;
         font-weight: 600 !important;
-        color: #444444 !important;
+        color: #445550 !important; 
         cursor: pointer;
-        padding: 5px 10px;
-        border-radius: 5px;
-        transition: background-color 0.2s;
+        padding: 8px 20px;
+        border-radius: 20px;
+        transition: all 0.3s ease;
     }
 
     div[role="radiogroup"] p:hover {
