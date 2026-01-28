@@ -21,8 +21,14 @@ def update_search(new_query):
 def load_data():
     file_path = 'Human Proteostasis Network 4.1 - 2026-0127.xlsx'
     try:
+        # Load data (adjust sheet name if necessary)
         df = pd.read_excel(file_path, sheet_name='MAIN')
         df = df.dropna(subset=['Gene Symbol', 'UniProt ID'])
+        # Fill NaN values in hierarchy columns with empty strings for smoother filtering
+        fill_cols = ['Branch', 'Class', 'Group', 'Type', 'Subtype']
+        for c in fill_cols:
+            if c in df.columns:
+                df[c] = df[c].fillna("N/A")
         return df
     except Exception as e:
         return pd.DataFrame()
@@ -48,36 +54,30 @@ st.markdown("""
     footer { visibility: hidden; }
 
     /* --- CUSTOM NAVBAR (STYLING THE RADIO BUTTON) --- */
-    /* 1. Make the radio group a horizontal row with a white background and bottom border */
     div[role="radiogroup"] {
-    position: fixed !important;      /* 1. Sticks it to the screen */
-    top: 0 !important;               /* 2. Anchors to very top */
-    left: 0 !important;              /* 3. Anchors to left edge */
-    width: 100vw !important;         /* 4. Forces full screen width */
-    z-index: 99999 !important;       /* 5. Ensures it sits on top of everything */
-    
-    background-color: #FFFFFF;       /* 6. Sage green color from screenshot */
-    
-    display: flex !important;
-    justify-content: center !important; /* 7. CENTERS the Search/About buttons */
-    padding: 10px 0 !important; 
-    
-    align-items: center !important; /* Ensures text stays vertically centered */
-    border-bottom: 1px solid #E0E0E0;
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 100vw !important;
+        z-index: 99999 !important;
+        background-color: #FFFFFF;
+        display: flex !important;
+        justify-content: center !important;
+        padding: 10px 0 !important; 
+        align-items: center !important;
+        border-bottom: 1px solid #E0E0E0;
     }
 
-    /* 2. Hide the actual radio bubbles/circles */
     div[role="radiogroup"] label > div:first-child {
         display: none !important;
     }
 
-    /* 3. Style the text labels to look like navbar links */
     div[role="radiogroup"] label {
         margin-right: 0px !important;
     }
 
     div[role="radiogroup"] p {
-        font-family: Arial, Helvetica, sans-serif !important;  /* <--- ADD THIS LINE */
+        font-family: Arial, Helvetica, sans-serif !important;
         font-size: 18px !important;
         font-weight: 600 !important;
         color: #445550 !important; 
@@ -92,34 +92,22 @@ st.markdown("""
         color: #006064 !important;
     }
 
-
-    /* --- EXTERNAL LINK STYLING (The New "Laboratory" Link) --- */
-    /* --- EXTERNAL LINK STYLING (REVISED) --- */
+    /* --- EXTERNAL LINK STYLING --- */
     .nav-external-link {
         position: fixed !important;
-        
-        /* CHANGE 1: Set top to 10px to match navbar padding */
         top: 10px !important;       
-        
         right: 40px !important;     
         z-index: 100000 !important; 
-        
         font-family: Arial, Helvetica, sans-serif !important;
-        
-        /* CHANGE 2: Increase size to 18px to match nav buttons */
         font-size: 18px !important; 
-        
         font-weight: 600 !important;
         color: #445550 !important;
         text-decoration: none !important;
-        
         display: flex !important;
         align-items: center !important;
-        gap: 8px !important;       
-        
-        /* Keeps the pill shape consistent */
+        gap: 8px !important;        
         padding: 8px 15px !important;
-        border-radius: 20px !important; /* Added base border-radius here too */
+        border-radius: 20px !important;
         transition: all 0.3s ease !important;
     }
 
@@ -129,14 +117,11 @@ st.markdown("""
     }
     
     .nav-external-link svg {
-        width: 20px !important;   /* Slightly larger icon to match 18px text */
+        width: 20px !important;
         height: 20px !important;
         fill: currentColor;
-        margin-bottom: -2px;      /* Micro-adjustment for visual alignment */
+        margin-bottom: -2px;
     }
-
-
-
 
     /* --- TABLE & GENERAL STYLING --- */
     td { 
@@ -174,35 +159,39 @@ st.markdown("""
         margin-bottom: 40px;
     }
 
-    /* Input Box Styling */
+    /* --- INPUT & SELECT BOX STYLING --- */
+    
+    /* Target the main Text Input (Global width rule) */
     div[data-testid="stTextInput"] {
-        width: 50% !important;      /* 50% = Half screen width. 100% = Full width. */
+        width: 50% !important;
         min-width: 300px;
         margin: 0 auto -15px !important;
     }
 
     div[data-testid="stTextInput"] > div {
         height: auto !important;
-        min-height: 75px !important; /* Must be larger than your input height (approx 68px) */
+        min-height: 75px !important; 
     }
 
     div[data-testid="stTextInput"] > div > div > input {
         font-family: Arial, Helvetica, sans-serif !important;
         border-radius: 12px !important;
-        
-        /* Box sizing prevents math errors with padding */
         box-sizing: border-box !important; 
-        
         padding: 22px 25px !important;
         font-size: 15px !important;
-        
-        /* Your uniform border */
         border: 2px solid #4DD0E1 !important; 
-        
         background-color: white !important;
-        color: #006064 !important; /* Optional: Makes typed text match your theme */
+        color: #006064 !important; 
     }
 
+    /* Specific Styling for Selectboxes (Dropdowns) to match theme */
+    div[data-baseweb="select"] > div {
+        border-radius: 8px !important;
+        border: 1px solid #4DD0E1 !important;
+        background-color: #FFFFFF !important;
+        color: #006064 !important;
+    }
+    
     /* Results Table Styling */
     .result-container {
         font-family: Arial, Helvetica, sans-serif !important;
@@ -234,6 +223,12 @@ st.markdown("""
     
     a { color: #00838F !important; font-weight: bold; text-decoration: none; }
     a:hover { text-decoration: underline; }
+    
+    /* Advanced Search Specifics - Restore width for dropdowns inside columns */
+    div[data-testid="stVerticalBlock"] div[data-testid="stVerticalBlock"] div[data-testid="stTextInput"] {
+        width: 100% !important; /* Overrides the global 50% rule for inputs inside columns if needed */
+        margin: 0 !important;
+    }
     </style>
     """, unsafe_allow_html=True)
 
@@ -249,12 +244,9 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 
-# --- TOP NAVBAR (Using st.radio styled with CSS) ---
-# We map the labels with icons to internal values
-NAV_OPTIONS = ["🔍 Search", "ℹ️ About"]
+# --- TOP NAVBAR ---
+NAV_OPTIONS = ["🔍 Search", "⚡ Advanced Search", "ℹ️ About"]
 
-# Place the radio button at the very top. 
-# The CSS above hides the circles and makes it look like a navbar.
 selected_nav = st.radio(
     "Navigation", 
     NAV_OPTIONS, 
@@ -263,15 +255,17 @@ selected_nav = st.radio(
     key="nav_radio"
 )
 
-# Logic to handle page selection based on the label with icon
-if "Search" in selected_nav:
+# Page Router
+if "Search" in selected_nav and "Advanced" not in selected_nav:
     selected_page = "Search"
+elif "Advanced" in selected_nav:
+    selected_page = "Advanced"
 else:
     selected_page = "About"
 
 
 # ==========================================
-# PAGE 1: SEARCH
+# PAGE 1: SEARCH (MAIN)
 # ==========================================
 if selected_page == "Search":
 
@@ -322,17 +316,12 @@ if selected_page == "Search":
                 with col_download:
                     st.markdown('<div style="margin-top: 10px;"></div>', unsafe_allow_html=True)
 
-                    # Define the columns you want to export
                     display_cols = [
                         'UniProt ID', 'Gene ID', 'Gene Symbol', 'Branch', 
                         'Class', 'Group', 'Type', 'Subtype', 
                         'Interpro Domains'
                     ]
-                    
-                    # Ensure we only select columns that actually exist in the dataframe to prevent errors
                     valid_cols = [c for c in display_cols if c in results.columns]
-                    
-                    # Convert only the selected columns to CSV
                     csv = results[valid_cols].to_csv(index=False).encode('utf-8')
                     
                     st.download_button(
@@ -341,16 +330,15 @@ if selected_page == "Search":
                         file_name=f"search_results_{query}.csv",
                         mime="text/csv",
                     )
-                    
                 
-                # Link Formatting
+                # Link Formatting (Helper functions)
                 results['UniProt ID'] = results['UniProt ID'].apply(
                     lambda x: f'<a href="https://www.uniprot.org/uniprotkb/{x}/entry" target="_blank">{x}</a>'
                 )
                 
                 if 'Gene ID' in results.columns:
                     def create_ncbi_link(val):
-                        if pd.isna(val) or val == "": return ""
+                        if pd.isna(val) or str(val) == "": return ""
                         try:
                             clean_id = str(int(float(val)))
                             return f'<a href="https://www.ncbi.nlm.nih.gov/gene/{clean_id}" target="_blank">{clean_id}</a>'
@@ -388,54 +376,150 @@ if selected_page == "Search":
             else:
                 st.error(f"No results found for '{query}'.")
 
-    # Footer/Contact
-    st.markdown("<br><br><hr>", unsafe_allow_html=True)
-    col_left, col_right = st.columns(2)
-
-    with col_left:
-        st.markdown('<p class="section-header">Contact</p>', unsafe_allow_html=True)
-        st.markdown("""
-        <div class="info-box" style="border-left: 5px solid #00838F;">
-            <div style="margin-bottom: 15px;">
-                <strong>ALP, Chaperones, Trafficking & Organelle-specific</strong><br>
-                <span style="font-size: 0.9em; color: #555;">Evan Powers: <a href="mailto:PNAnnotation@gmail.com">PNAnnotation@gmail.com</a></span>
-            </div>
-            <div style="margin-bottom: 15px;">
-                <strong>UPS</strong><br>
-                <span style="font-size: 0.9em; color: #555;">Suzanne Elsasser: <a href="mailto:suzanne_elsasser@hms.harvard.edu">suzanne_elsasser@hms.harvard.edu</a></span><br>
-                <span style="font-size: 0.9em; color: #555;">Daniel Finley: <a href="mailto:daniel_finley@hms.harvard.edu">daniel_finley@hms.harvard.edu</a></span>
-            </div>
-            <div>
-                <strong>APP Support</strong><br>
-                <span style="font-size: 0.9em; color: #555;">Xiaojing Sui: <a href="mailto:xiaojing.sui@northwestern.edu">xiaojing.sui@northwestern.edu</a></span>
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
-
-    with col_right:
-        st.markdown('<p class="section-header">Cite</p>', unsafe_allow_html=True)
-        st.markdown("""
-            <div class="info-box" style="border-left: 5px solid #00838F; padding: 15px; border-radius: 5px;">
-                <p style="margin-bottom: 10px; font-weight: bold;">If you use this resource, please cite:</p>
-                <p style="margin-bottom: 10px; font-size: 0.9em;">
-                    1. A Comprehensive Enumeration of the Human Proteostasis Network. 1. Components of Translation, Protein Folding, and Organelle-Specific Systems 
-                    <a href="https://doi.org/10.1101/2022.08.30.505920" target="_blank">doi:10.1101/2022.08.30.505920</a>
-                </p>
-                <p style="margin-bottom: 0; font-size: 0.9em;">
-                    2. A Comprehensive Enumeration of the Human Proteostasis Network. 2. Components of the Autophagy-Lysosome Pathway 
-                    <a href="https://doi.org/10.1101/2023.03.22.533675" target="_blank">doi:10.1101/2023.03.22.533675</a>
-                </p>
-            </div>
-        """, unsafe_allow_html=True)
+    # Footer
     st.markdown("<br><br><hr>", unsafe_allow_html=True)
     st.caption("Data source: Human Proteostasis Network v4.1")
 
 
 # ==========================================
-# PAGE 2: ABOUT
+# PAGE 2: ADVANCED SEARCH
 # ==========================================
+elif selected_page == "Advanced":
+    
+    df = load_data()
+
+    # Hero Section Small
+    st.markdown('<div class="hero-section" style="padding-bottom: 10px;">', unsafe_allow_html=True)
+    st.markdown('<p class="hero-title" style="font-size: 36px;">Advanced Catalog Search</p>', unsafe_allow_html=True)
+    st.markdown('<p class="hero-subtitle" style="font-size: 18px;">Filter by hierarchy. Options update based on selection.</p>', unsafe_allow_html=True)
+    st.markdown('</div>', unsafe_allow_html=True)
+
+    if df.empty:
+        st.error("Data could not be loaded.")
+    else:
+        # Container for filters
+        with st.container():
+            st.markdown("""
+                <style>
+                /* Override the 50% width rule specifically for this page's selectboxes/inputs */
+                div[data-testid="stVerticalBlock"] div[data-testid="stHorizontalBlock"] div[data-testid="stVerticalBlock"] > div {
+                    width: 100% !important;
+                }
+                </style>
+            """, unsafe_allow_html=True)
+
+            # CASCADING FILTERS
+            # We create a progressive filtering object. 
+            # Note: We filter a COPY of the dataframe for display, but we calculate options based on the progressive state.
+
+            filtered_df = df.copy()
+
+            # Row 1: Branch & Class
+            col1, col2 = st.columns(2)
+            
+            with col1:
+                # Branch options are always all branches
+                branch_opts = sorted(df['Branch'].unique().astype(str).tolist())
+                sel_branch = st.selectbox("Branch", ["All"] + branch_opts)
+                
+                if sel_branch != "All":
+                    filtered_df = filtered_df[filtered_df['Branch'] == sel_branch]
+
+            with col2:
+                # Class options depend on Branch selection
+                class_opts = sorted(filtered_df['Class'].unique().astype(str).tolist())
+                sel_class = st.selectbox("Class", ["All"] + class_opts)
+                
+                if sel_class != "All":
+                    filtered_df = filtered_df[filtered_df['Class'] == sel_class]
+
+            # Row 2: Group & Type
+            col3, col4 = st.columns(2)
+            
+            with col3:
+                # Group options depend on Branch + Class
+                group_opts = sorted(filtered_df['Group'].unique().astype(str).tolist())
+                sel_group = st.selectbox("Group", ["All"] + group_opts)
+                
+                if sel_group != "All":
+                    filtered_df = filtered_df[filtered_df['Group'] == sel_group]
+
+            with col4:
+                # Type options depend on previous
+                type_opts = sorted(filtered_df['Type'].unique().astype(str).tolist())
+                sel_type = st.selectbox("Type", ["All"] + type_opts)
+                
+                if sel_type != "All":
+                    filtered_df = filtered_df[filtered_df['Type'] == sel_type]
+
+            # Row 3: Subtype & Text Filter
+            col5, col6 = st.columns(2)
+            
+            with col5:
+                 # Subtype options depend on previous
+                subtype_opts = sorted(filtered_df['Subtype'].unique().astype(str).tolist())
+                sel_subtype = st.selectbox("Subtype", ["All"] + subtype_opts)
+                
+                if sel_subtype != "All":
+                    filtered_df = filtered_df[filtered_df['Subtype'] == sel_subtype]
+            
+            with col6:
+                # Optional Text refinement
+                # We need to use a custom key to avoid conflict with main page
+                text_filter = st.text_input("Refine by Gene Symbol (contains)", key="adv_text_filter")
+                if text_filter:
+                    filtered_df = filtered_df[filtered_df['Gene Symbol'].astype(str).str.contains(text_filter, case=False, na=False)]
 
 
+        # --- DISPLAY RESULTS ---
+        st.markdown("---")
+        
+        # Determine if we should show results (default to showing all if nothing selected, or handle heavy load)
+        # Showing all 5000+ rows might be heavy, but let's assume it's okay for <10k rows.
+        
+        results_count = len(filtered_df)
+        
+        c_res, c_down = st.columns([8, 2])
+        with c_res:
+            st.markdown(f"**Found {results_count} entries**")
+        
+        with c_down:
+             # CSV Export Logic
+             display_cols = ['UniProt ID', 'Gene ID', 'Gene Symbol', 'Branch', 'Class', 'Group', 'Type', 'Subtype', 'Interpro Domains']
+             valid_cols = [c for c in display_cols if c in filtered_df.columns]
+             csv_adv = filtered_df[valid_cols].to_csv(index=False).encode('utf-8')
+             st.download_button(
+                 label="Download Filtered CSV",
+                 data=csv_adv,
+                 file_name="advanced_search_results.csv",
+                 mime="text/csv"
+             )
+
+        # Apply Link Formatting (Same as Main Page)
+        # Note: We work on a .copy() for display to not break the next rerun logic
+        display_df = filtered_df.copy()
+        
+        # Link Logic (Duplicated for isolation)
+        display_df['UniProt ID'] = display_df['UniProt ID'].apply(
+            lambda x: f'<a href="https://www.uniprot.org/uniprotkb/{x}/entry" target="_blank">{x}</a>'
+        )
+        if 'Gene ID' in display_df.columns:
+            display_df['Gene ID'] = display_df['Gene ID'].apply(
+                lambda val: f'<a href="https://www.ncbi.nlm.nih.gov/gene/{int(float(val))}" target="_blank">{int(float(val))}</a>' if (pd.notna(val) and str(val)!="") else ""
+            )
+        
+        # Just reuse the display columns logic
+        valid_display = [c for c in display_cols if c in display_df.columns]
+        
+        st.write(
+            display_df[valid_display].to_html(escape=False, index=False, border=0, classes='result-container'), 
+            unsafe_allow_html=True
+        )
+
+
+# ==========================================
+# PAGE 3: ABOUT
+# ==========================================
 elif selected_page == "About":
     st.markdown('<div class="hero-section">', unsafe_allow_html=True)
     st.markdown('<p class="hero-title">About the Project</p>', unsafe_allow_html=True)
@@ -443,113 +527,95 @@ elif selected_page == "About":
     
     # MAIN CONTENT START
     st.markdown("""
-<style>
-.about-container {
-max-width: 900px;
-margin: 0 auto;
-font-family: Arial, Helvetica, sans-serif;
-font-size: 16px;
-line-height: 1.6;
-color: #212121;
-}
-.about-header {
-font-size: 20px;
-font-weight: bold;
-color: #006064;
-margin-top: 30px;
-margin-bottom: 10px;
-border-bottom: 2px solid #E0F7FA;
-padding-bottom: 5px;
-}
-.term-highlight {
-font-weight: bold;
-color: #00838F;
-}
-.red-highlight {
-font-weight: bold;
-color: #B71C1C;
-}
-.about-list {
-padding-left: 20px;
-margin-bottom: 15px;
-}
-.about-list li {
-margin-bottom: 8px;
-}
-</style>
-<div class="about-container">
-<p>
-A more extensive description of the project can be found on the 
-<a href="https://www.proteostasisconsortium.com/pn-annotation/" target="_blank">Human Proteostasis Network Annotation website</a>.
-</p>
-<p>
-The proteostasis network is a fundamental entity in biology with direct relevance to many diseases of protein conformation. 
-However, it has not been well defined or annotated, which has hindered its functional characterization in health and disease. 
-Here, we operationally define the human proteostasis network by providing a comprehensive, annotated list of its components.
-</p>
-<p>
-To organize the proteostasis network components, we use a taxonomic scheme consisting of five levels: 
-<b>Branch, Class, Group, Type, and Subtype</b>. We find that five levels are sufficient to convey a general sense of 
-each component’s localization and function while minimizing the number of descriptors.
-</p>
-<div style="background-color: #F9FDFD; padding: 20px; border-radius: 8px; border: 1px solid #E0F7FA; margin: 20px 0;">
-<p style="margin-bottom: 15px;">
-<span class="term-highlight">Branch</span> refers to a component’s localization or membership in an overarching pathway. 
-There are nine Branch categories: cytonuclear proteostasis (CY), ER proteostasis (ER), mitochondrial proteostasis (MI), 
-nuclear proteostasis (NU), PN regulation (PN), translation (TR), extracellular proteostasis (EX), 
-the autophagy-lysosome pathway (ALP), and the ubiquitin-proteasome system (UPS).
-</p>
-<p style="margin-bottom: 15px;">
-<span class="term-highlight">Class</span> refers to a component’s function in proteostasis (e.g., chaperones, protein transport, etc.) 
-in most Branches of the PN. In the ALP it refers to the stage of autophagy in which the component participates.
-</p>
-<p style="margin-bottom: 0px;">
-<span class="term-highlight">Group, Type, and Subtype</span> provide increasingly specific descriptors of proteostasis functions within a Class.
-</p>
-</div>
-<p>
-Our goal was to use only as many descriptors as are minimally necessary to give a basic understanding of a component’s role in proteostasis. 
-Thus, not every component has Type or Subtype annotations. Also, some components have multiple roles in the proteostasis network. 
-These are given multiple entries in our list to reflect each separate role.
-</p>
+    <style>
+    .about-container {
+        max-width: 900px;
+        margin: 0 auto;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 16px;
+        line-height: 1.6;
+        color: #212121;
+    }
+    .about-header {
+        font-size: 20px;
+        font-weight: bold;
+        color: #006064;
+        margin-top: 30px;
+        margin-bottom: 10px;
+        border-bottom: 2px solid #E0F7FA;
+        padding-bottom: 5px;
+    }
+    .term-highlight {
+        font-weight: bold;
+        color: #00838F;
+    }
+    .red-highlight {
+        font-weight: bold;
+        color: #B71C1C;
+    }
+    .about-list {
+        padding-left: 20px;
+        margin-bottom: 15px;
+    }
+    .about-list li {
+        margin-bottom: 8px;
+    }
+    </style>
+    <div class="about-container">
+        <p>
+            A more extensive description of the project can be found on the 
+            <a href="https://www.proteostasisconsortium.com/pn-annotation/" target="_blank">Human Proteostasis Network Annotation website</a>.
+        </p>
+        <p>
+            The proteostasis network is a fundamental entity in biology with direct relevance to many diseases of protein conformation. 
+            However, it has not been well defined or annotated, which has hindered its functional characterization in health and disease. 
+            Here, we operationally define the human proteostasis network by providing a comprehensive, annotated list of its components.
+        </p>
+        <p>
+            To organize the proteostasis network components, we use a taxonomic scheme consisting of five levels: 
+            <b>Branch, Class, Group, Type, and Subtype</b>. We find that five levels are sufficient to convey a general sense of 
+            each component’s localization and function while minimizing the number of descriptors.
+        </p>
+        <div style="background-color: #F9FDFD; padding: 20px; border-radius: 8px; border: 1px solid #E0F7FA; margin: 20px 0;">
+            <p style="margin-bottom: 15px;">
+                <span class="term-highlight">Branch</span> refers to a component’s localization or membership in an overarching pathway. 
+                There are nine Branch categories: cytonuclear proteostasis (CY), ER proteostasis (ER), mitochondrial proteostasis (MI), 
+                nuclear proteostasis (NU), PN regulation (PN), translation (TR), extracellular proteostasis (EX), 
+                the autophagy-lysosome pathway (ALP), and the ubiquitin-proteasome system (UPS).
+            </p>
+            <p style="margin-bottom: 15px;">
+                <span class="term-highlight">Class</span> refers to a component’s function in proteostasis (e.g., chaperones, protein transport, etc.) 
+                in most Branches of the PN. In the ALP it refers to the stage of autophagy in which the component participates.
+            </p>
+            <p style="margin-bottom: 0px;">
+                <span class="term-highlight">Group, Type, and Subtype</span> provide increasingly specific descriptors of proteostasis functions within a Class.
+            </p>
+        </div>
+        
+        <div class="about-header">How to use this interface</div>
+        <p>The interface is open for immediate use and allows you to:</p>
+        <ul class="about-list">
+            <li>
+                <span class="term-highlight">Search flexibly:</span> Query by <b>Gene Symbol</b> (e.g., HSPA1A), <b>UniProt ID</b>, or functional keywords (e.g., “Chaperone”), with direct links to UniProt, NCBI, and InterPro databases.
+            </li>
+            <li>
+                <span class="term-highlight">Advanced Search:</span> Use the catalog view to filter hierarchically by Branch, Class, Group, Type, and Subtype.
+            </li>
+            <li>
+                <span class="term-highlight">Export Data:</span> Use the <b>“Download CSV”</b> button to export your search results for offline analysis.
+            </li>
+        </ul>
 
-<div class="about-header">How to use this interface</div>
-<p>The interface is open for immediate use and allows you to:</p>
-<ul class="about-list">
-<li>
-<span class="term-highlight">Search flexibly:</span> Query by <b>Gene Symbol</b> (e.g., HSPA1A), <b>UniProt ID</b>, or functional keywords (e.g., “Chaperone”), with direct links to UniProt, NCBI, and InterPro databases.
-</li>
-<li>
-<span class="term-highlight">View annotations:</span> Explore detailed classifications including Branch, Class, Group, Type, Subtype, and Domains.
-</li>
-<li>
-<span class="term-highlight">Export Data:</span> Use the <b>“Download CSV”</b> button to export your search results for offline analysis.
-</li>
-</ul>
-
-<div class="about-header">Indexing values for this catalog</div>
-<p>
-Individual entries in the <b>MAIN</b> tab are indexed by <span class="red-highlight">Gene ID</span>, 
-<span class="red-highlight">Uniprot ID</span>, and official <span class="red-highlight">Gene Symbol</span>. 
-<span class="red-highlight">Gene Synonyms</span> are additionally listed.
-RNA genes are given arbitrary but unique designations in the <b>Uniprot ID</b> field to assist with data analysis.
-Entries in the <b>UNIQUE</b> tab also include ENSG and HGNC designations.
-</p>
-<p>
-The core <b>Proteostasis Network Annotation</b> can be found in the 
-<span class="red-highlight">Branch, Class, Group, Type</span>, and <span class="red-highlight">Subtype</span> designations. 
-Explanatory details about the fine structure of the annotation will be published in a forthcoming paper.
-</p>
-<div class="about-header">Branch-specific notes</div>
-<ul class="about-list">
-<li><b>“Cytonuclear”</b> refers to components that support proteostasis in both the cytosol and the nucleus.</li>
-<li><b>“Nuclear”</b> refers to components that primarily support nuclear proteostasis (e.g., histone chaperones).</li>
-<li><b>“Proteostasis regulation”</b> refers to components that control transcription or translation of proteostasis network components.</li>
-<li>For the <b>ALP Branch</b>, Class annotations are based on the temporal progression of autophagy; see the Tallies tab for a terse list. Each component in the ALP Branch has a note explaining why it was included (see Notes column).</li>
-<li>For the <b>UPS Branch</b>, annotations rely heavily on shared or characteristic Interpro domains, and these will be described in detail in the forthcoming paper.</li>
-</ul>
-</div>
-""", unsafe_allow_html=True)
+        <div class="about-header">Indexing values for this catalog</div>
+        <p>
+            Individual entries in the <b>MAIN</b> tab are indexed by <span class="red-highlight">Gene ID</span>, 
+            <span class="red-highlight">Uniprot ID</span>, and official <span class="red-highlight">Gene Symbol</span>. 
+            <span class="red-highlight">Gene Synonyms</span> are additionally listed.
+            RNA genes are given arbitrary but unique designations in the <b>Uniprot ID</b> field to assist with data analysis.
+            Entries in the <b>UNIQUE</b> tab also include ENSG and HGNC designations.
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
 
     st.markdown("<br><br><hr>", unsafe_allow_html=True)
     st.caption("Data source: Human Proteostasis Network v4.1")
