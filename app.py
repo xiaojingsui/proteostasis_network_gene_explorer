@@ -243,7 +243,7 @@ st.markdown("""
         <svg viewBox="0 0 24 24" aria-hidden="true">
             <path d="M14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3M5 5h4v2H5v12h12v-4h2v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2Z"></path>
         </svg>
-        Laboratory
+        ProteostasisConsortium
     </a>
 """, unsafe_allow_html=True)
 
