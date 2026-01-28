@@ -146,6 +146,7 @@ st.markdown("""
         font-size: 40px;
         color: #00838F;
         margin-bottom: 10px;
+
     }
     
     /* Link styling */
@@ -281,7 +282,7 @@ with col_left:
     
     # NOTICE: The HTML below is flushed to the far left to prevent Markdown code blocking
     st.markdown("""
-<div class="info-box">
+<div class="info-box" style="border-left: 5px solid #00838F;">
 <div style="margin-bottom: 15px;">
 <strong>ALP, Chaperones, Trafficking & Organelle-specific</strong><br>
 <span style="font-size: 0.9em; color: #555;">
