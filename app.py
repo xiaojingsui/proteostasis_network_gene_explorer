@@ -55,7 +55,7 @@ st.markdown("""
     width: 100vw !important;         /* 4. Forces full screen width */
     z-index: 99999 !important;       /* 5. Ensures it sits on top of everything */
     
-    background-color: #E9F5F0;       /* 6. Sage green color from screenshot */
+    background-color: #000000;       /* 6. Sage green color from screenshot */
     
     display: flex !important;
     justify-content: center !important; /* 7. CENTERS the Search/About buttons */
