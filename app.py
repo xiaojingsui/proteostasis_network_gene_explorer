@@ -423,13 +423,11 @@ if selected_page == "Search":
 
 
 elif selected_page == "About":
-    # Hero Section
     st.markdown('<div class="hero-section">', unsafe_allow_html=True)
     st.markdown('<p class="hero-title">About the Project</p>', unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
     
-    # NOTE: All lines inside this string are FLUSH LEFT (no indentation)
-    # This prevents the Markdown parser from detecting "4 spaces" and turning it into a code block.
+    # MAIN CONTENT START
     st.markdown("""
 <style>
 .about-container {
@@ -441,7 +439,7 @@ line-height: 1.6;
 color: #212121;
 }
 .about-header {
-font-size: 16px;
+font-size: 20px;
 font-weight: bold;
 color: #006064;
 margin-top: 30px;
@@ -500,6 +498,21 @@ Our goal was to use only as many descriptors as are minimally necessary to give 
 Thus, not every component has Type or Subtype annotations. Also, some components have multiple roles in the proteostasis network. 
 These are given multiple entries in our list to reflect each separate role.
 </p>
+
+<div class="about-header">How to use this interface</div>
+<p>The interface is open for immediate use and allows you to:</p>
+<ul class="about-list">
+<li>
+<span class="term-highlight">Search flexibly:</span> Query by <b>Gene Symbol</b> (e.g., HSPA1A), <b>UniProt ID</b>, or functional keywords (e.g., “Chaperone”), with direct links to UniProt, NCBI, and InterPro databases.
+</li>
+<li>
+<span class="term-highlight">View annotations:</span> Explore detailed classifications including Branch, Class, Group, Type, Subtype, and Domains.
+</li>
+<li>
+<span class="term-highlight">Export Data:</span> Use the <b>“Download CSV”</b> button to export your search results for offline analysis.
+</li>
+</ul>
+
 <div class="about-header">Indexing values for this catalog</div>
 <p>
 Individual entries in the <b>MAIN</b> tab are indexed by <span class="red-highlight">Gene ID</span>, 
