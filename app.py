@@ -59,7 +59,7 @@ st.markdown("""
     
     display: flex !important;
     justify-content: center !important; /* 7. CENTERS the Search/About buttons */
-    padding: 15px 0 !important; /* increased from 15px */
+    padding: 10px 0 !important; 
     
     align-items: center !important; /* Ensures text stays vertically centered */
     border-bottom: 1px solid #E0E0E0;
@@ -77,7 +77,7 @@ st.markdown("""
 
     div[role="radiogroup"] p {
         font-family: Arial, Helvetica, sans-serif !important;  /* <--- ADD THIS LINE */
-        font-size: 22px !important;
+        font-size: 18px !important;
         font-weight: 600 !important;
         color: #445550 !important; 
         cursor: pointer;
