@@ -291,7 +291,7 @@ Evan Powers: <a href="mailto:PNAnnotation@gmail.com">PNAnnotation@gmail.com</a>
 </div>
 
 <div style="margin-bottom: 15px;">
-<strong>UPS Branch</strong><br>
+<strong>UPS</strong><br>
 <span style="font-size: 0.9em; color: #555;">
 Suzanne Elsasser: <a href="mailto:suzanne_elsasser@hms.harvard.edu">suzanne_elsasser@hms.harvard.edu</a>
 </span><br>
