@@ -137,7 +137,7 @@ st.markdown("""
         border: 1px solid #4DD0E1;
         border-radius: 8px;
         padding: 20px;
-        height: 180px; /* Fixed height to keep them even */
+        min-height: 450px; /* CHANGED from height: 180px */
         color: #006064;
     }
     .info-title {
