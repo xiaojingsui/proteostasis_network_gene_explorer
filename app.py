@@ -329,4 +329,4 @@ with col_right:
     """, unsafe_allow_html=True)
 # Footer
 st.markdown("<br><br><hr>", unsafe_allow_html=True)
-st.caption("Data source: Human Proteostasis Network 4.1 - 2026-0127")
+st.caption("Data source: Human Proteostasis Network v4.1")
