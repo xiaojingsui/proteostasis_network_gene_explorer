@@ -137,7 +137,7 @@ st.markdown("""
         border: 1px solid #4DD0E1;
         border-radius: 8px;
         padding: 20px;
-        height: 220px; 
+        height: 240px; 
         color: #006064;
     }
     .info-title {
