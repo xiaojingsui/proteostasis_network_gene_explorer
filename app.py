@@ -49,14 +49,16 @@ st.markdown("""
     /* --- CUSTOM NAVBAR (STYLING THE RADIO BUTTON) --- */
     /* 1. Make the radio group a horizontal row with a white background and bottom border */
     div[role="radiogroup"] {
-        display: flex;
-        flex-direction: row;
-        width: 100%;
-        background-color: white;
-        padding: 15px 20px;
-        margin-top: -20px; /* Pull it up to the top */
-        border-bottom: 1px solid #E0E0E0;
-        gap: 25px; /* Spacing between items */
+    position: fixed !important;      /* 1. Sticks it to the screen */
+    top: 0 !important;               /* 2. Anchors to very top */
+    left: 0 !important;              /* 3. Anchors to left edge */
+    width: 100vw !important;         /* 4. Forces full screen width */
+    z-index: 99999 !important;       /* 5. Ensures it sits on top of everything */
+    
+    background-color: #E9F5F0;       /* 6. Sage green color from screenshot */
+    
+    display: flex !important;
+    justify-content: center !important; /* 7. CENTERS the Search/About buttons */
     }
 
     /* 2. Hide the actual radio bubbles/circles */
