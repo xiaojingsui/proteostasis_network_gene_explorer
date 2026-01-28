@@ -321,13 +321,27 @@ if selected_page == "Search":
                 
                 with col_download:
                     st.markdown('<div style="margin-top: 10px;"></div>', unsafe_allow_html=True)
-                    csv = results.to_csv(index=False).encode('utf-8')
+
+                    # Define the columns you want to export
+                    display_cols = [
+                        'UniProt ID', 'Gene ID', 'Gene Symbol', 'Branch', 
+                        'Class', 'Group', 'Type', 'Subtype', 
+                        'Interpro Domains'
+                    ]
+                    
+                    # Ensure we only select columns that actually exist in the dataframe to prevent errors
+                    valid_cols = [c for c in display_cols if c in results.columns]
+                    
+                    # Convert only the selected columns to CSV
+                    csv = results[valid_cols].to_csv(index=False).encode('utf-8')
+                    
                     st.download_button(
                         label="Download CSV",
                         data=csv,
                         file_name=f"search_results_{query}.csv",
                         mime="text/csv",
                     )
+                    
                 
                 # Link Formatting
                 results['UniProt ID'] = results['UniProt ID'].apply(
