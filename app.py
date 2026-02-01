@@ -236,37 +236,46 @@ st.markdown("""
     a:hover { text-decoration: underline; }
 
     /* ==========================================================================
-       FORCE PROPORTIONAL LAYOUT (Keep Columns Side-by-Side)
+       MOBILE REPAIR CODE (Paste this before </style>)
        ========================================================================== */
     @media only screen and (max-width: 768px) {
         
-        /* 1. Stop columns from wrapping/stacking */
-        div[data-testid="stHorizontalBlock"] {
-            flex-wrap: nowrap !important;
-            gap: 5px !important; /* Reduce gap between columns to save space */
+        /* 1. Fix the Top Overlap: Move the "ProteostasisConsortium" link to bottom-right */
+        .nav-external-link {
+            top: auto !important;
+            bottom: 20px !important;
+            right: 20px !important;
+            background-color: #D3E8E0 !important; 
+            box-shadow: 0px 4px 10px rgba(0,0,0,0.2);
+            z-index: 999999 !important;
         }
 
-        /* 2. Allow columns to shrink smaller than their content */
+        /* 2. Fix the Input Box: Make it full width on phone */
+        div[data-testid="stTextInput"] {
+            width: 95% !important;
+            min-width: 0px !important;
+        }
+
+        /* 3. Force Layout: Keep buttons side-by-side (Proportional) */
+        div[data-testid="stHorizontalBlock"] {
+            flex-wrap: nowrap !important;
+            gap: 5px !important;
+        }
+        
+        /* Allow columns to shrink */
         div[data-testid="column"] {
             min-width: 0px !important;
             width: auto !important;
             flex: 1 1 auto !important;
         }
 
-        /* 3. Make buttons smaller so they fit side-by-side */
-        div[data-testid="stButton"] button {
-            padding: 0.25rem 0.5rem !important;
-            font-size: 12px !important;
-            height: auto !important;
-            min-height: 0px !important;
-        }
-
-        /* 4. Optional: Zoom out the whole page slightly to fit more */
-        /* This makes it look more like "Desktop" on a phone */
-        .block-container {
-            zoom: 0.85; /* Scales everything down to 85% size */
+        /* 4. Fix Text Size: Prevent the big title from breaking layout */
+        .hero-title { 
+            font-size: 28px !important; 
+            line-height: 1.2 !important;
         }
     }
+
     </style>
     """, unsafe_allow_html=True)
 
