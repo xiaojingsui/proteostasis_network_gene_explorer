@@ -235,46 +235,7 @@ st.markdown("""
     a { color: #00838F !important; font-weight: bold; text-decoration: none; }
     a:hover { text-decoration: underline; }
 
-    /* ==========================================================================
-       MOBILE REPAIR CODE (Paste this before </style>)
-       ========================================================================== */
-    @media only screen and (max-width: 768px) {
-        
-        /* 1. Fix the Top Overlap: Move the "ProteostasisConsortium" link to bottom-right */
-        .nav-external-link {
-            top: auto !important;
-            bottom: 20px !important;
-            right: 20px !important;
-            background-color: #D3E8E0 !important; 
-            box-shadow: 0px 4px 10px rgba(0,0,0,0.2);
-            z-index: 999999 !important;
-        }
-
-        /* 2. Fix the Input Box: Make it full width on phone */
-        div[data-testid="stTextInput"] {
-            width: 95% !important;
-            min-width: 0px !important;
-        }
-
-        /* 3. Force Layout: Keep buttons side-by-side (Proportional) */
-        div[data-testid="stHorizontalBlock"] {
-            flex-wrap: nowrap !important;
-            gap: 5px !important;
-        }
-        
-        /* Allow columns to shrink */
-        div[data-testid="column"] {
-            min-width: 0px !important;
-            width: auto !important;
-            flex: 1 1 auto !important;
-        }
-
-        /* 4. Fix Text Size: Prevent the big title from breaking layout */
-        .hero-title { 
-            font-size: 28px !important; 
-            line-height: 1.2 !important;
-        }
-    }
+    
 
     </style>
     """, unsafe_allow_html=True)
