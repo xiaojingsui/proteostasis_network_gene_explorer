@@ -234,6 +234,39 @@ st.markdown("""
     
     a { color: #00838F !important; font-weight: bold; text-decoration: none; }
     a:hover { text-decoration: underline; }
+
+    /* ==========================================================================
+       FORCE PROPORTIONAL LAYOUT (Keep Columns Side-by-Side)
+       ========================================================================== */
+    @media only screen and (max-width: 768px) {
+        
+        /* 1. Stop columns from wrapping/stacking */
+        div[data-testid="stHorizontalBlock"] {
+            flex-wrap: nowrap !important;
+            gap: 5px !important; /* Reduce gap between columns to save space */
+        }
+
+        /* 2. Allow columns to shrink smaller than their content */
+        div[data-testid="column"] {
+            min-width: 0px !important;
+            width: auto !important;
+            flex: 1 1 auto !important;
+        }
+
+        /* 3. Make buttons smaller so they fit side-by-side */
+        div[data-testid="stButton"] button {
+            padding: 0.25rem 0.5rem !important;
+            font-size: 12px !important;
+            height: auto !important;
+            min-height: 0px !important;
+        }
+
+        /* 4. Optional: Zoom out the whole page slightly to fit more */
+        /* This makes it look more like "Desktop" on a phone */
+        .block-container {
+            zoom: 0.85; /* Scales everything down to 85% size */
+        }
+    }
     </style>
     """, unsafe_allow_html=True)
 
