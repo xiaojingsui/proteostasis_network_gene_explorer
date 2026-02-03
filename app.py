@@ -413,7 +413,13 @@ if selected_page == "Open Search":
                     unsafe_allow_html=True
                 )
             else:
-                st.error(f"No results found for '{query}'.")
+                # REVISED NO RESULTS NOTIFICATION
+                st.markdown(f"""
+                    <div style="background-color: #FFF8E1; padding: 20px; border-radius: 8px; color: #F57F17; border: 1px solid #FFE082; text-align: center; margin-top: 10px;">
+                        <span style="font-size: 16px; font-weight: bold;">No results found for '{query}'</span><br>
+                        <span style="font-size: 14px; color: #8D6E63;">Please try a different keyword, Gene Symbol, or UniProt ID.</span>
+                    </div>
+                """, unsafe_allow_html=True)
 
     # Footer Logic (Same as before)
     st.markdown("<br><br><hr>", unsafe_allow_html=True)
