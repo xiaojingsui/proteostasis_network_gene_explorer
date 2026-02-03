@@ -23,11 +23,56 @@ def load_data():
     try:
         df = pd.read_excel(file_path, sheet_name='MAIN')
         df = df.dropna(subset=['Gene Symbol', 'UniProt ID'])
+        # Fill NaN in hierarchy columns with empty strings to avoid dropdown errors
+        hierarchy_cols = ['Branch', 'Class', 'Group', 'Type', 'Subtype']
+        for col in hierarchy_cols:
+            if col in df.columns:
+                df[col] = df[col].fillna('')
         return df
     except Exception as e:
         return pd.DataFrame()
 
-# 3. GLOBAL CSS
+# 3. HELPER FUNCTIONS FOR LINKS
+def format_links(df_input):
+    """Applies HTML formatting to specific columns for display"""
+    df_copy = df_input.copy()
+    
+    # UniProt Link
+    if 'UniProt ID' in df_copy.columns:
+        df_copy['UniProt ID'] = df_copy['UniProt ID'].apply(
+            lambda x: f'<a href="https://www.uniprot.org/uniprotkb/{x}/entry" target="_blank">{x}</a>'
+        )
+    
+    # NCBI Gene ID Link
+    if 'Gene ID' in df_copy.columns:
+        def create_ncbi_link(val):
+            if pd.isna(val) or val == "": return ""
+            try:
+                clean_id = str(int(float(val)))
+                return f'<a href="https://www.ncbi.nlm.nih.gov/gene/{clean_id}" target="_blank">{clean_id}</a>'
+            except:
+                return f'<a href="https://www.ncbi.nlm.nih.gov/gene/?term={val}" target="_blank">{val}</a>'
+        df_copy['Gene ID'] = df_copy['Gene ID'].apply(create_ncbi_link)
+
+    # Interpro Links
+    if 'Interpro Domains' in df_copy.columns:
+        def create_interpro_links(val):
+            if pd.isna(val) or str(val).strip() == "" or "(none noted)" in str(val):
+                return val
+            domains = [d.strip() for d in str(val).split(';')]
+            linked_domains = []
+            for d in domains:
+                if d.startswith('IPR'):
+                    url = f"https://www.ebi.ac.uk/interpro/entry/InterPro/{d}"
+                    linked_domains.append(f'<a href="{url}" target="_blank">{d}</a>')
+                else:
+                    linked_domains.append(d)
+            return ", ".join(linked_domains)
+        df_copy['Interpro Domains'] = df_copy['Interpro Domains'].apply(create_interpro_links)
+        
+    return df_copy
+
+# 4. GLOBAL CSS
 st.markdown("""
     <style>
     /* --- GLOBAL FONTS & MAIN CONTAINER --- */
@@ -48,36 +93,33 @@ st.markdown("""
     footer { visibility: hidden; }
 
     /* --- CUSTOM NAVBAR (STYLING THE RADIO BUTTON) --- */
-    /* 1. Make the radio group a horizontal row with a white background and bottom border */
     div[role="radiogroup"] {
-    position: fixed !important;      /* 1. Sticks it to the screen */
-    top: 0 !important;               /* 2. Anchors to very top */
-    left: 0 !important;              /* 3. Anchors to left edge */
-    width: 100vw !important;         /* 4. Forces full screen width */
-    z-index: 99999 !important;       /* 5. Ensures it sits on top of everything */
+    position: fixed !important;      
+    top: 0 !important;               
+    left: 0 !important;              
+    width: 100vw !important;         
+    z-index: 99999 !important;       
     
-    background-color: #FFFFFF;       /* 6. Sage green color from screenshot */
+    background-color: #FFFFFF;       
     
     display: flex !important;
-    justify-content: center !important; /* 7. CENTERS the Search/About buttons */
+    justify-content: center !important; 
     padding: 10px 0 !important; 
     
-    align-items: center !important; /* Ensures text stays vertically centered */
+    align-items: center !important; 
     border-bottom: 1px solid #E0E0E0;
     }
 
-    /* 2. Hide the actual radio bubbles/circles */
     div[role="radiogroup"] label > div:first-child {
         display: none !important;
     }
 
-    /* 3. Style the text labels to look like navbar links */
     div[role="radiogroup"] label {
         margin-right: 0px !important;
     }
 
     div[role="radiogroup"] p {
-        font-family: Arial, Helvetica, sans-serif !important;  /* <--- ADD THIS LINE */
+        font-family: Arial, Helvetica, sans-serif !important;  
         font-size: 18px !important;
         font-weight: 600 !important;
         color: #445550 !important; 
@@ -92,34 +134,22 @@ st.markdown("""
         color: #006064 !important;
     }
 
-
-    
-    /* --- EXTERNAL LINK STYLING (REVISED) --- */
+    /* --- EXTERNAL LINK STYLING --- */
     .nav-external-link {
         position: fixed !important;
-        
-        /* CHANGE 1: Set top to 10px to match navbar padding */
-        top: 10px !important;       
-        
-        right: 40px !important;     
+        top: 10px !important;        
+        right: 40px !important;      
         z-index: 100000 !important; 
-        
         font-family: Arial, Helvetica, sans-serif !important;
-        
-        /* CHANGE 2: Increase size to 18px to match nav buttons */
         font-size: 18px !important; 
-        
         font-weight: 600 !important;
         color: #445550 !important;
         text-decoration: none !important;
-        
         display: flex !important;
         align-items: center !important;
-        gap: 8px !important;       
-        
-        /* Keeps the pill shape consistent */
+        gap: 8px !important;        
         padding: 8px 15px !important;
-        border-radius: 20px !important; /* Added base border-radius here too */
+        border-radius: 20px !important; 
         transition: all 0.3s ease !important;
     }
 
@@ -129,14 +159,11 @@ st.markdown("""
     }
     
     .nav-external-link svg {
-        width: 20px !important;   /* Slightly larger icon to match 18px text */
+        width: 20px !important;   
         height: 20px !important;
         fill: currentColor;
-        margin-bottom: -2px;      /* Micro-adjustment for visual alignment */
+        margin-bottom: -2px;      
     }
-
-
-
 
     /* --- TABLE & GENERAL STYLING --- */
     td { 
@@ -176,31 +203,25 @@ st.markdown("""
 
     /* Input Box Styling */
     div[data-testid="stTextInput"] {
-        width: 50% !important;      /* 50% = Half screen width. 100% = Full width. */
+        width: 50% !important;      
         min-width: 300px;
         margin: 0 auto -15px !important;
     }
 
     div[data-testid="stTextInput"] > div {
         height: auto !important;
-        min-height: 75px !important; /* Must be larger than your input height (approx 68px) */
+        min-height: 75px !important; 
     }
 
     div[data-testid="stTextInput"] > div > div > input {
         font-family: Arial, Helvetica, sans-serif !important;
         border-radius: 12px !important;
-        
-        /* Box sizing prevents math errors with padding */
         box-sizing: border-box !important; 
-        
         padding: 22px 25px !important;
         font-size: 15px !important;
-        
-        /* Your uniform border */
         border: 2px solid #4DD0E1 !important; 
-        
         background-color: white !important;
-        color: #006064 !important; /* Optional: Makes typed text match your theme */
+        color: #006064 !important; 
     }
 
     /* Results Table Styling */
@@ -235,8 +256,6 @@ st.markdown("""
     a { color: #00838F !important; font-weight: bold; text-decoration: none; }
     a:hover { text-decoration: underline; }
 
-    
-
     </style>
     """, unsafe_allow_html=True)
 
@@ -253,11 +272,8 @@ st.markdown("""
 
 
 # --- TOP NAVBAR (Using st.radio styled with CSS) ---
-# We map the labels with icons to internal values
-NAV_OPTIONS = ["Search","About"]
+NAV_OPTIONS = ["Search", "Guided Search", "About"]
 
-# Place the radio button at the very top. 
-# The CSS above hides the circles and makes it look like a navbar.
 selected_nav = st.radio(
     "Navigation", 
     NAV_OPTIONS, 
@@ -266,15 +282,11 @@ selected_nav = st.radio(
     key="nav_radio"
 )
 
-# Logic to handle page selection based on the label with icon
-if "Search" in selected_nav:
-    selected_page = "Search"
-else:
-    selected_page = "About"
+selected_page = selected_nav
 
 
 # ==========================================
-# PAGE 1: SEARCH
+# PAGE 1: SEARCH (KEYWORD)
 # ==========================================
 if selected_page == "Search":
 
@@ -317,19 +329,8 @@ if selected_page == "Search":
             clean_query = query.strip().lower()
 
             # --- SEARCH STRATEGY DEFINITION ---
-            
-            # Group 1: Standard Columns 
-            # (Cell must match query EXACTLY. e.g. "VCP" == "VCP")
-            exact_cols = [
-                'Gene Symbol', 'UniProt ID', 'Branch', 
-                'Class', 'Group', 'Type', 'Subtype'
-            ]
-            
-            # Group 2: List Columns 
-            # (Cell contains a list "A, B, C". Query "A" matches if it equals one of the items)
+            exact_cols = ['Gene Symbol', 'UniProt ID', 'Branch', 'Class', 'Group', 'Type', 'Subtype']
             list_cols = ['Interpro Domains']
-
-            # --- EXECUTE SEARCH ---
 
             # 1. Check Exact Columns
             valid_exact = [c for c in exact_cols if c in df.columns]
@@ -346,21 +347,16 @@ if selected_page == "Search":
             if valid_list:
                 def list_contains_exact(cell_val, q_val):
                     if pd.isna(cell_val): return False
-                    # Normalize delimiters: replace semicolons with commas, then split
-                    # This handles "ID1, ID2" AND "ID1; ID2" formats
                     items = [item.strip().lower() for item in str(cell_val).replace(';', ',').split(',')]
                     return q_val in items
 
-                # Apply the check row by row
                 mask_list = df[valid_list].apply(
                     lambda col: col.apply(lambda cell: list_contains_exact(cell, clean_query))
                 ).any(axis=1)
 
-            # 3. Combine Results (Match found in Exact OR List columns)
+            # 3. Combine Results
             final_mask = mask_exact | mask_list
             results = df[final_mask].copy()
-            
-            
             
             if not results.empty:
                 col_results, col_download = st.columns([7, 1])
@@ -369,18 +365,12 @@ if selected_page == "Search":
                 
                 with col_download:
                     st.markdown('<div style="margin-top: 10px;"></div>', unsafe_allow_html=True)
-
-                    # Define the columns you want to export
                     display_cols = [
                         'UniProt ID', 'Gene ID', 'Gene Symbol', 'Branch', 
                         'Class', 'Group', 'Type', 'Subtype', 
                         'Interpro Domains'
                     ]
-                    
-                    # Ensure we only select columns that actually exist in the dataframe to prevent errors
                     valid_cols = [c for c in display_cols if c in results.columns]
-                    
-                    # Convert only the selected columns to CSV
                     csv = results[valid_cols].to_csv(index=False).encode('utf-8')
                     
                     st.download_button(
@@ -389,44 +379,11 @@ if selected_page == "Search":
                         file_name=f"search_results_{query}.csv",
                         mime="text/csv",
                     )
-                    
                 
-                # Link Formatting
-                results['UniProt ID'] = results['UniProt ID'].apply(
-                    lambda x: f'<a href="https://www.uniprot.org/uniprotkb/{x}/entry" target="_blank">{x}</a>'
-                )
+                # Use Helper to format links
+                results = format_links(results)
                 
-                if 'Gene ID' in results.columns:
-                    def create_ncbi_link(val):
-                        if pd.isna(val) or val == "": return ""
-                        try:
-                            clean_id = str(int(float(val)))
-                            return f'<a href="https://www.ncbi.nlm.nih.gov/gene/{clean_id}" target="_blank">{clean_id}</a>'
-                        except:
-                            return f'<a href="https://www.ncbi.nlm.nih.gov/gene/?term={val}" target="_blank">{val}</a>'
-                    results['Gene ID'] = results['Gene ID'].apply(create_ncbi_link)
-
-                def create_interpro_links(val):
-                    if pd.isna(val) or str(val).strip() == "" or "(none noted)" in str(val):
-                        return val
-                    domains = [d.strip() for d in str(val).split(';')]
-                    linked_domains = []
-                    for d in domains:
-                        if d.startswith('IPR'):
-                            url = f"https://www.ebi.ac.uk/interpro/entry/InterPro/{d}"
-                            linked_domains.append(f'<a href="{url}" target="_blank">{d}</a>')
-                        else:
-                            linked_domains.append(d)
-                    return ", ".join(linked_domains)
-
-                if 'Interpro Domains' in results.columns:
-                    results['Interpro Domains'] = results['Interpro Domains'].apply(create_interpro_links)
-                
-                display_cols = [
-                    'UniProt ID', 'Gene ID', 'Gene Symbol', 'Branch', 
-                    'Class', 'Group', 'Type', 'Subtype', 
-                    'Interpro Domains'
-                ]
+                display_cols = ['UniProt ID', 'Gene ID', 'Gene Symbol', 'Branch', 'Class', 'Group', 'Type', 'Subtype', 'Interpro Domains']
                 available_cols = [c for c in display_cols if c in results.columns]
                 
                 st.write(
@@ -436,10 +393,9 @@ if selected_page == "Search":
             else:
                 st.error(f"No results found for '{query}'.")
 
-    # Footer/Contact
+    # Footer Logic (Same as before)
     st.markdown("<br><br><hr>", unsafe_allow_html=True)
     col_left, col_right = st.columns(2)
-
     with col_left:
         st.markdown('<p class="section-header">Contact</p>', unsafe_allow_html=True)
         st.markdown("""
@@ -480,16 +436,139 @@ if selected_page == "Search":
 
 
 # ==========================================
-# PAGE 2: ABOUT
+# PAGE 2: GUIDED SEARCH
 # ==========================================
+elif selected_page == "Guided Search":
+    df = load_data()
+
+    # Hero Section
+    st.markdown('<div class="hero-section">', unsafe_allow_html=True)
+    st.markdown('<p class="hero-title">Guided Search</p>', unsafe_allow_html=True)
+    st.markdown('<p class="hero-subtitle">Filter by hierarchy: Branch &rarr; Class &rarr; Group &rarr; Type &rarr; Subtype</p>', unsafe_allow_html=True)
+    st.markdown('</div>', unsafe_allow_html=True)
+
+    if df.empty:
+        st.error("Database could not be loaded.")
+    else:
+        # --- HIERARCHICAL DROPDOWNS ---
+        # Container for filters
+        with st.container():
+            # Use styling to make dropdowns look cleaner
+            st.markdown("""<style>div[data-testid="stSelectbox"] > div > div {border-color: #4DD0E1 !important;}</style>""", unsafe_allow_html=True)
+            
+            # Row 1: Branch, Class, Group
+            c1, c2, c3 = st.columns(3)
+            
+            # 1. Branch Selection
+            branches = sorted(df['Branch'].unique().tolist())
+            # Remove empty strings if present in the unique list (optional, but good for UI)
+            branches = [x for x in branches if x]
+            sel_branch = c1.selectbox("1. Select Branch", [""] + branches)
+
+            # Logic: Filter DF based on Branch
+            df_lvl1 = df[df['Branch'] == sel_branch] if sel_branch else df
+
+            # 2. Class Selection (Depends on Branch)
+            if sel_branch:
+                classes = sorted(df_lvl1['Class'].unique().tolist())
+                classes = [x for x in classes if x] # Clean empty
+                sel_class = c2.selectbox("2. Select Class", [""] + classes)
+            else:
+                sel_class = c2.selectbox("2. Select Class", [], disabled=True, placeholder="Select Branch first")
+
+            # Logic: Filter DF based on Class
+            df_lvl2 = df_lvl1[df_lvl1['Class'] == sel_class] if (sel_branch and sel_class) else df_lvl1
+
+            # 3. Group Selection (Depends on Class)
+            if sel_branch and sel_class:
+                groups = sorted(df_lvl2['Group'].unique().tolist())
+                groups = [x for x in groups if x]
+                sel_group = c3.selectbox("3. Select Group (Optional)", [""] + groups)
+            else:
+                sel_group = c3.selectbox("3. Select Group", [], disabled=True, placeholder="Select Class first")
+
+            # Logic: Filter DF based on Group
+            df_lvl3 = df_lvl2[df_lvl2['Group'] == sel_group] if (sel_branch and sel_class and sel_group) else df_lvl2
+
+            # Row 2: Type, Subtype
+            c4, c5 = st.columns(2)
+
+            # 4. Type Selection (Depends on Group)
+            # Note: User said "if they want to define subtype, they need to define branch class, group type"
+            if sel_branch and sel_class and sel_group:
+                types = sorted(df_lvl3['Type'].unique().tolist())
+                types = [x for x in types if x]
+                sel_type = c4.selectbox("4. Select Type (Optional)", [""] + types)
+            else:
+                sel_type = c4.selectbox("4. Select Type", [], disabled=True, placeholder="Select Group first")
+
+            # Logic: Filter DF based on Type
+            df_lvl4 = df_lvl3[df_lvl3['Type'] == sel_type] if (sel_branch and sel_class and sel_group and sel_type) else df_lvl3
+
+            # 5. Subtype Selection (Depends on Type)
+            if sel_branch and sel_class and sel_group and sel_type:
+                subtypes = sorted(df_lvl4['Subtype'].unique().tolist())
+                subtypes = [x for x in subtypes if x]
+                sel_subtype = c5.selectbox("5. Select Subtype (Optional)", [""] + subtypes)
+            else:
+                sel_subtype = c5.selectbox("5. Select Subtype", [], disabled=True, placeholder="Select Type first")
+            
+            # Final Filter Logic
+            final_df = df_lvl4[df_lvl4['Subtype'] == sel_subtype] if (sel_branch and sel_class and sel_group and sel_type and sel_subtype) else df_lvl4
+
+        # --- DISPLAY RESULTS ---
+        st.divider()
+        
+        # Only show results if at least Branch is selected, otherwise it's too much data to show cleanly
+        if sel_branch:
+            col_res_header, col_res_dl = st.columns([7, 1])
+            with col_res_header:
+                st.markdown(f"#### Found {len(final_df)} entries")
+                breadcrumb = f"{sel_branch}"
+                if sel_class: breadcrumb += f" > {sel_class}"
+                if sel_group: breadcrumb += f" > {sel_group}"
+                if sel_type: breadcrumb += f" > {sel_type}"
+                if sel_subtype: breadcrumb += f" > {sel_subtype}"
+                st.caption(f"Filter: {breadcrumb}")
+
+            with col_res_dl:
+                st.markdown('<div style="margin-top: 10px;"></div>', unsafe_allow_html=True)
+                display_cols = ['UniProt ID', 'Gene ID', 'Gene Symbol', 'Branch', 'Class', 'Group', 'Type', 'Subtype', 'Interpro Domains']
+                valid_cols = [c for c in display_cols if c in final_df.columns]
+                csv = final_df[valid_cols].to_csv(index=False).encode('utf-8')
+                st.download_button(
+                    label="Download CSV",
+                    data=csv,
+                    file_name="guided_search_results.csv",
+                    mime="text/csv",
+                )
+
+            # Apply Link Formatting using Helper Function
+            display_df = format_links(final_df)
+            
+            available_cols = [c for c in display_cols if c in display_df.columns]
+            
+            st.write(
+                display_df[available_cols].to_html(escape=False, index=False, border=0, classes='result-container'), 
+                unsafe_allow_html=True
+            )
+        else:
+            st.info("Please select a Branch to begin the guided search.")
+            # Optional: Show a preview of Branches stats or generic info here
+
+    # Footer
+    st.markdown("<br><br><hr>", unsafe_allow_html=True)
+    st.caption("Data source: Human Proteostasis Network v4.1")
 
 
+# ==========================================
+# PAGE 3: ABOUT
+# ==========================================
 elif selected_page == "About":
     st.markdown('<div class="hero-section">', unsafe_allow_html=True)
     st.markdown('<p class="hero-title">About the Project</p>', unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
     
-    # MAIN CONTENT START
     st.markdown("""
 <style>
 .about-container {
@@ -566,6 +645,9 @@ These are given multiple entries in our list to reflect each separate role.
 <ul class="about-list">
 <li>
 <span class="term-highlight">Search flexibly:</span> Query by <b>Gene Symbol</b> (e.g., HSPA1A), <b>UniProt ID</b>, or functional keywords (e.g., “Chaperone”), with direct links to UniProt, NCBI, and InterPro databases.
+</li>
+<li>
+<span class="term-highlight">Guided Search:</span> Explore the network hierarchically by filtering Branch &rarr; Class &rarr; Group, etc.
 </li>
 <li>
 <span class="term-highlight">View annotations:</span> Explore detailed classifications including Branch, Class, Group, Type, Subtype, and Domains.
