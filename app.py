@@ -265,8 +265,8 @@ st.markdown("""
 
     /* HOVER STATE - When mouse moves over the button */
     div.stButton > button:hover {
-        #background-color: #E0F7FA !important; /* Light Teal background */
-        #color: #004D40 !important;            /* Darker Teal text */
+        background-color: #FFFFFF !important; /* Light Teal background */
+        color: #004D40 !important;            /* Darker Teal text */
         border-color: #006064 !important;     /* Darker border */
     }
 
