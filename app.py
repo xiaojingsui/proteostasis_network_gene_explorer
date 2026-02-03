@@ -401,7 +401,7 @@ if selected_page == "Search":
         <div class="info-box" style="border-left: 5px solid #00838F;">
             <div style="margin-bottom: 15px;">
                 <strong>ALP, Chaperones, Trafficking & Organelle-specific</strong><br>
-                <span style="font-size: 0.9em; color: #555;">Evan Powers: <a href="mailto:PNAnnotation@gmail.com">PNAnnotation@gmail.com</a></span>
+                <span style="font-size: 0.9em; color: #555;">Evan Powers: <a href="mailto:epowers@scripps.edu">epowers@scripps.edu</a></span>
             </div>
             <div style="margin-bottom: 15px;">
                 <strong>UPS</strong><br>
