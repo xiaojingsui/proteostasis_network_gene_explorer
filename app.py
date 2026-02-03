@@ -95,12 +95,12 @@ st.markdown("""
     /* --- CUSTOM NAVBAR (STYLING THE RADIO BUTTON) --- */
     div[role="radiogroup"] {
     position: fixed !important;      
-    top: 0 !important;               
-    left: 0 !important;              
+    top: 0 !important;                
+    left: 0 !important;               
     width: 100vw !important;         
-    z-index: 99999 !important;       
+    z-index: 99999 !important;        
     
-    background-color: #FFFFFF;       
+    background-color: #FFFFFF;        
     
     display: flex !important;
     justify-content: center !important; 
@@ -271,8 +271,8 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 
-# --- TOP NAVBAR (Using st.radio styled with CSS) ---
-NAV_OPTIONS = ["Search", "Guided Search", "About"]
+# --- TOP NAVBAR (Added "Guides" to options) ---
+NAV_OPTIONS = ["Search", "Guided Search", "About", "Guides"]
 
 selected_nav = st.radio(
     "Navigation", 
@@ -640,23 +640,6 @@ Thus, not every component has Type or Subtype annotations. Also, some components
 These are given multiple entries in our list to reflect each separate role.
 </p>
 
-<div class="about-header">How to use this interface</div>
-<p>The interface is open for immediate use and allows you to:</p>
-<ul class="about-list">
-<li>
-<span class="term-highlight">Search flexibly:</span> Query by <b>Gene Symbol</b> (e.g., HSPA1A), <b>UniProt ID</b>, or functional keywords (e.g., “Chaperone”), with direct links to UniProt, NCBI, and InterPro databases.
-</li>
-<li>
-<span class="term-highlight">Guided Search:</span> Explore the network hierarchically by filtering Branch &rarr; Class &rarr; Group, etc.
-</li>
-<li>
-<span class="term-highlight">View annotations:</span> Explore detailed classifications including Branch, Class, Group, Type, Subtype, and Domains.
-</li>
-<li>
-<span class="term-highlight">Export Data:</span> Use the <b>“Download CSV”</b> button to export your search results for offline analysis.
-</li>
-</ul>
-
 <div class="about-header">Indexing values for this catalog</div>
 <p>
 Individual entries in the <b>MAIN</b> tab are indexed by <span class="red-highlight">Gene ID</span>, 
@@ -680,6 +663,68 @@ Explanatory details about the fine structure of the annotation will be published
 </ul>
 </div>
 """, unsafe_allow_html=True)
+
+    st.markdown("<br><br><hr>", unsafe_allow_html=True)
+    st.caption("Data source: Human Proteostasis Network v4.1")
+
+# ==========================================
+# PAGE 4: GUIDES (NEW)
+# ==========================================
+elif selected_page == "Guides":
+    st.markdown('<div class="hero-section">', unsafe_allow_html=True)
+    st.markdown('<p class="hero-title">User Guides</p>', unsafe_allow_html=True)
+    st.markdown('</div>', unsafe_allow_html=True)
+
+    st.markdown("""
+    <style>
+    .guide-container {
+        max-width: 900px;
+        margin: 0 auto;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 16px;
+        line-height: 1.6;
+        color: #212121;
+    }
+    .guide-header {
+        font-size: 20px;
+        font-weight: bold;
+        color: #006064;
+        margin-top: 30px;
+        margin-bottom: 10px;
+        border-bottom: 2px solid #E0F7FA;
+        padding-bottom: 5px;
+    }
+    .term-highlight {
+        font-weight: bold;
+        color: #00838F;
+    }
+    .guide-list {
+        padding-left: 20px;
+        margin-bottom: 15px;
+    }
+    .guide-list li {
+        margin-bottom: 12px;
+    }
+    </style>
+    <div class="guide-container">
+        <div class="guide-header">How to use this interface</div>
+        <p>The interface is open for immediate use and allows you to:</p>
+        <ul class="guide-list">
+            <li>
+                <span class="term-highlight">Search flexibly:</span> Query by <b>Gene Symbol</b> (e.g., HSPA1A), <b>UniProt ID</b>, or functional keywords (e.g., “Chaperone”), with direct links to UniProt, NCBI, and InterPro databases.
+            </li>
+            <li>
+                <span class="term-highlight">Guided Search:</span> Explore the network hierarchically by filtering Branch &rarr; Class &rarr; Group, etc.
+            </li>
+            <li>
+                <span class="term-highlight">View annotations:</span> Explore detailed classifications including Branch, Class, Group, Type, Subtype, and Domains.
+            </li>
+            <li>
+                <span class="term-highlight">Export Data:</span> Use the <b>“Download CSV”</b> button to export your search results for offline analysis.
+            </li>
+        </ul>
+    </div>
+    """, unsafe_allow_html=True)
 
     st.markdown("<br><br><hr>", unsafe_allow_html=True)
     st.caption("Data source: Human Proteostasis Network v4.1")
