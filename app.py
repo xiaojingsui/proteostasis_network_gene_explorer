@@ -321,16 +321,18 @@ if selected_page == "Search":
             # 2. Define which columns to search strictly
             target_cols = [
                 'Gene Symbol', 'UniProt ID', 'Branch', 
-                'Class', 'Group', 'Type', 'Subtype'
+                'Class', 'Group', 'Type', 'Subtype', 
+                'Interpro Domains'
             ]
             valid_cols = [c for c in target_cols if c in df.columns]
 
             # 3. Apply Strict Equality Logic (== instead of .contains)
             # This returns True only if the ENTIRE cell matches the query exactly.
             # e.g., "VCP accessories" == "VCP" -> False
-            mask = df[valid_cols].apply(
-                lambda col: col.astype(str).str.strip().str.lower() == clean_query
-            ).any(axis=1)
+            match_matrix = df[valid_cols].astype(str).apply(
+                lambda x: x.str.strip().str.lower() == clean_query
+            )
+            mask = match_matrix.any(axis=1)
 
             
 
