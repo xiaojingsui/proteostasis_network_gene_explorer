@@ -225,6 +225,13 @@ st.markdown("""
         color: #006064 !important; 
     }
 
+    /* Fix: Target the focused state to remove red outline/shadow */
+    div[data-testid="stTextInput"] > div > div > input:focus {
+        border: 2px solid #4DD0E1 !important; /* Match your teal color */
+        outline: none !important;             /* Remove browser outline */
+        box-shadow: none !important;          /* Remove Streamlit default glow */
+    }
+
     div[data-testid="InputInstructions"] {
         display: none !important;
     }
