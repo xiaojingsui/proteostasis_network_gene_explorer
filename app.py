@@ -262,6 +262,36 @@ st.markdown("""
         border-color: #4DD0E1 !important;
     }
 
+
+    /* --- BUTTON STYLING (Fix for HSPA1A / Chip buttons) --- */
+    div.stButton > button {
+        background-color: #FFFFFF !important;
+        color: #006064 !important;
+        border: 1px solid #4DD0E1 !important;
+        border-radius: 20px !important; /* Makes them look like chips */
+        padding: 5px 20px !important;
+        font-weight: 600 !important;
+        transition: all 0.3s ease !important;
+    }
+
+    /* HOVER STATE - When mouse moves over the button */
+    div.stButton > button:hover {
+        background-color: #E0F7FA !important; /* Light Teal background */
+        color: #004D40 !important;            /* Darker Teal text */
+        border-color: #006064 !important;     /* Darker border */
+    }
+
+    /* FOCUS/ACTIVE STATE - Removes the default Streamlit red/orange outline */
+    div.stButton > button:focus {
+        box-shadow: none !important;
+        outline: none !important;
+        border-color: #006064 !important;
+    }
+    div.stButton > button:active {
+        background-color: #B2EBF2 !important;
+    }
+    
+
     /* Results Table Styling */
     .result-container {
         font-family: Arial, Helvetica, sans-serif !important;
