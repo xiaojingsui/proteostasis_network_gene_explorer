@@ -413,11 +413,22 @@ if selected_page == "Open Search":
                     unsafe_allow_html=True
                 )
             else:
-                # REVISED NO RESULTS NOTIFICATION
+                # REVISED NO RESULTS NOTIFICATION (White Background, Smaller, Centered)
                 st.markdown(f"""
-                    <div style="background-color: #FFF8E1; padding: 20px; border-radius: 8px; color: #F57F17; border: 1px solid #FFE082; text-align: center; margin-top: 10px;">
-                        <span style="font-size: 24px; font-weight: bold;">No results found</span>
-                        
+                    <div style="
+                        background-color: #FFFFFF;
+                        padding: 20px;
+                        border-radius: 8px;
+                        color: #E65100;
+                        border: 1px solid #FFE082;
+                        text-align: center;
+                        margin: 20px auto; 
+                        width: 33%;
+                        min-width: 300px;
+                        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+                    ">
+                        <span style="font-size: 16px; font-weight: bold;">No results found for '{query}'</span><br>
+                        <span style="font-size: 14px; color: #8D6E63;">Please try a different keyword, Gene Symbol, or UniProt ID.</span>
                     </div>
                 """, unsafe_allow_html=True)
 
