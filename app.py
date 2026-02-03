@@ -260,7 +260,7 @@ st.markdown("""
     /* Style the main box of the selectbox */
     div[data-testid="stSelectbox"] > div > div {
         border-color: #4DD0E1 !important;
-        border-width: 4px !important;
+        border-width: 2px !important;
     }
 
 
