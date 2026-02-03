@@ -254,7 +254,7 @@ st.markdown("""
 
 # --- TOP NAVBAR (Using st.radio styled with CSS) ---
 # We map the labels with icons to internal values
-NAV_OPTIONS = ["Search","Guided Search", "About", "Guides"]
+NAV_OPTIONS = ["Search","About"]
 
 # Place the radio button at the very top. 
 # The CSS above hides the circles and makes it look like a navbar.
