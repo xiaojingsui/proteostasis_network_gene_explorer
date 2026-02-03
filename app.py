@@ -210,29 +210,19 @@ st.markdown("""
         min-width: 300px;
         margin: 0 auto -15px !important;
     }
-    
-    /* 1. Remove the standard border and background box */
     div[data-testid="stTextInput"] > div {
-        border: none !important;
-        background-color: transparent !important;
-        box-shadow: none !important; 
+        height: auto !important;
+        min-height: 75px !important; 
     }
-
-    /* 2. Style the actual input text area */
     div[data-testid="stTextInput"] > div > div > input {
         font-family: Arial, Helvetica, sans-serif !important;
-        font-size: 18px !important;     
+        border-radius: 12px !important;
+        box-sizing: border-box !important; 
+        padding: 22px 25px !important;
+        font-size: 15px !important;
+        border: 2px solid #4DD0E1 !important; 
+        background-color: white !important;
         color: #006064 !important; 
-        background-color: transparent !important; /* Removes the white background */
-        border: none !important;        
-        padding: 10px 0px !important;   
-        border-bottom: 2px solid #E0F7FA !important; /* Keep a subtle line for guidance */
-    }
-
-    /* 3. CRITICAL: HIDE the native 'Press Enter' overlay 
-       This removes the awkward floating text AND the white box behind it */
-    div[data-testid="InputInstructions"] {
-        display: none !important;
     }
 
     /* Selectboxes (Dropdowns) - Force Arial on everything */
