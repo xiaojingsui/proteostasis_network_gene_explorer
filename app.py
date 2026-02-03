@@ -227,11 +227,7 @@ st.markdown("""
         color: #006064 !important; 
     }
 
-    div[data-testid="stTextInput"] > div > div > input:focus {
-        border: 2px solid #4DD0E1 !important; /* Force teal border on click */
-        box-shadow: none !important;          /* Remove the red glow */
-        outline: none !important;
-    }
+    
 
     /* Selectboxes (Dropdowns) - Force Arial on everything */
     div[data-testid="stSelectbox"] * {
