@@ -217,7 +217,7 @@ st.markdown("""
     div[data-testid="stTextInput"] > div > div {
         align-items: center !important; /* Centers the 'Press Enter' text vertically */
     }
-    
+
     div[data-testid="stTextInput"] > div > div > input {
         font-family: Arial, Helvetica, sans-serif !important;
         border-radius: 12px !important;
@@ -227,6 +227,12 @@ st.markdown("""
         border: 2px solid #4DD0E1 !important; 
         background-color: white !important;
         color: #006064 !important; 
+    }
+
+    div[data-testid="stTextInput"] > div > div > input:focus {
+        border: 2px solid #4DD0E1 !important; /* Force teal border on click */
+        box-shadow: none !important;          /* Remove the red glow */
+        outline: none !important;
     }
 
     /* Selectboxes (Dropdowns) - Force Arial on everything */
