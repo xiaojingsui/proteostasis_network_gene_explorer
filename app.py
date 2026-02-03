@@ -93,7 +93,7 @@ st.markdown("""
     }
 
 
-    /* --- EXTERNAL LINK STYLING (The New "Laboratory" Link) --- */
+    
     /* --- EXTERNAL LINK STYLING (REVISED) --- */
     .nav-external-link {
         position: fixed !important;
@@ -254,7 +254,7 @@ st.markdown("""
 
 # --- TOP NAVBAR (Using st.radio styled with CSS) ---
 # We map the labels with icons to internal values
-NAV_OPTIONS = ["🔍 Search", "ℹ️ About"]
+NAV_OPTIONS = ["Search","Guided Search", "About", "Guides"]
 
 # Place the radio button at the very top. 
 # The CSS above hides the circles and makes it look like a navbar.
