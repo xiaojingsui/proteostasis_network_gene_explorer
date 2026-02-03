@@ -314,8 +314,36 @@ if selected_page == "Search":
         if df.empty:
              st.error("Database could not be loaded. Please check the source file.")
         else:
-            mask = df.apply(lambda row: row.astype(str).str.contains(query, case=False).any(), axis=1)
+            # 1. Define the specific columns to search
+            target_cols = [
+                'Gene Symbol', 'UniProt ID', 'Branch', 
+                'Class', 'Group', 'Type', 'Subtype', 
+                'Interpro Domains'
+            ]
+            
+            # Ensure we only check columns that actually exist in your dataframe
+            valid_cols = [c for c in target_cols if c in df.columns]
+            
+            # 2. Standard Exact Match Logic (Case-Insensitive)
+            # Checks if the cell content is exactly equal to the query
+            clean_query = query.strip().lower()
+            
+            mask = df[valid_cols].apply(
+                lambda col: col.astype(str).str.strip().str.lower() == clean_query
+            ).any(axis=1)
+
+            # 3. Special Logic for 'Interpro Domains' (List matching)
+            # Since domains are often lists (e.g., "IPR1; IPR2"), a strict "==" fails 
+            # if you search for just "IPR1". This fixes that.
+            if 'Interpro Domains' in df.columns:
+                domain_mask = df['Interpro Domains'].astype(str).apply(
+                    lambda x: clean_query in [d.strip().lower() for d in x.split(';')]
+                )
+                # Combine the standard exact match with the domain list match
+                mask = mask | domain_mask
+
             results = df[mask].copy()
+            
             
             if not results.empty:
                 col_results, col_download = st.columns([7, 1])
