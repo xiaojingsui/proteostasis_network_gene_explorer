@@ -225,11 +225,16 @@ st.markdown("""
         color: #006064 !important; 
     }
 
-    /* Fix: Target the focused state to remove red outline/shadow */
-    div[data-testid="stTextInput"] > div > div > input:focus {
-        border: 2px solid #4DD0E1 !important; /* Match your teal color */
-        outline: none !important;             /* Remove browser outline */
-        box-shadow: none !important;          /* Remove Streamlit default glow */
+    /* Fix: Remove the default Streamlit border/shadow from the container wrapper */
+    div[data-testid="stTextInput"] > div > div {
+        border: none !important;
+        box-shadow: none !important;
+    }
+
+    /* Fix: Prevent the container from showing the red outline when you click inside */
+    div[data-testid="stTextInput"] > div > div:focus-within {
+        border: none !important;
+        box-shadow: none !important;
     }
 
     div[data-testid="InputInstructions"] {
