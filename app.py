@@ -214,8 +214,6 @@ st.markdown("""
         height: auto !important;
         min-height: 75px !important; 
     }
-    
-
     div[data-testid="stTextInput"] > div > div > input {
         font-family: Arial, Helvetica, sans-serif !important;
         border-radius: 12px !important;
@@ -226,8 +224,6 @@ st.markdown("""
         background-color: white !important;
         color: #006064 !important; 
     }
-
-    
 
     /* Selectboxes (Dropdowns) - Force Arial on everything */
     div[data-testid="stSelectbox"] * {
@@ -417,24 +413,7 @@ if selected_page == "Open Search":
                     unsafe_allow_html=True
                 )
             else:
-                # REVISED NO RESULTS NOTIFICATION (White Background, Smaller, Centered)
-                st.markdown(f"""
-                    <div style="
-                        background-color: #FFFFFF;
-                        padding: 20px;
-                        border-radius: 8px;
-                        color: #E65100;
-                        border: 1px solid #FFE082;
-                        text-align: center;
-                        margin: 20px auto; 
-                        width: 33%;
-                        min-width: 300px;
-                        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-                    ">
-                        <span style="font-size: 16px; font-weight: bold;">No results found for '{query}'</span><br>
-                        <span style="font-size: 14px; color: #8D6E63;">Please try a different query term.</span>
-                    </div>
-                """, unsafe_allow_html=True)
+                st.error(f"No results found for '{query}'.")
 
     # Footer Logic (Same as before)
     st.markdown("<br><br><hr>", unsafe_allow_html=True)
