@@ -314,35 +314,35 @@ if selected_page == "Search":
         if df.empty:
              st.error("Database could not be loaded. Please check the source file.")
         else:
-            # 1. Define the specific columns to search
+            # 1. Prepare the query for exact matching
+            # Removing spaces and converting to lowercase ensures " vcp " matches "VCP"
+            clean_query = query.strip().lower()
+
+            # 2. Define which columns to search strictly
             target_cols = [
                 'Gene Symbol', 'UniProt ID', 'Branch', 
-                'Class', 'Group', 'Type', 'Subtype', 
-                'Interpro Domains'
+                'Class', 'Group', 'Type', 'Subtype'
             ]
-            
-            # Ensure we only check columns that actually exist in your dataframe
             valid_cols = [c for c in target_cols if c in df.columns]
-            
-            # 2. Standard Exact Match Logic (Case-Insensitive)
-            # Checks if the cell content is exactly equal to the query
-            clean_query = query.strip().lower()
-            
+
+            # 3. Apply Strict Equality Logic (== instead of .contains)
+            # This returns True only if the ENTIRE cell matches the query exactly.
+            # e.g., "VCP accessories" == "VCP" -> False
             mask = df[valid_cols].apply(
                 lambda col: col.astype(str).str.strip().str.lower() == clean_query
             ).any(axis=1)
 
-            # 3. Special Logic for 'Interpro Domains' (List matching)
-            # Since domains are often lists (e.g., "IPR1; IPR2"), a strict "==" fails 
-            # if you search for just "IPR1". This fixes that.
+            # 4. Special Handling for 'Interpro Domains'
+            # Domains are a list (e.g., "IPR1; IPR2"). strict "==" fails if you search "IPR1".
+            # This logic splits the list and checks if the query is ONE of the items.
             if 'Interpro Domains' in df.columns:
                 domain_mask = df['Interpro Domains'].astype(str).apply(
-                    lambda x: clean_query in [d.strip().lower() for d in x.split(';')]
+                    lambda x: clean_query in [d.strip().lower() for d in x.replace(',', ';').split(';')]
                 )
-                # Combine the standard exact match with the domain list match
                 mask = mask | domain_mask
 
             results = df[mask].copy()
+            
             
             
             if not results.empty:
