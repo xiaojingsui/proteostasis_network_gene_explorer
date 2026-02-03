@@ -225,6 +225,10 @@ st.markdown("""
         color: #006064 !important; 
     }
 
+    div[data-testid="InputInstructions"] {
+        display: none !important;
+    }
+
     /* Selectboxes (Dropdowns) - Force Arial on everything */
     div[data-testid="stSelectbox"] * {
         font-family: Arial, Helvetica, sans-serif !important;
