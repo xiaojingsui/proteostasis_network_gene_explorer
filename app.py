@@ -521,8 +521,9 @@ elif selected_page == "Guided Search":
             c1, c2, c3 = st.columns(3)
             
             # 1. Branch Selection
-            branches = sorted(df['Branch'].unique().tolist())
-            branches = [x for x in branches if x]
+            # REMOVED sorted() to preserve Excel order
+            branches = df['Branch'].unique().tolist()
+            branches = [x for x in branches if x] 
             sel_branch = c1.selectbox("1. Select Branch", [""] + branches)
 
             # Logic: Filter DF based on Branch
@@ -530,7 +531,8 @@ elif selected_page == "Guided Search":
 
             # 2. Class Selection (Depends on Branch)
             if sel_branch:
-                classes = sorted(df_lvl1['Class'].unique().tolist())
+                # REMOVED sorted()
+                classes = df_lvl1['Class'].unique().tolist()
                 classes = [x for x in classes if x] 
                 sel_class = c2.selectbox("2. Select Class (Optional)", [""] + classes)
             else:
@@ -541,7 +543,8 @@ elif selected_page == "Guided Search":
 
             # 3. Group Selection (Depends on Class)
             if sel_branch and sel_class:
-                groups = sorted(df_lvl2['Group'].unique().tolist())
+                # REMOVED sorted()
+                groups = df_lvl2['Group'].unique().tolist()
                 groups = [x for x in groups if x]
                 sel_group = c3.selectbox("3. Select Group (Optional)", [""] + groups)
             else:
@@ -555,7 +558,8 @@ elif selected_page == "Guided Search":
 
             # 4. Type Selection (Depends on Group)
             if sel_branch and sel_class and sel_group:
-                types = sorted(df_lvl3['Type'].unique().tolist())
+                # REMOVED sorted()
+                types = df_lvl3['Type'].unique().tolist()
                 types = [x for x in types if x]
                 sel_type = c4.selectbox("4. Select Type (Optional)", [""] + types)
             else:
@@ -566,7 +570,8 @@ elif selected_page == "Guided Search":
 
             # 5. Subtype Selection (Depends on Type)
             if sel_branch and sel_class and sel_group and sel_type:
-                subtypes = sorted(df_lvl4['Subtype'].unique().tolist())
+                # REMOVED sorted()
+                subtypes = df_lvl4['Subtype'].unique().tolist()
                 subtypes = [x for x in subtypes if x]
                 sel_subtype = c5.selectbox("5. Select Subtype (Optional)", [""] + subtypes)
             else:
