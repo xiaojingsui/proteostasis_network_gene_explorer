@@ -214,9 +214,7 @@ st.markdown("""
         height: auto !important;
         min-height: 75px !important; 
     }
-    div[data-testid="stTextInput"] > div > div {
-        align-items: center !important; /* Centers the 'Press Enter' text vertically */
-    }
+    
 
     div[data-testid="stTextInput"] > div > div > input {
         font-family: Arial, Helvetica, sans-serif !important;
