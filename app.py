@@ -472,7 +472,7 @@ elif selected_page == "Guided Search":
             if sel_branch:
                 classes = sorted(df_lvl1['Class'].unique().tolist())
                 classes = [x for x in classes if x] # Clean empty
-                sel_class = c2.selectbox("2. Select Class", [""] + classes)
+                sel_class = c2.selectbox("2. Select Class (Optional)", [""] + classes)
             else:
                 sel_class = c2.selectbox("2. Select Class", [], disabled=True, placeholder="Select Branch first")
 
