@@ -314,29 +314,51 @@ if selected_page == "Search":
         if df.empty:
              st.error("Database could not be loaded. Please check the source file.")
         else:
-            # 1. Prepare the query for exact matching
-            # Removing spaces and converting to lowercase ensures " vcp " matches "VCP"
             clean_query = query.strip().lower()
 
-            # 2. Define which columns to search strictly
-            target_cols = [
-                'Gene Symbol', 'UniProt ID', 'Branch', 
-                'Class', 'Group', 'Type', 'Subtype', 
-                'Interpro Domains'
-            ]
-            valid_cols = [c for c in target_cols if c in df.columns]
-
-            # 3. Apply Strict Equality Logic (== instead of .contains)
-            # This returns True only if the ENTIRE cell matches the query exactly.
-            # e.g., "VCP accessories" == "VCP" -> False
-            match_matrix = df[valid_cols].astype(str).apply(
-                lambda x: x.str.strip().str.lower() == clean_query
-            )
-            mask = match_matrix.any(axis=1)
-
+            # --- SEARCH STRATEGY DEFINITION ---
             
+            # Group 1: Standard Columns 
+            # (Cell must match query EXACTLY. e.g. "VCP" == "VCP")
+            exact_cols = [
+                'Gene Symbol', 'UniProt ID', 'Branch', 
+                'Class', 'Group', 'Type', 'Subtype'
+            ]
+            
+            # Group 2: List Columns 
+            # (Cell contains a list "A, B, C". Query "A" matches if it equals one of the items)
+            list_cols = ['Interpro Domains']
 
-            results = df[mask].copy()
+            # --- EXECUTE SEARCH ---
+
+            # 1. Check Exact Columns
+            valid_exact = [c for c in exact_cols if c in df.columns]
+            mask_exact = pd.Series(False, index=df.index)
+            if valid_exact:
+                mask_exact = df[valid_exact].astype(str).apply(
+                    lambda x: x.str.strip().str.lower() == clean_query
+                ).any(axis=1)
+
+            # 2. Check List Columns (Interpro)
+            valid_list = [c for c in list_cols if c in df.columns]
+            mask_list = pd.Series(False, index=df.index)
+            
+            if valid_list:
+                def list_contains_exact(cell_val, q_val):
+                    if pd.isna(cell_val): return False
+                    # Normalize delimiters: replace semicolons with commas, then split
+                    # This handles "ID1, ID2" AND "ID1; ID2" formats
+                    items = [item.strip().lower() for item in str(cell_val).replace(';', ',').split(',')]
+                    return q_val in items
+
+                # Apply the check row by row
+                mask_list = df[valid_list].apply(
+                    lambda col: col.apply(lambda cell: list_contains_exact(cell, clean_query))
+                ).any(axis=1)
+
+            # 3. Combine Results (Match found in Exact OR List columns)
+            final_mask = mask_exact | mask_list
+            results = df[final_mask].copy()
             
             
             
