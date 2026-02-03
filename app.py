@@ -76,7 +76,8 @@ def format_links(df_input):
 st.markdown("""
     <style>
     /* --- GLOBAL FONTS & MAIN CONTAINER --- */
-    html, body, [data-testid="stAppViewContainer"], .stApp {
+    /* Force Arial on everything in the app */
+    html, body, [data-testid="stAppViewContainer"], .stApp, p, h1, h2, h3, h4, h5, h6, span, div {
         font-family: Arial, Helvetica, sans-serif !important;
         background-color: #FBFEFF;
     }
@@ -201,18 +202,18 @@ st.markdown("""
         margin-bottom: 40px;
     }
 
-    /* Input Box Styling */
+    /* --- WIDGET STYLING (Inputs & Selectboxes) --- */
+    
+    /* Text Inputs */
     div[data-testid="stTextInput"] {
         width: 50% !important;      
         min-width: 300px;
         margin: 0 auto -15px !important;
     }
-
     div[data-testid="stTextInput"] > div {
         height: auto !important;
         min-height: 75px !important; 
     }
-
     div[data-testid="stTextInput"] > div > div > input {
         font-family: Arial, Helvetica, sans-serif !important;
         border-radius: 12px !important;
@@ -222,6 +223,27 @@ st.markdown("""
         border: 2px solid #4DD0E1 !important; 
         background-color: white !important;
         color: #006064 !important; 
+    }
+
+    /* Selectboxes (Dropdowns) - Force Arial on everything */
+    div[data-testid="stSelectbox"] * {
+        font-family: Arial, Helvetica, sans-serif !important;
+    }
+    
+    /* Target the Label of the Selectbox specifically */
+    div[data-testid="stSelectbox"] label p {
+        font-size: 14px !important;
+        color: #445550 !important;
+    }
+
+    /* Target the dropdown popover menu items */
+    div[role="listbox"] * {
+         font-family: Arial, Helvetica, sans-serif !important;
+    }
+
+    /* Style the main box of the selectbox */
+    div[data-testid="stSelectbox"] > div > div {
+        border-color: #4DD0E1 !important;
     }
 
     /* Results Table Styling */
@@ -271,7 +293,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 
-# --- TOP NAVBAR (Added "Guides" to options) ---
+# --- TOP NAVBAR ---
 NAV_OPTIONS = ["Search", "Guided Search", "About", "Guides"]
 
 selected_nav = st.radio(
@@ -436,7 +458,7 @@ if selected_page == "Search":
 
 
 # ==========================================
-# PAGE 2: GUIDED SEARCH
+# PAGE 2: GUIDED SEARCH (REVISED)
 # ==========================================
 elif selected_page == "Guided Search":
     df = load_data()
@@ -451,17 +473,12 @@ elif selected_page == "Guided Search":
         st.error("Database could not be loaded.")
     else:
         # --- HIERARCHICAL DROPDOWNS ---
-        # Container for filters
         with st.container():
-            # Use styling to make dropdowns look cleaner
-            st.markdown("""<style>div[data-testid="stSelectbox"] > div > div {border-color: #4DD0E1 !important;}</style>""", unsafe_allow_html=True)
-            
             # Row 1: Branch, Class, Group
             c1, c2, c3 = st.columns(3)
             
             # 1. Branch Selection
             branches = sorted(df['Branch'].unique().tolist())
-            # Remove empty strings if present in the unique list (optional, but good for UI)
             branches = [x for x in branches if x]
             sel_branch = c1.selectbox("1. Select Branch", [""] + branches)
 
@@ -471,7 +488,7 @@ elif selected_page == "Guided Search":
             # 2. Class Selection (Depends on Branch)
             if sel_branch:
                 classes = sorted(df_lvl1['Class'].unique().tolist())
-                classes = [x for x in classes if x] # Clean empty
+                classes = [x for x in classes if x] 
                 sel_class = c2.selectbox("2. Select Class (Optional)", [""] + classes)
             else:
                 sel_class = c2.selectbox("2. Select Class", [], disabled=True, placeholder="Select Branch first")
@@ -494,7 +511,6 @@ elif selected_page == "Guided Search":
             c4, c5 = st.columns(2)
 
             # 4. Type Selection (Depends on Group)
-            # Note: User said "if they want to define subtype, they need to define branch class, group type"
             if sel_branch and sel_class and sel_group:
                 types = sorted(df_lvl3['Type'].unique().tolist())
                 types = [x for x in types if x]
@@ -519,7 +535,6 @@ elif selected_page == "Guided Search":
         # --- DISPLAY RESULTS ---
         st.divider()
         
-        # Only show results if at least Branch is selected, otherwise it's too much data to show cleanly
         if sel_branch:
             col_res_header, col_res_dl = st.columns([7, 1])
             with col_res_header:
@@ -543,9 +558,8 @@ elif selected_page == "Guided Search":
                     mime="text/csv",
                 )
 
-            # Apply Link Formatting using Helper Function
+            # Apply Link Formatting
             display_df = format_links(final_df)
-            
             available_cols = [c for c in display_cols if c in display_df.columns]
             
             st.write(
@@ -553,8 +567,12 @@ elif selected_page == "Guided Search":
                 unsafe_allow_html=True
             )
         else:
-            st.info("Please select a Branch to begin the guided search.")
-            # Optional: Show a preview of Branches stats or generic info here
+            # Styled info box to match Arial theme
+            st.markdown("""
+                <div style="background-color: #E1F5FE; padding: 15px; border-radius: 8px; color: #0277BD; border: 1px solid #B3E5FC;">
+                    Please select a <b>Branch</b> to begin the guided search.
+                </div>
+            """, unsafe_allow_html=True)
 
     # Footer
     st.markdown("<br><br><hr>", unsafe_allow_html=True)
@@ -574,7 +592,7 @@ elif selected_page == "About":
 .about-container {
 max-width: 900px;
 margin: 0 auto;
-font-family: Arial, Helvetica, sans-serif;
+font-family: Arial, Helvetica, sans-serif !important;
 font-size: 16px;
 line-height: 1.6;
 color: #212121;
@@ -668,7 +686,7 @@ Explanatory details about the fine structure of the annotation will be published
     st.caption("Data source: Human Proteostasis Network v4.1")
 
 # ==========================================
-# PAGE 4: GUIDES (NEW)
+# PAGE 4: GUIDES
 # ==========================================
 elif selected_page == "Guides":
     st.markdown('<div class="hero-section">', unsafe_allow_html=True)
@@ -680,7 +698,7 @@ elif selected_page == "Guides":
     .guide-container {
         max-width: 900px;
         margin: 0 auto;
-        font-family: Arial, Helvetica, sans-serif;
+        font-family: Arial, Helvetica, sans-serif !important;
         font-size: 16px;
         line-height: 1.6;
         color: #212121;
