@@ -332,14 +332,7 @@ if selected_page == "Search":
                 lambda col: col.astype(str).str.strip().str.lower() == clean_query
             ).any(axis=1)
 
-            # 4. Special Handling for 'Interpro Domains'
-            # Domains are a list (e.g., "IPR1; IPR2"). strict "==" fails if you search "IPR1".
-            # This logic splits the list and checks if the query is ONE of the items.
-            if 'Interpro Domains' in df.columns:
-                domain_mask = df['Interpro Domains'].astype(str).apply(
-                    lambda x: clean_query in [d.strip().lower() for d in x.replace(',', ';').split(';')]
-                )
-                mask = mask | domain_mask
+            
 
             results = df[mask].copy()
             
