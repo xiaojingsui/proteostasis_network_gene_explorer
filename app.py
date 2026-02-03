@@ -204,37 +204,46 @@ st.markdown("""
 
     /* --- WIDGET STYLING (Inputs & Selectboxes) --- */
     
-    /* Text Inputs */
+    /* Text Inputs Container */
     div[data-testid="stTextInput"] {
         width: 50% !important;      
         min-width: 300px;
         margin: 0 auto -15px !important;
     }
-    div[data-testid="stTextInput"] > div {
-        height: auto !important;
-        min-height: 75px !important; 
-    }
-    div[data-testid="stTextInput"] > div > div > input {
+
+    /* 1. Target the Input Element directly */
+    div[data-testid="stTextInput"] input {
         font-family: Arial, Helvetica, sans-serif !important;
         border-radius: 12px !important;
         box-sizing: border-box !important; 
         padding: 22px 25px !important;
         font-size: 15px !important;
-        border: 2px solid #4DD0E1 !important; 
         background-color: white !important;
         color: #006064 !important; 
+        
+        /* Define the standard border */
+        border: 2px solid #4DD0E1 !important; 
     }
 
-    /* Fix: Remove the default Streamlit border/shadow from the container wrapper */
-    div[data-testid="stTextInput"] > div > div {
-        border: none !important;
-        box-shadow: none !important;
+    /* 2. THE FIX: Handle the Focus State to remove red outline/shadow */
+    div[data-testid="stTextInput"] input:focus {
+        border: 2px solid #4DD0E1 !important; /* Force the Teal border to stay */
+        outline: none !important;             /* Remove the default browser outline */
+        box-shadow: none !important;          /* Remove Streamlit's red glow */
     }
 
-    /* Fix: Prevent the container from showing the red outline when you click inside */
-    div[data-testid="stTextInput"] > div > div:focus-within {
+    /* 3. Remove default Streamlit container styling (The wrapper around the input) */
+    div[data-testid="stTextInput"] > div[data-baseweb="input"] {
         border: none !important;
         box-shadow: none !important;
+        background-color: transparent !important;
+    }
+
+    /* 4. Ensure the wrapper doesn't react to focus-within */
+    div[data-testid="stTextInput"] > div[data-baseweb="input"]:focus-within {
+        border: none !important;
+        box-shadow: none !important;
+        outline: none !important;
     }
 
     div[data-testid="InputInstructions"] {
