@@ -10,7 +10,7 @@ st.set_page_config(page_title="Human PN Database", layout="wide")
 if "search_key" not in st.session_state:
     st.session_state.search_key = ""
 if "page" not in st.session_state:
-    st.session_state.page = "Search"
+    st.session_state.page = "Open Search"
 
 # CALLBACKS
 def update_search(new_query):
@@ -294,7 +294,7 @@ st.markdown("""
 
 
 # --- TOP NAVBAR ---
-NAV_OPTIONS = ["Search", "Guided Search", "About", "Guides"]
+NAV_OPTIONS = ["Open Search", "Guided Search", "About", "Guides"]
 
 selected_nav = st.radio(
     "Navigation", 
@@ -310,7 +310,7 @@ selected_page = selected_nav
 # ==========================================
 # PAGE 1: SEARCH (KEYWORD)
 # ==========================================
-if selected_page == "Search":
+if selected_page == "Open Search":
 
     df = load_data()
 
