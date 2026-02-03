@@ -413,7 +413,7 @@ if selected_page == "Open Search":
                     unsafe_allow_html=True
                 )
             else:
-                else:
+                
                 # REVISED NO RESULTS NOTIFICATION (White Background, Smaller, Centered)
                 st.markdown(f"""
                     <div style="
