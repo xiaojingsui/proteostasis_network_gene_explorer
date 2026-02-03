@@ -288,7 +288,7 @@ if selected_page == "Search":
     # Search Input
     st.text_input(
         "", 
-        placeholder="Search by Gene Symbol, UniProt ID, Branch, Class, Group, Type, Subtype, or Domain...", 
+        placeholder="Search by Gene Symbol, UniProt ID, Branch, Class, Group, Type, Subtype, or InterPro Domain...", 
         label_visibility="collapsed",
         key="search_key" 
     )
