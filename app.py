@@ -428,7 +428,7 @@ if selected_page == "Open Search":
                         box-shadow: 0 4px 6px rgba(0,0,0,0.05);
                     ">
                         <span style="font-size: 16px; font-weight: bold;">No results found for '{query}'</span><br>
-                        <span style="font-size: 14px; color: #8D6E63;">Please try a different keyword, Gene Symbol, or UniProt ID.</span>
+                        <span style="font-size: 14px; color: #8D6E63;">Please try a different query term.</span>
                     </div>
                 """, unsafe_allow_html=True)
 
