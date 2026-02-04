@@ -778,7 +778,7 @@ elif selected_page == "Guides":
         <p>The interface is open for immediate use and allows you to:</p>
         <ul class="guide-list">
             <li>
-                <span class="term-highlight">Search flexibly:</span> Query by <b>Gene Symbol</b> (e.g., HSPA1A), <b>UniProt ID</b>, or functional keywords (e.g., “Chaperone”), with direct links to UniProt, NCBI, and InterPro databases.
+                <span class="term-highlight">Open Search:</span> Query by <b>Gene Symbol</b> (e.g., HSPA1A), <b>UniProt ID</b>, or functional keywords (e.g., “Chaperone”), with direct links to UniProt, NCBI, and InterPro databases.
             </li>
             <li>
                 <span class="term-highlight">Guided Search:</span> Explore the network hierarchically by filtering Branch &rarr; Class &rarr; Group, etc.
