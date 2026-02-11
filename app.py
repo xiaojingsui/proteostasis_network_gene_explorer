@@ -834,11 +834,11 @@ selecting an option in the first box updates the available options in the subseq
 </p>
 
 <div class="guide-subheader">The Hierarchy Levels</div>
+
 <ul class="guide-list">
-<li><b> Branch:</b> The highest level of organization (e.g., <i>Cytonuclear proteostasis, Autophagy-Lysosome, etc</i>). You must select this first.</li>
-<li><b> Class:</b> The functional role within the Branch.</li>
-<li><b> Group:</b> A functional grouping within the Class.</li>
-<li><b> Type & Subtype:</b> High-resolution descriptors for specific protein functions.</li>
+<li><b> Branch:</b> Refers to a component’s localization or membership in an overarching pathway. There are nine Branch categories: cytonuclear proteostasis (CY), ER proteostasis (ER), mitochondrial proteostasis (MI), nuclear proteostasis (NU), PN regulation (PN), translation (TR), extracellular proteostasis (EX), the autophagy-lysosome pathway (ALP), and the ubiquitin-proteasome system (UPS).</li>
+<li><b> Class:</b> Refers to a component’s function in proteostasis (e.g., chaperones, protein transport, etc.) in most Branches of the PN. In the ALP it refers to the stage of autophagy in which the component participates.</li>
+<li><b> Group, Type, and Subtype:</b> Provide increasingly specific descriptors of proteostasis functions within a Class.</li>
 </ul>
 
 <div class="step-box">
