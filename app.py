@@ -798,7 +798,7 @@ border-radius: 0 4px 4px 0;
 
 <div class="guide-container">
 <p>
-This application provides an interactive interface to the Human Proteostasis Network (PN) v4.1. 
+This application provides an interactive interface to the Human Proteostasis Network. 
 Below are detailed instructions on how to utilize the search functions and interpret the data hierarchy.
 </p>
 
@@ -813,13 +813,13 @@ The <b>Open Search</b> page is designed for quick retrieval of specific genes or
 <b>Identifiers:</b> You can search directly by <span class="term-highlight">Gene Symbol</span> (e.g., <i>HSPA1A</i>) or <span class="term-highlight">UniProt ID</span> (e.g., <i>P0DMV8</i>).
 </li>
 <li>
-<b>Keywords:</b> You can search for functional terms found in the hierarchy, such as "Chaperone", "Autophagy", or "Ubiquitin".
+<b>Keywords:</b> You can search for functional terms found in the hierarchy, such as "Chaperone", "Translation", or "PN regulation", etc.
 </li>
 <li>
 <b>InterPro Domains:</b> The engine searches within the domain lists. You can search for specific domain IDs (e.g., <i>IPR001234</i>).
 </li>
 <li>
-<b>Exact vs. Partial:</b> The search is case-insensitive. For Gene Symbols and IDs, it prioritizes exact matches, but will also scan lists (like domains) for the presence of your query.
+<b>Exact vs. Partial:</b> The search is case-insensitive. For Gene Symbols, IDs and functional terms, it prioritizes exact matches, but will also scan lists (like domains) for the presence of your query.
 </li>
 </ul>
 
@@ -835,10 +835,10 @@ selecting an option in the first box updates the available options in the subseq
 
 <div class="guide-subheader">The Hierarchy Levels</div>
 <ul class="guide-list">
-<li><b>1. Branch:</b> The highest level of organization (e.g., <i>UPS, Autophagy-Lysosome, Cytosolic</i>). You must select this first.</li>
-<li><b>2. Class:</b> The functional role or temporal stage within the Branch (e.g., <i>Chaperone, Initiation</i>).</li>
-<li><b>3. Group:</b> A specific family or functional grouping within the Class.</li>
-<li><b>4. Type & 5. Subtype:</b> High-resolution descriptors for specific protein functions.</li>
+<li><b> Branch:</b> The highest level of organization (e.g., <i>Cytonuclear proteostasis, Autophagy-Lysosome, etc</i>). You must select this first.</li>
+<li><b> Class:</b> The functional role within the Branch.</li>
+<li><b> Group:</b> A functional grouping within the Class.</li>
+<li><b> Type & Subtype:</b> High-resolution descriptors for specific protein functions.</li>
 </ul>
 
 <div class="step-box">
