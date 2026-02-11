@@ -824,7 +824,7 @@ The <b>Open Search</b> page is designed for quick retrieval of specific genes or
 </ul>
 
 <div class="step-box">
-<b>Tip:</b> If you receive too many results, try switching to <b>Guided Search</b> to filter by specific biological context.
+<b>Tip:</b> If you would like to explore based on PN function, try switching to <b>Guided Search</b> to filter.
 </div>
 
 <div class="guide-header">2. Using Guided Search</div>
