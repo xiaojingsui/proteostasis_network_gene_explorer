@@ -739,138 +739,140 @@ Explanatory details about the fine structure of the annotation will be published
 # PAGE 4: GUIDES
 # ==========================================
 elif selected_page == "Guides":
+    # Hero Section
     st.markdown('<div class="hero-section">', unsafe_allow_html=True)
     st.markdown('<p class="hero-title">User Guides</p>', unsafe_allow_html=True)
     st.markdown('<p class="hero-subtitle">Navigating the Human Proteostasis Network Database</p>', unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
 
+    # NOTE: The string below is intentionally left-aligned (no indentation) 
+    # to prevent Markdown from interpreting it as a code block.
     st.markdown("""
-    <style>
-    .guide-container {
-        max-width: 900px;
-        margin: 0 auto;
-        font-family: Arial, Helvetica, sans-serif !important;
-        font-size: 16px;
-        line-height: 1.6;
-        color: #212121;
-        padding-bottom: 50px;
-    }
-    .guide-header {
-        font-size: 22px;
-        font-weight: bold;
-        color: #006064;
-        margin-top: 40px;
-        margin-bottom: 15px;
-        border-bottom: 2px solid #E0F7FA;
-        padding-bottom: 5px;
-    }
-    .guide-subheader {
-        font-size: 18px;
-        font-weight: bold;
-        color: #00838F;
-        margin-top: 20px;
-        margin-bottom: 10px;
-    }
-    .term-highlight {
-        font-weight: bold;
-        color: #00838F;
-        background-color: #E0F7FA;
-        padding: 2px 6px;
-        border-radius: 4px;
-    }
-    .guide-list {
-        padding-left: 20px;
-        margin-bottom: 15px;
-    }
-    .guide-list li {
-        margin-bottom: 10px;
-    }
-    .step-box {
-        background-color: #FAFAFA;
-        border-left: 4px solid #4DD0E1;
-        padding: 15px;
-        margin: 15px 0;
-        border-radius: 0 4px 4px 0;
-    }
-    </style>
+<style>
+.guide-container {
+    max-width: 900px;
+    margin: 0 auto;
+    font-family: Arial, Helvetica, sans-serif !important;
+    font-size: 16px;
+    line-height: 1.6;
+    color: #212121;
+    padding-bottom: 50px;
+}
+.guide-header {
+    font-size: 22px;
+    font-weight: bold;
+    color: #006064;
+    margin-top: 40px;
+    margin-bottom: 15px;
+    border-bottom: 2px solid #E0F7FA;
+    padding-bottom: 5px;
+}
+.guide-subheader {
+    font-size: 18px;
+    font-weight: bold;
+    color: #00838F;
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+.term-highlight {
+    font-weight: bold;
+    color: #00838F;
+    background-color: #E0F7FA;
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+.guide-list {
+    padding-left: 20px;
+    margin-bottom: 15px;
+}
+.guide-list li {
+    margin-bottom: 10px;
+}
+.step-box {
+    background-color: #FAFAFA;
+    border-left: 4px solid #4DD0E1;
+    padding: 15px;
+    margin: 15px 0;
+    border-radius: 0 4px 4px 0;
+}
+</style>
+
+<div class="guide-container">
+    <p>
+        This application provides an interactive interface to the Human Proteostasis Network (PN) v4.1. 
+        Below are detailed instructions on how to utilize the search functions and interpret the data hierarchy.
+    </p>
+
+    <div class="guide-header">1. Using Open Search</div>
+    <p>
+        The <b>Open Search</b> page is designed for quick retrieval of specific genes or broad exploration of functional terms.
+    </p>
     
-    <div class="guide-container">
-        <p>
-            This application provides an interactive interface to the Human Proteostasis Network (PN) v4.1. 
-            Below are detailed instructions on how to utilize the search functions and interpret the data hierarchy.
-        </p>
+    <div class="guide-subheader">Search Logic</div>
+    <ul class="guide-list">
+        <li>
+            <b>Identifiers:</b> You can search directly by <span class="term-highlight">Gene Symbol</span> (e.g., <i>HSPA1A</i>) or <span class="term-highlight">UniProt ID</span> (e.g., <i>P0DMV8</i>).
+        </li>
+        <li>
+            <b>Keywords:</b> You can search for functional terms found in the hierarchy, such as "Chaperone", "Autophagy", or "Ubiquitin".
+        </li>
+        <li>
+            <b>InterPro Domains:</b> The engine searches within the domain lists. You can search for specific domain IDs (e.g., <i>IPR001234</i>).
+        </li>
+        <li>
+            <b>Exact vs. Partial:</b> The search is case-insensitive. For Gene Symbols and IDs, it prioritizes exact matches, but will also scan lists (like domains) for the presence of your query.
+        </li>
+    </ul>
 
-        <div class="guide-header">1. Using Open Search</div>
-        <p>
-            The <b>Open Search</b> page is designed for quick retrieval of specific genes or broad exploration of functional terms.
-        </p>
-        
-        <div class="guide-subheader">Search Logic</div>
-        <ul class="guide-list">
-            <li>
-                <b>Identifiers:</b> You can search directly by <span class="term-highlight">Gene Symbol</span> (e.g., <i>HSPA1A</i>) or <span class="term-highlight">UniProt ID</span> (e.g., <i>P0DMV8</i>).
-            </li>
-            <li>
-                <b>Keywords:</b> You can search for functional terms found in the hierarchy, such as "Chaperone", "Autophagy", or "Ubiquitin".
-            </li>
-            <li>
-                <b>InterPro Domains:</b> The engine searches within the domain lists. You can search for specific domain IDs (e.g., <i>IPR001234</i>).
-            </li>
-            <li>
-                <b>Exact vs. Partial:</b> The search is case-insensitive. For Gene Symbols and IDs, it prioritizes exact matches, but will also scan lists (like domains) for the presence of your query.
-            </li>
-        </ul>
-
-        <div class="step-box">
-            <b>Tip:</b> If you receive too many results, try switching to <b>Guided Search</b> to filter by specific biological context.
-        </div>
-
-        <div class="guide-header">2. Using Guided Search</div>
-        <p>
-            The <b>Guided Search</b> page allows you to drill down into the network taxonomy. The filters are hierarchical; 
-            selecting an option in the first box updates the available options in the subsequent boxes.
-        </p>
-
-        <div class="guide-subheader">The Hierarchy Levels</div>
-        <ul class="guide-list">
-            <li><b>1. Branch:</b> The highest level of organization (e.g., <i>UPS, Autophagy-Lysosome, Cytosolic</i>). You must select this first.</li>
-            <li><b>2. Class:</b> The functional role or temporal stage within the Branch (e.g., <i>Chaperone, Initiation</i>).</li>
-            <li><b>3. Group:</b> A specific family or functional grouping within the Class.</li>
-            <li><b>4. Type & 5. Subtype:</b> High-resolution descriptors for specific protein functions.</li>
-        </ul>
-
-        <div class="step-box">
-            <b>Note:</b> Not all genes have data for Type or Subtype. These dropdowns are marked "Optional" and may remain empty for certain branches.
-        </div>
-
-        <div class="guide-header">3. Interpreting Results & External Links</div>
-        <p>
-            Both search modes generate a standard results table containing the following interactive features:
-        </p>
-        <ul class="guide-list">
-            <li>
-                <span class="term-highlight">UniProt ID</span>: Clicking this value opens the official UniProtKB entry in a new tab.
-            </li>
-            <li>
-                <span class="term-highlight">Gene ID</span>: Clicking this value opens the NCBI Gene database entry.
-            </li>
-            <li>
-                <span class="term-highlight">InterPro Domains</span>: Specific domains listed (starting with IPR) are hyperlinked to the EBI InterPro database for structural analysis.
-            </li>
-        </ul>
-
-        <div class="guide-header">4. Exporting Data</div>
-        <p>
-            You can export the results of any search (Open or Guided) for offline analysis.
-        </p>
-        <ol class="guide-list">
-            <li>Perform your search or apply your filters.</li>
-            <li>Locate the <b>"Download CSV"</b> button in the top right corner of the results area.</li>
-            <li>The file will save automatically with a relevant filename (e.g., <i>search_results_HSPA1A.csv</i>).</li>
-        </ol>
-
+    <div class="step-box">
+        <b>Tip:</b> If you receive too many results, try switching to <b>Guided Search</b> to filter by specific biological context.
     </div>
-    """, unsafe_allow_html=True)
+
+    <div class="guide-header">2. Using Guided Search</div>
+    <p>
+        The <b>Guided Search</b> page allows you to drill down into the network taxonomy. The filters are hierarchical; 
+        selecting an option in the first box updates the available options in the subsequent boxes.
+    </p>
+
+    <div class="guide-subheader">The Hierarchy Levels</div>
+    <ul class="guide-list">
+        <li><b>1. Branch:</b> The highest level of organization (e.g., <i>UPS, Autophagy-Lysosome, Cytosolic</i>). You must select this first.</li>
+        <li><b>2. Class:</b> The functional role or temporal stage within the Branch (e.g., <i>Chaperone, Initiation</i>).</li>
+        <li><b>3. Group:</b> A specific family or functional grouping within the Class.</li>
+        <li><b>4. Type & 5. Subtype:</b> High-resolution descriptors for specific protein functions.</li>
+    </ul>
+
+    <div class="step-box">
+        <b>Note:</b> Not all genes have data for Type or Subtype. These dropdowns are marked "Optional" and may remain empty for certain branches.
+    </div>
+
+    <div class="guide-header">3. Interpreting Results & External Links</div>
+    <p>
+        Both search modes generate a standard results table containing the following interactive features:
+    </p>
+    <ul class="guide-list">
+        <li>
+            <span class="term-highlight">UniProt ID</span>: Clicking this value opens the official UniProtKB entry in a new tab.
+        </li>
+        <li>
+            <span class="term-highlight">Gene ID</span>: Clicking this value opens the NCBI Gene database entry.
+        </li>
+        <li>
+            <span class="term-highlight">InterPro Domains</span>: Specific domains listed (starting with IPR) are hyperlinked to the EBI InterPro database for structural analysis.
+        </li>
+    </ul>
+
+    <div class="guide-header">4. Exporting Data</div>
+    <p>
+        You can export the results of any search (Open or Guided) for offline analysis.
+    </p>
+    <ol class="guide-list">
+        <li>Perform your search or apply your filters.</li>
+        <li>Locate the <b>"Download CSV"</b> button in the top right corner of the results area.</li>
+        <li>The file will save automatically with a relevant filename (e.g., <i>search_results_HSPA1A.csv</i>).</li>
+    </ol>
+</div>
+""", unsafe_allow_html=True)
 
     st.markdown("<br><hr>", unsafe_allow_html=True)
     st.caption("Data source: Human Proteostasis Network v4.1")
