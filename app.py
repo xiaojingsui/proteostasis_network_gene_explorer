@@ -597,7 +597,7 @@ elif selected_page == "Guided Search":
 
             with col_res_dl:
                 st.markdown('<div style="margin-top: 10px;"></div>', unsafe_allow_html=True)
-                display_cols = ['UniProt ID', 'Gene ID', 'Gene Symbol', 'Branch', 'Class', 'Group', 'Type', 'Subtype', 'Interpro Domains']
+                display_cols = ['UniProt ID', 'Gene ID', 'Gene Symbol', 'Gene Synonyms','Branch', 'Class', 'Group', 'Type', 'Subtype', 'Interpro Domains']
                 valid_cols = [c for c in display_cols if c in final_df.columns]
                 csv = final_df[valid_cols].to_csv(index=False).encode('utf-8')
                 st.download_button(
