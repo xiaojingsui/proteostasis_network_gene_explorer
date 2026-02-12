@@ -431,7 +431,7 @@ if selected_page == "Open Search":
                 # Use Helper to format links
                 results = format_links(results)
                 
-                display_cols = ['UniProt ID', 'Gene ID', 'Gene Symbol', 'Branch', 'Class', 'Group', 'Type', 'Subtype', 'Interpro Domains']
+                display_cols = ['UniProt ID', 'Gene ID', 'Gene Symbol','Gene Synonyms', 'Branch', 'Class', 'Group', 'Type', 'Subtype', 'Interpro Domains']
                 available_cols = [c for c in display_cols if c in results.columns]
                 
                 st.write(
