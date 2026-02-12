@@ -377,7 +377,7 @@ if selected_page == "Open Search":
             clean_query = query.strip().lower()
 
             # --- SEARCH STRATEGY DEFINITION ---
-            exact_cols = ['Gene Symbol', 'UniProt ID', 'Branch', 'Class', 'Group', 'Type', 'Subtype']
+            exact_cols = ['Gene Symbol', 'Gene ID', 'UniProt ID', 'Branch', 'Class', 'Group', 'Type', 'Subtype']
             list_cols = ['Interpro Domains']
 
             # 1. Check Exact Columns
