@@ -839,8 +839,8 @@ selecting an option in the first box updates the available options in the subseq
 <li><b> Branch:</b> Refers to a component’s localization or membership in an overarching pathway. There are nine Branch categories: cytonuclear proteostasis, ER proteostasis, mitochondrial proteostasis, nuclear proteostasis, PN regulation, translation, extracellular proteostasis, the autophagy-lysosome pathway, and the ubiquitin-proteasome system.</li>
 <li><b> Class:</b> Refers to a component’s function in proteostasis (e.g., chaperones, protein transport, etc.) in most Branches of the PN. In the ALP it refers to the stage of autophagy in which the component participates.</li>
 <li><b> Group:</b> Provide increasingly specific descriptors of proteostasis functions within a Class.</li>
-<li><b> Type:</b> Provide increasingly specific descriptors of proteostasis functions within a Class.</li>
-<li><b> Subtype:</b> Provide increasingly specific descriptors of proteostasis functions within a Class.</li>
+<li><b> Type:</b> Provide increasingly specific descriptors of proteostasis functions within a Group.</li>
+<li><b> Subtype:</b> Provide increasingly specific descriptors of proteostasis functions within a Type.</li>
 </ul>
 
 <div class="step-box">
