@@ -284,6 +284,11 @@ st.markdown("""
         border-width: 2px !important;
     }
 
+    /* Fix for invisible dropdown arrow in Dark Mode */
+    div[data-testid="stSelectbox"] svg {
+        fill: #006064 !important;
+    }
+
 
     /* --- BUTTON & DOWNLOAD BUTTON STYLING (Force Light Theme) --- */
     
