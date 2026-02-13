@@ -265,11 +265,29 @@ st.markdown("""
     }
 
 
-    /* HOVER STATE - When mouse moves over the button */
+    /* --- BUTTON STYLING (Force Light Theme) --- */
+    
+    /* 1. Normal State (Idle) - This forces the button to be white even in Dark Mode */
+    div.stButton > button {
+        background-color: #FFFFFF !important;
+        color: #212121 !important;             /* Dark text */
+        border: 1px solid #D3D3D3 !important;  /* Light grey border */
+        transition: all 0.3s ease !important;
+    }
+
+    /* 2. Hover State - Your custom teal styling */
     div.stButton > button:hover {
-        background-color: #FFFFFF !important; /* Light Teal background */
+        background-color: #F0FBFC !important; /* Very light teal tint */
         color: #004D40 !important;            /* Darker Teal text */
         border-color: #006064 !important;     /* Darker border */
+    }
+
+    /* 3. Active/Focus State (When clicked) */
+    div.stButton > button:active, div.stButton > button:focus {
+        background-color: #FFFFFF !important;
+        color: #006064 !important;
+        border-color: #006064 !important;
+        box-shadow: none !important;
     }
 
 
