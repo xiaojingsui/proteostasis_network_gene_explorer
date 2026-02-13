@@ -205,52 +205,47 @@ st.markdown("""
 
     /* --- WIDGET STYLING (Inputs & Selectboxes) --- */
     
-    /* Text Inputs */
+    /* --- TEXT INPUT STYLING (Fixed for Dark Mode) --- */
+    
+    /* 1. Position the Widget */
     div[data-testid="stTextInput"] {
         width: 50% !important;      
         min-width: 300px;
         margin: 0 auto -15px !important;
     }
-    div[data-testid="stTextInput"] > div {
-        height: auto !important;
-        min-height: 75px !important; 
-    }
-    div[data-testid="stTextInput"] > div > div > input {
+
+    /* 2. The Inner Input Field (The part you type in) */
+    div[data-testid="stTextInput"] input {
         font-family: Arial, Helvetica, sans-serif !important;
         border-radius: 12px !important;
-        box-sizing: border-box !important; 
         padding: 22px 25px !important;
         font-size: 15px !important;
         border: 2px solid #4DD0E1 !important; 
-        background-color: white !important;
-        color: #006064 !important; 
+        background-color: #FFFFFF !important;  /* Force White Background */
+        color: #006064 !important;             /* Force Teal Text */
+        caret-color: #006064 !important;       /* Teal typing cursor */
     }
 
+    /* 3. The Outer Wrapper (The hidden culprit!) */
+    /* We strip all styling from this wrapper so it doesn't show black lines/backgrounds */
+    div[data-testid="stTextInput"] div[data-baseweb="input"] {
+        background-color: transparent !important;
+        border: none !important;
+        border-radius: 12px !important;
+    }
+
+    /* 4. Focus States (When clicking inside) */
     div[data-testid="stTextInput"] input:focus {
-    outline: none !important;     /* 1. Kills default browser line */
-    box-shadow: none !important;  /* 2. Kills Streamlit red glow */
-    border: 2px solid #4DD0E1 !important; /* Replaces it with your Teal border */
-    }
-
-    div[data-testid="stTextInput"] > div[data-baseweb="input"]:focus-within {
-    border: none !important;      /* Removes wrapper border */
-    box-shadow: none !important;  /* Removes wrapper red glow */
-    outline: none !important;
-    }
-
-    div[data-testid="InputInstructions"] {
-        display: none !important;
-    }
-
-    /* Selectboxes (Dropdowns) - Force Arial on everything */
-    div[data-testid="stSelectbox"] * {
-        font-family: Arial, Helvetica, sans-serif !important;
+        outline: none !important;
+        border: 2px solid #4DD0E1 !important; 
+        box-shadow: none !important;
     }
     
-    /* Target the Label of the Selectbox specifically */
-    div[data-testid="stSelectbox"] label p {
-        font-size: 14px !important;
-        color: #445550 !important;
+    /* Remove default focus glow from the wrapper */
+    div[data-testid="stTextInput"] div[data-baseweb="input"]:focus-within {
+        border: none !important;
+        box-shadow: none !important;
+        outline: none !important;
     }
 
     /* Target the dropdown popover menu items */
