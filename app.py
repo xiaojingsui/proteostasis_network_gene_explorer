@@ -265,25 +265,26 @@ st.markdown("""
     }
 
 
-    /* --- BUTTON STYLING (Force Light Theme) --- */
+    /* --- BUTTON & DOWNLOAD BUTTON STYLING (Force Light Theme) --- */
     
-    /* 1. Normal State (Idle) - This forces the button to be white even in Dark Mode */
-    div.stButton > button {
+    /* 1. Normal State (Idle) */
+    div.stButton > button, div.stDownloadButton > button {
         background-color: #FFFFFF !important;
         color: #212121 !important;             /* Dark text */
         border: 1px solid #D3D3D3 !important;  /* Light grey border */
         transition: all 0.3s ease !important;
     }
 
-    /* 2. Hover State - Your custom teal styling */
-    div.stButton > button:hover {
+    /* 2. Hover State */
+    div.stButton > button:hover, div.stDownloadButton > button:hover {
         background-color: #F0FBFC !important; /* Very light teal tint */
         color: #004D40 !important;            /* Darker Teal text */
         border-color: #006064 !important;     /* Darker border */
     }
 
     /* 3. Active/Focus State (When clicked) */
-    div.stButton > button:active, div.stButton > button:focus {
+    div.stButton > button:active, div.stButton > button:focus,
+    div.stDownloadButton > button:active, div.stDownloadButton > button:focus {
         background-color: #FFFFFF !important;
         color: #006064 !important;
         border-color: #006064 !important;
