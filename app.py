@@ -909,7 +909,7 @@ To balance ease of discovery with precision, the <b>Open Search</b> follows thes
 <div class="guide-subheader">Partial vs. Exact Matching</div>
 <ul class="guide-list">
 <li>
-<b>Gene Symbols & Synonyms (Partial):</b> These allow partial matches. Searching for <span class="term-highlight">HSP</span> will return <i>HSPA1A</i>, <i>HSPB1</i>, and any gene containing those letters.
+<b>The search is case-insensitive. Gene Symbols & Synonyms (Partial):</b> These allow partial matches. Searching for <span class="term-highlight">HSP</span> will return <i>HSPA1A</i>, <i>HSPB1</i>, and any gene containing those letters.
 </li>
 <li>
 <b>Functional Terms & IDs (Exact):</b> Terms like <span class="term-highlight">Branch</span>, <span class="term-highlight">Class</span>, or <span class="term-highlight">UniProt ID</span> require an exact match. 
@@ -929,7 +929,7 @@ selecting an option in the first box updates the available options in the subseq
 
 <div class="guide-subheader">The Hierarchy Levels</div>
 <ul class="guide-list">
-<li><b>Branch:</b> Overarching pathway or localization (e.g., UPS, ALP, ER).</li>
+<li><b>Branch:</b> Overarching pathway or localization (e.g., UPS, ALP).</li>
 <li><b>Class:</b> Functional role within that branch (e.g., chaperone, protein transport).</li>
 <li><b>Group/Type/Subtype:</b> Increasingly specific functional descriptors.</li>
 </ul>
