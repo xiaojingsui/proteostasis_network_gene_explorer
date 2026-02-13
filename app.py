@@ -566,7 +566,9 @@ if selected_page == "Open Search":
                     if 'Gene Symbol' in results_csv.columns:
                         results_csv['Inhibitor'] = results_csv['Gene Symbol'].apply(lambda x: get_inhibitor_html(x, for_csv=True))
                     
-                    dl_cols = ['Gene Symbol', 'Protein Name', 'Inhibitor', 'UniProt ID', 'Branch', 'Class']
+                    dl_cols = ['UniProt ID', 'Gene ID', 'Gene Symbol', 'Gene Synonyms', 
+                'Protein Name', 'Branch', 'Class', 'Group', 'Type', 'Subtype', 
+                'Inhibitor']
                     valid_dl_cols = [c for c in dl_cols if c in results_csv.columns]
                     csv = results_csv[valid_dl_cols].to_csv(index=False).encode('utf-8')
                     st.download_button("Download CSV", data=csv, file_name=f"search_{query}.csv", mime="text/csv")
