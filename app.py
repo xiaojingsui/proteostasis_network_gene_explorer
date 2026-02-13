@@ -205,9 +205,9 @@ st.markdown("""
 
     /* --- WIDGET STYLING (Inputs & Selectboxes) --- */
     
-    /* --- TEXT INPUT STYLING (Final "Input-Only" Fix) --- */
+    /* --- TEXT INPUT STYLING (The "Wrapper" Fix) --- */
 
-    /* 1. Main Container positioning */
+    /* 1. Main Position (Unchanged) */
     div[data-testid="stTextInput"] {
         width: 50% !important;      
         min-width: 300px;
@@ -219,45 +219,39 @@ st.markdown("""
         min-height: 75px !important; 
     }
 
-    /* 2. THE OUTER WRAPPERS (Make them Invisible) */
-    /* We strip the background and border from the containers so no "Black Box" can exist */
-    div[data-testid="stTextInput"] div[data-baseweb="input"],
-    div[data-testid="stTextInput"] div[data-baseweb="base-input"] {
-        background-color: transparent !important;
-        border: none !important;
-        box-shadow: none !important;
+    /* 2. THE OUTER WRAPPER (The Box) - We style THIS to be white/teal */
+    /* This overrides the black background/border that was showing through */
+    div[data-testid="stTextInput"] div[data-baseweb="input"] {
+        background-color: #FFFFFF !important;   /* Force Container White */
+        border: 2px solid #4DD0E1 !important;   /* Force Container Border */
+        border-radius: 12px !important;
+        box-shadow: none !important;            /* Kill default shadows */
     }
 
-    /* 3. THE INNER INPUT (The Actual White Box) */
-    /* We apply the white background and teal border directly to the typing area */
+    /* 3. THE INNER INPUT (The Text) - We make this see-through */
     div[data-testid="stTextInput"] input {
         font-family: Arial, Helvetica, sans-serif !important;
-        background-color: #FFFFFF !important;   /* Force White Background */
-        border: 2px solid #4DD0E1 !important;   /* Force Teal Border */
-        border-radius: 12px !important;
+        background-color: transparent !important; /* Transparent so white wrapper shows */
+        border: none !important;                  /* No double borders */
+        color: #006064 !important;                /* Teal Text */
+        caret-color: #006064 !important;          /* Teal Cursor */
         
-        color: #006064 !important;              /* Force Teal Text */
-        caret-color: #006064 !important;        /* Teal Cursor */
-        
+        /* Spacing/Sizing matches your previous design */
         box-sizing: border-box !important; 
         padding: 22px 25px !important;
         font-size: 15px !important;
+        height: 100% !important;
     }
 
-    /* 4. Placeholder Text (Make sure it's visible on white) */
-    div[data-testid="stTextInput"] input::placeholder {
-        color: #90A4AE !important;
-        opacity: 1 !important;
-    }
-
-    /* 5. Focus State */
-    div[data-testid="stTextInput"] input:focus {
-        border-color: #006064 !important;
+    /* 4. Focus State */
+    /* When you click inside, we keep the border teal and remove default glows */
+    div[data-testid="stTextInput"] div[data-baseweb="input"]:focus-within {
+        border: 2px solid #4DD0E1 !important;
+        background-color: #FFFFFF !important;
         box-shadow: none !important;
         outline: none !important;
     }
-
-    /* Hide Instruction Text */
+    
     div[data-testid="InputInstructions"] {
         display: none !important;
     }
@@ -273,13 +267,6 @@ st.markdown("""
         color: #445550 !important;
     }
 
-    /* --- FIX: GREY TEXT FOR DISABLED/PLACEHOLDER BOXES --- */
-    div[data-testid="stSelectbox"] div[aria-disabled="true"] * {
-        color: #90A4AE !important; 
-        -webkit-text-fill-color: #90A4AE !important;
-        cursor: not-allowed !important;
-    }
-
     /* Target the dropdown popover menu items */
     div[role="listbox"] * {
          font-family: Arial, Helvetica, sans-serif !important;
@@ -289,13 +276,6 @@ st.markdown("""
     div[data-testid="stSelectbox"] > div > div {
         border-color: #4DD0E1 !important;
         border-width: 2px !important;
-    }
-
-    /* This overrides the global dark text color for disabled selectboxes */
-    div[data-testid="stSelectbox"] div[aria-disabled="true"] * {
-        color: #90A4AE !important; /* Nice distinct grey */
-        -webkit-text-fill-color: #90A4AE !important; /* Safari/Chrome fix */
-        cursor: not-allowed !important;
     }
 
 
