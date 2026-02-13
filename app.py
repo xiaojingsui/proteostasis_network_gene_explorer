@@ -5,6 +5,45 @@ import textwrap
 import requests
 import math
 
+
+# --- NEW: INHIBITOR DATA MAPPING ---
+# Maps Gene Symbols to lists of (Name, URL)
+INHIBITOR_MAP = {
+    "HSP90AA1": [("AUY922", "https://www.chemicalprobes.org/luminespib?q=Hsp90"), ("BIIB021", "https://www.chemicalprobes.org/biib021?q=Hsp90"), ("Onalespib", "https://www.chemicalprobes.org/onalespib?q=Hsp90")],
+    "HSP90AB1": [("AUY922", "https://www.chemicalprobes.org/luminespib?q=Hsp90"), ("BIIB021", "https://www.chemicalprobes.org/biib021?q=Hsp90"), ("Onalespib", "https://www.chemicalprobes.org/onalespib?q=Hsp90")],
+    "VCP": [("CB-5083", "https://www.chemicalprobes.org/cb-5083?q=p97"), ("NMS-873", "https://www.chemicalprobes.org/nms-873?q=p97")],
+    "SEC61A1": [("cotransin", "https://www.chemicalprobes.org/cotransin?q=SEC61")],
+    "UBA1": [("TAK243", "https://www.chemicalprobes.org/tak-243"), ("ABP3", "https://www.chemicalprobes.org/abpa3")],
+    "UBA2": [("TAK-981", "https://www.chemicalprobes.org/tak-981?q=ubiquitin")],
+    "UBA3": [("pevonedistat", "https://www.chemicalprobes.org/pevonedistat")],
+    "USP1": [("ML323", "https://www.chemicalprobes.org/ml323?q=USP")],
+    "USP7": [("FT671", "https://www.chemicalprobes.org/ft671?q=ubiquitin")],
+    "USP21": [("BAY-805", "https://www.chemicalprobes.org/bay-805?q=ubiquitin")],
+    "UCHL1": [("IMP-1710", "https://www.chemicalprobes.org/imp-1710?q=ubiquitin"), ("8RK64", "https://www.chemicalprobes.org/8rk64?q=ubiquitin")],
+    "PSMB9": [("KZR-504", "https://www.chemicalprobes.org/kzr-504?q=proteasome")],
+    "MTOR": [("rapamycin", "https://www.chemicalprobes.org/rapamycin?q=rapamycin"), ("AZD-2014", "https://www.chemicalprobes.org/azd2014?q=rapamycin")],
+    "MDM2": [("RO5353", "https://www.chemicalprobes.org/ro5353?q=MDM2"), ("MD-244", "https://www.chemicalprobes.org/md-224?q=MDM2"), ("MI-77301", "https://www.chemicalprobes.org/mi-77301?q=E3%20ligase"), ("AM-6761", "https://www.chemicalprobes.org/am-6761?q=E3%20ligase"), ("AMG232", "https://www.chemicalprobes.org/amg232?q=MDM2"), ("RO2468", "https://www.chemicalprobes.org/ro2468?q=MDM2"), ("RG7112", "https://www.chemicalprobes.org/rg7112?q=MDM2")],
+    "GID4": [("PFI-7", "https://www.chemicalprobes.org/pfi-7?q=Gid4")],
+    "ERN1": [("AMG-18", "https://www.chemicalprobes.org/amg-18?q=IRE1")],
+    "KEAP1": [("KI-696", "https://www.chemicalprobes.org/ki-696")],
+    "VHL": [("VH298", "https://www.chemicalprobes.org/vh298?q=ubiquitin")],
+    "EPAS1": [("PT2399", "https://www.chemicalprobes.org/pt2399?q=HIF1a"), ("PT2385", "https://www.chemicalprobes.org/pt2385?q=HIF1a")],
+    "EIF2AK3": [("AMG-PERK-44", "https://www.chemicalprobes.org/amg-perk-44?q=Unfolded"), ("GSK2656157", "https://www.chemicalprobes.org/gsk2656157?q=Unfolded")]
+}
+
+# --- HELPER FOR INHIBITOR HTML ---
+def get_inhibitor_html(symbol, for_csv=False):
+    inhibitors = INHIBITOR_MAP.get(symbol, [])
+    if not inhibitors:
+        return ""
+    if for_csv:
+        # Returns plain text separated by semicolon for the Excel download
+        return "; ".join([name for name, url in inhibitors])
+    # Returns clickable links separated by semicolon for the web UI
+    return "; ".join([f'<a href="{url}" target="_blank">{name}</a>' for name, url in inhibitors])
+
+
+
 # 1. Page Config (Must be the first command)
 st.set_page_config(page_title="Human PN Database", layout="wide")
 
@@ -55,6 +94,10 @@ def format_links(df_input):
             except:
                 return f'<a href="https://www.ncbi.nlm.nih.gov/gene/?term={val}" target="_blank">{val}</a>'
         df_copy['Gene ID'] = df_copy['Gene ID'].apply(create_ncbi_link)
+    
+    # NEW: Add Inhibitor Column
+    if 'Gene Symbol' in df_copy.columns:
+        df_copy['Inhibitor'] = df_copy['Gene Symbol'].apply(lambda x: get_inhibitor_html(x, for_csv=False))
         
     return df_copy
 
@@ -518,19 +561,26 @@ if selected_page == "Open Search":
                     st.markdown(f"#### {len(results)} results found for '{query}'")
                 
                 with col_download:
-                    st.markdown('<div style="margin-top: 10px;"></div>', unsafe_allow_html=True)
-                    dl_cols = ['UniProt ID', 'Gene ID', 'Gene Symbol', 'Gene Synonyms', 'Protein Name', 'Branch', 'Class', 'Group', 'Type', 'Subtype']
-                    valid_dl_cols = [c for c in dl_cols if c in results.columns]
-                    csv = results[valid_dl_cols].to_csv(index=False).encode('utf-8')
-                    st.download_button("Download CSV", data=csv, file_name=f"search_results_{query}.csv", mime="text/csv")
+                    # Prepare a version for CSV with plain text inhibitors
+                    results_csv = results.copy()
+                    if 'Gene Symbol' in results_csv.columns:
+                        results_csv['Inhibitor'] = results_csv['Gene Symbol'].apply(lambda x: get_inhibitor_html(x, for_csv=True))
+                    
+                    dl_cols = ['Gene Symbol', 'Protein Name', 'Inhibitor', 'UniProt ID', 'Branch', 'Class']
+                    valid_dl_cols = [c for c in dl_cols if c in results_csv.columns]
+                    csv = results_csv[valid_dl_cols].to_csv(index=False).encode('utf-8')
+                    st.download_button("Download CSV", data=csv, file_name=f"search_{query}.csv", mime="text/csv")
+                
                 
                 # Format Links and Display
-                results = format_links(results)
-                display_cols = ['UniProt ID', 'Gene ID', 'Gene Symbol', 'Gene Synonyms', 'Protein Name', 'Branch', 'Class', 'Group', 'Type', 'Subtype']
-                available_cols = [c for c in display_cols if c in results.columns]
-                
+                results_formatted = format_links(results) # Apply the formatting with inhibitors
+
+                # UPDATE THIS LIST
+                display_cols = ['Gene Symbol', 'Protein Name', 'Inhibitor', 'UniProt ID', 'Branch', 'Class', 'Group']
+                available_cols = [c for c in display_cols if c in results_formatted.columns]
+
                 st.write(
-                    results[available_cols].to_html(escape=False, index=False, border=0, classes='result-container'), 
+                    results_formatted[available_cols].to_html(escape=False, index=False, border=0, classes='result-container'), 
                     unsafe_allow_html=True
                 )
             else:
