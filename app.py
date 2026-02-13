@@ -261,25 +261,31 @@ st.markdown("""
         border-color: #E0E0E0 !important; 
         border-width: 1px !important;
         background-color: white !important;
-        color: #212121 !important; /* ENABLED BOX = BLACK TEXT */
+        color: #212121 !important; 
     }
 
-    /* 2. DISABLED STATE (Grey Text - For "Select Branch First") */
-    /* This overrides the black text for any box that is disabled */
+    /* 2. DISABLED STATE (Light Grey Text) */
+    /* Target the wrapper of the disabled box */
     div[data-testid="stSelectbox"] div[aria-disabled="true"] {
-        color: #9E9E9E !important; 
-        opacity: 0.8 !important;
+        border-color: #EEEEEE !important;
+        background-color: #FAFAFA !important;
     }
     
-    /* Force internal text of disabled box to be grey */
+    /* Target the TEXT content inside the disabled box */
     div[data-testid="stSelectbox"] div[aria-disabled="true"] * {
-        color: #9E9E9E !important; 
-        -webkit-text-fill-color: #9E9E9E !important;
+        color: #B0BEC5 !important;  /* Light Grey hex code */
+        -webkit-text-fill-color: #B0BEC5 !important; /* Force override for Webkit browsers */
+        opacity: 1 !important;
     }
 
     /* 3. ARROW ICONS */
     div[data-testid="stSelectbox"] svg {
-        fill: #9E9E9E !important; /* Grey Triangle Default */
+        fill: #9E9E9E !important; 
+    }
+    
+    /* Force Arrow to be Light Grey when disabled */
+    div[data-testid="stSelectbox"] div[aria-disabled="true"] svg {
+        fill: #B0BEC5 !important;
     }
     
     /* 4. HOVER & FOCUS (Teal) - Only for Enabled Boxes */
