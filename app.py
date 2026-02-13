@@ -417,7 +417,7 @@ selected_page = selected_nav
 
 
 # ==========================================
-# PAGE 1: SEARCH (KEYWORD)
+# PAGE 1: OPEN SEARCH - REVISED LOGIC
 # ==========================================
 if selected_page == "Open Search":
 
@@ -428,10 +428,10 @@ if selected_page == "Open Search":
     st.markdown('<p class="hero-title">HUMAN Proteostasis Network Database</p>', unsafe_allow_html=True)
     st.markdown('<p class="hero-subtitle">The comprehensive knowledgebase for human proteostasis network genes</p>', unsafe_allow_html=True)
 
-    # Search Input
+    # Updated Placeholder to reflect new rules
     st.text_input(
         "", 
-        placeholder="Search by Gene Symbol, UniProt ID, Branch, Class, Group, Type, Subtype, or InterPro Domain...", 
+        placeholder="Search Gene (partial) or 'Exact Gene'. Functional terms (Class, Group) require exact matches...", 
         label_visibility="collapsed",
         key="search_key" 
     )
@@ -451,47 +451,66 @@ if selected_page == "Open Search":
         st.button("Chaperone", on_click=update_search, args=("Chaperone",))
     st.markdown('</div>', unsafe_allow_html=True)
 
-    # Results Logic
+    # --- REVISED SEARCH LOGIC ---
     query = st.session_state.search_key
     if query:
         if df.empty:
              st.error("Database could not be loaded. Please check the source file.")
         else:
-            clean_query = query.strip().lower()
+            # Check for Forced Exact Match syntax: 'TERM'
+            is_forced_exact = query.startswith("'") and query.endswith("'")
+            
+            if is_forced_exact:
+                # Strip the quotes for the actual search
+                clean_query = query[1:-1].strip().lower()
+                
+                # Logic for exact match in comma-separated synonyms
+                def exact_synonym_match(cell):
+                    if pd.isna(cell): return False
+                    # Splits by comma and checks if any item matches exactly
+                    return clean_query in [item.strip().lower() for item in str(cell).split(',')]
 
-            # --- SEARCH STRATEGY DEFINITION ---
-            # Search still works on Interpro, but we won't display it later
-            exact_cols = ['Gene Symbol', 'Gene ID', 'UniProt ID', 'Branch', 'Class', 'Group', 'Type', 'Subtype']
-            list_cols = ['Interpro Domains']
-
-            # 1. Check Exact Columns
-            valid_exact = [c for c in exact_cols if c in df.columns]
-            mask_exact = pd.Series(False, index=df.index)
-            if valid_exact:
-                mask_exact = df[valid_exact].astype(str).apply(
+                # Apply strict exact match across all searchable columns
+                mask = (
+                    (df['Gene Symbol'].str.strip().str.lower() == clean_query) |
+                    (df['UniProt ID'].str.strip().str.lower() == clean_query) |
+                    (df['Gene ID'].astype(str).str.strip().str.lower() == clean_query) |
+                    (df['Branch'].str.strip().str.lower() == clean_query) |
+                    (df['Class'].str.strip().str.lower() == clean_query) |
+                    (df['Group'].str.strip().str.lower() == clean_query) |
+                    (df['Type'].str.strip().str.lower() == clean_query) |
+                    (df['Subtype'].str.strip().str.lower() == clean_query) |
+                    (df['Gene Synonyms'].apply(exact_synonym_match))
+                )
+            else:
+                clean_query = query.strip().lower()
+                
+                # 1. Partial Match: Gene Symbol and Gene Synonyms
+                mask_partial = (
+                    df['Gene Symbol'].str.contains(clean_query, case=False, na=False) |
+                    df['Gene Synonyms'].str.contains(clean_query, case=False, na=False)
+                )
+                
+                # 2. Exact Match: Functional terms and IDs
+                # This prevents "ER" from matching "Chaperone" or "Interferon"
+                functional_cols = ['UniProt ID', 'Gene ID', 'Branch', 'Class', 'Group', 'Type', 'Subtype']
+                mask_exact = df[functional_cols].astype(str).apply(
                     lambda x: x.str.strip().str.lower() == clean_query
                 ).any(axis=1)
+                
+                # 3. Interpro (List match - usually requires exact ID match)
+                mask_interpro = pd.Series(False, index=df.index)
+                if 'Interpro Domains' in df.columns:
+                    mask_interpro = df['Interpro Domains'].apply(
+                        lambda cell: clean_query in [i.strip().lower() for i in str(cell).replace(';', ',').split(',')]
+                    )
 
-            # 2. Check List Columns (Interpro)
-            valid_list = [c for c in list_cols if c in df.columns]
-            mask_list = pd.Series(False, index=df.index)
-            
-            if valid_list:
-                def list_contains_exact(cell_val, q_val):
-                    if pd.isna(cell_val): return False
-                    items = [item.strip().lower() for item in str(cell_val).replace(';', ',').split(',')]
-                    return q_val in items
+                mask = mask_partial | mask_exact | mask_interpro
 
-                mask_list = df[valid_list].apply(
-                    lambda col: col.apply(lambda cell: list_contains_exact(cell, clean_query))
-                ).any(axis=1)
-
-            # 3. Combine Results
-            final_mask = mask_exact | mask_list
-            results = df[final_mask].copy()
+            results = df[mask].copy()
             
             if not results.empty:
-                # ENRICH RESULTS: Add Protein Name from UniProt if missing
+                # ENRICH RESULTS: Add Protein Name from UniProt
                 results = enrich_with_protein_names(results)
 
                 col_results, col_download = st.columns([7, 1])
@@ -500,30 +519,14 @@ if selected_page == "Open Search":
                 
                 with col_download:
                     st.markdown('<div style="margin-top: 10px;"></div>', unsafe_allow_html=True)
-                    # Define download columns (including Protein Name)
-                    dl_cols = [
-                        'UniProt ID', 'Gene ID', 'Gene Symbol', 'Gene Synonyms', 'Protein Name',
-                        'Branch', 'Class', 'Group', 'Type', 'Subtype'
-                    ]
+                    dl_cols = ['UniProt ID', 'Gene ID', 'Gene Symbol', 'Gene Synonyms', 'Protein Name', 'Branch', 'Class', 'Group', 'Type', 'Subtype']
                     valid_dl_cols = [c for c in dl_cols if c in results.columns]
                     csv = results[valid_dl_cols].to_csv(index=False).encode('utf-8')
-                    
-                    st.download_button(
-                        label="Download CSV",
-                        data=csv,
-                        file_name=f"search_results_{query}.csv",
-                        mime="text/csv",
-                    )
+                    st.download_button("Download CSV", data=csv, file_name=f"search_results_{query}.csv", mime="text/csv")
                 
-                # Format Links
+                # Format Links and Display
                 results = format_links(results)
-                
-                # DEFINED DISPLAY COLUMNS (Removed Interpro, Added Protein Name)
-                display_cols = [
-                    'UniProt ID', 'Gene ID', 'Gene Symbol', 'Gene Synonyms', 
-                    'Protein Name', 
-                    'Branch', 'Class', 'Group', 'Type', 'Subtype'
-                ]
+                display_cols = ['UniProt ID', 'Gene ID', 'Gene Symbol', 'Gene Synonyms', 'Protein Name', 'Branch', 'Class', 'Group', 'Type', 'Subtype']
                 available_cols = [c for c in display_cols if c in results.columns]
                 
                 st.write(
@@ -532,20 +535,9 @@ if selected_page == "Open Search":
                 )
             else:
                 st.markdown(f"""
-                    <div style="
-                        background-color: #FFFFFF;
-                        padding: 20px;
-                        border-radius: 8px;
-                        color: #E65100;
-                        border: 1px solid #FFE082;
-                        text-align: center;
-                        margin: 20px auto; 
-                        width: 33%;
-                        min-width: 300px;
-                        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-                    ">
+                    <div style="background-color: #FFFFFF; padding: 20px; border-radius: 8px; color: #E65100; border: 1px solid #FFE082; text-align: center; margin: 20px auto; width: 33%; min-width: 300px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
                         <span style="font-size: 16px; font-weight: bold;">No results found for '{query}'</span><br>
-                        <span style="font-size: 14px; color: #8D6E63;">Please try a different query term.</span>
+                        <span style="font-size: 14px; color: #8D6E63;">Try using 'single quotes' for exact symbol matching.</span>
                     </div>
                 """, unsafe_allow_html=True)
 
