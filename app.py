@@ -99,7 +99,7 @@ st.markdown("""
     position: fixed !important;      
     top: 0 !important;                
     left: 0 !important;               
-    width: 100vw !important;         
+    width: 100vw !important;          
     z-index: 99999 !important;        
     
     background-color: #FFFFFF;        
@@ -220,7 +220,6 @@ st.markdown("""
     }
 
     /* 2. THE OUTER WRAPPERS (Make them Invisible) */
-    /* We strip the background and border from the containers so no "Black Box" can exist */
     div[data-testid="stTextInput"] div[data-baseweb="input"],
     div[data-testid="stTextInput"] div[data-baseweb="base-input"] {
         background-color: transparent !important;
@@ -229,7 +228,6 @@ st.markdown("""
     }
 
     /* 3. THE INNER INPUT (The Actual White Box) */
-    /* We apply the white background and teal border directly to the typing area */
     div[data-testid="stTextInput"] input {
         font-family: Arial, Helvetica, sans-serif !important;
         background-color: #FFFFFF !important;   /* Force White Background */
@@ -244,7 +242,7 @@ st.markdown("""
         font-size: 15px !important;
     }
 
-    /* 4. Placeholder Text (Make sure it's visible on white) */
+    /* 4. Placeholder Text */
     div[data-testid="stTextInput"] input::placeholder {
         color: #90A4AE !important;
         opacity: 1 !important;
@@ -262,31 +260,46 @@ st.markdown("""
         display: none !important;
     }
 
-    /* Selectboxes (Dropdowns) - Force Arial on everything */
+    /* --- SELECTBOX STYLING (DROPDOWNS) --- */
+    /* Force Arial on everything */
     div[data-testid="stSelectbox"] * {
-        font-family: Arial, Helvetica, sans-serif !important;
+         font-family: Arial, Helvetica, sans-serif !important;
     }
     
-    /* Target the Label of the Selectbox specifically */
+    /* Label styling */
     div[data-testid="stSelectbox"] label p {
         font-size: 14px !important;
         color: #445550 !important;
     }
 
-    /* Target the dropdown popover menu items */
+    /* Dropdown menu items */
     div[role="listbox"] * {
          font-family: Arial, Helvetica, sans-serif !important;
     }
 
-    /* Style the main box of the selectbox */
+    /* 1. DEFAULT STATE (Grey - for Disabled/Inactive look) */
     div[data-testid="stSelectbox"] > div > div {
-        border-color: #4DD0E1 !important;
-        border-width: 2px !important;
+        border-color: #E0E0E0 !important; /* Light Grey Border by default */
+        border-width: 1px !important;
+        background-color: white !important;
+        color: #757575 !important;
     }
 
-    /* Fix for invisible dropdown arrow in Dark Mode */
+    /* 2. ARROW COLOR (Grey by default) */
     div[data-testid="stSelectbox"] svg {
-        fill: #006064 !important;
+        fill: #9E9E9E !important; /* Grey Triangle */
+    }
+
+    /* 3. HOVER & FOCUS STATE (Teal - Only when interacting) */
+    div[data-testid="stSelectbox"]:hover > div > div, 
+    div[data-testid="stSelectbox"] > div > div:focus-within {
+        border-color: #4DD0E1 !important; /* Teal Border */
+        border-width: 2px !important;
+    }
+    
+    div[data-testid="stSelectbox"]:hover svg,
+    div[data-testid="stSelectbox"] > div > div:focus-within svg {
+        fill: #006064 !important; /* Teal Triangle */
     }
 
 
@@ -295,8 +308,8 @@ st.markdown("""
     /* 1. Normal State (Idle) */
     div.stButton > button, div.stDownloadButton > button {
         background-color: #FFFFFF !important;
-        color: #212121 !important;             /* Dark text */
-        border: 1px solid #D3D3D3 !important;  /* Light grey border */
+        color: #212121 !important;              /* Dark text */
+        border: 1px solid #D3D3D3 !important;   /* Light grey border */
         transition: all 0.3s ease !important;
     }
 
@@ -304,7 +317,7 @@ st.markdown("""
     div.stButton > button:hover, div.stDownloadButton > button:hover {
         background-color: #F0FBFC !important; /* Very light teal tint */
         color: #004D40 !important;            /* Darker Teal text */
-        border-color: #006064 !important;     /* Darker border */
+        border-color: #006064 !important;      /* Darker border */
     }
 
     /* 3. Active/Focus State (When clicked) */
@@ -485,7 +498,7 @@ if selected_page == "Open Search":
                 )
             else:
                 
-                # REVISED NO RESULTS NOTIFICATION (White Background, Smaller, Centered)
+                # REVISED NO RESULTS NOTIFICATION
                 st.markdown(f"""
                     <div style="
                         background-color: #FFFFFF;
@@ -504,7 +517,7 @@ if selected_page == "Open Search":
                     </div>
                 """, unsafe_allow_html=True)
 
-    # Footer Logic (Same as before)
+    # Footer Logic
     st.markdown("<br><br><hr>", unsafe_allow_html=True)
     col_left, col_right = st.columns(2)
     with col_left:
@@ -567,34 +580,31 @@ elif selected_page == "Guided Search":
             c1, c2, c3 = st.columns(3)
             
             # 1. Branch Selection
-            # REMOVED sorted() to preserve Excel order
             branches = df['Branch'].unique().tolist()
             branches = [x for x in branches if x] 
-            sel_branch = c1.selectbox("1. Select Branch", [""] + branches)
+            sel_branch = c1.selectbox("Select Branch", [""] + branches)
 
             # Logic: Filter DF based on Branch
             df_lvl1 = df[df['Branch'] == sel_branch] if sel_branch else df
 
             # 2. Class Selection (Depends on Branch)
             if sel_branch:
-                # REMOVED sorted()
                 classes = df_lvl1['Class'].unique().tolist()
                 classes = [x for x in classes if x] 
-                sel_class = c2.selectbox("2. Select Class (Optional)", [""] + classes)
+                sel_class = c2.selectbox("Select Class", [""] + classes)
             else:
-                sel_class = c2.selectbox("2. Select Class", [], disabled=True, placeholder="Select Branch first")
+                sel_class = c2.selectbox("Select Class", [], disabled=True, placeholder="Select Branch first")
 
             # Logic: Filter DF based on Class
             df_lvl2 = df_lvl1[df_lvl1['Class'] == sel_class] if (sel_branch and sel_class) else df_lvl1
 
             # 3. Group Selection (Depends on Class)
             if sel_branch and sel_class:
-                # REMOVED sorted()
                 groups = df_lvl2['Group'].unique().tolist()
                 groups = [x for x in groups if x]
-                sel_group = c3.selectbox("3. Select Group (Optional)", [""] + groups)
+                sel_group = c3.selectbox("Select Group", [""] + groups)
             else:
-                sel_group = c3.selectbox("3. Select Group", [], disabled=True, placeholder="Select Class first")
+                sel_group = c3.selectbox("Select Group", [], disabled=True, placeholder="Select Class first")
 
             # Logic: Filter DF based on Group
             df_lvl3 = df_lvl2[df_lvl2['Group'] == sel_group] if (sel_branch and sel_class and sel_group) else df_lvl2
@@ -604,24 +614,22 @@ elif selected_page == "Guided Search":
 
             # 4. Type Selection (Depends on Group)
             if sel_branch and sel_class and sel_group:
-                # REMOVED sorted()
                 types = df_lvl3['Type'].unique().tolist()
                 types = [x for x in types if x]
-                sel_type = c4.selectbox("4. Select Type (Optional)", [""] + types)
+                sel_type = c4.selectbox("Select Type", [""] + types)
             else:
-                sel_type = c4.selectbox("4. Select Type", [], disabled=True, placeholder="Select Group first")
+                sel_type = c4.selectbox("Select Type", [], disabled=True, placeholder="Select Group first")
 
             # Logic: Filter DF based on Type
             df_lvl4 = df_lvl3[df_lvl3['Type'] == sel_type] if (sel_branch and sel_class and sel_group and sel_type) else df_lvl3
 
             # 5. Subtype Selection (Depends on Type)
             if sel_branch and sel_class and sel_group and sel_type:
-                # REMOVED sorted()
                 subtypes = df_lvl4['Subtype'].unique().tolist()
                 subtypes = [x for x in subtypes if x]
-                sel_subtype = c5.selectbox("5. Select Subtype (Optional)", [""] + subtypes)
+                sel_subtype = c5.selectbox("Select Subtype", [""] + subtypes)
             else:
-                sel_subtype = c5.selectbox("5. Select Subtype", [], disabled=True, placeholder="Select Type first")
+                sel_subtype = c5.selectbox("Select Subtype", [], disabled=True, placeholder="Select Type first")
             
             # Final Filter Logic
             final_df = df_lvl4[df_lvl4['Subtype'] == sel_subtype] if (sel_branch and sel_class and sel_group and sel_type and sel_subtype) else df_lvl4
@@ -780,7 +788,6 @@ Explanatory details about the fine structure of the annotation will be published
     st.caption("Data source: Human Proteostasis Network v4.1")
 
 # ==========================================
-# ==========================================
 # PAGE 4: GUIDES
 # ==========================================
 elif selected_page == "Guides":
@@ -790,7 +797,7 @@ elif selected_page == "Guides":
     st.markdown('<p class="hero-subtitle">Navigating the Human Proteostasis Network Database</p>', unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
 
-    # HTML Block - Content is flushed left to match your screenshot structure
+    # HTML Block
     st.markdown("""
 <style>
 .guide-container {
