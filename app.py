@@ -262,26 +262,56 @@ st.markdown("""
         display: none !important;
     }
 
-    /* Selectboxes (Dropdowns) - Force Arial on everything */
+    /* --- SELECTBOX STYLING (Force Light Theme & Grey Placeholder) --- */
+
+    /* 1. Force Font Family */
     div[data-testid="stSelectbox"] * {
         font-family: Arial, Helvetica, sans-serif !important;
     }
-    
-    /* Target the Label of the Selectbox specifically */
+
+    /* 2. The Label (e.g., "1. Select Branch") */
     div[data-testid="stSelectbox"] label p {
         font-size: 14px !important;
         color: #445550 !important;
     }
 
-    /* Target the dropdown popover menu items */
-    div[role="listbox"] * {
-         font-family: Arial, Helvetica, sans-serif !important;
+    /* 3. The Clickable Box (The Container) */
+    /* We force White background to hide Dark Mode's black box, and Grey text for the placeholder */
+    div[data-testid="stSelectbox"] div[data-baseweb="select"] > div {
+        background-color: #FFFFFF !important;   /* Force White Background */
+        border: 2px solid #4DD0E1 !important;   /* Teal Border */
+        border-radius: 12px !important;
+        color: #757575 !important;              /* <--- THIS MAKES THE TEXT GREY */
+        box-shadow: none !important;
     }
 
-    /* Style the main box of the selectbox */
-    div[data-testid="stSelectbox"] > div > div {
-        border-color: #4DD0E1 !important;
-        border-width: 2px !important;
+    /* 4. The Text Inside the Box */
+    /* Ensures the "Select Branch first" text inherits the grey color */
+    div[data-testid="stSelectbox"] div[data-baseweb="select"] > div > div {
+        color: #757575 !important;
+    }
+
+    /* 5. The SVG Arrow Icon */
+    div[data-testid="stSelectbox"] svg {
+        fill: #006064 !important; /* Teal Arrow */
+    }
+
+    /* 6. The Dropdown Menu (The list that pops up) */
+    /* We must also force this to be White/Dark Text so it's readable in Dark Mode */
+    div[data-baseweb="popover"] div[role="listbox"] {
+        background-color: #FFFFFF !important;
+        border: 1px solid #4DD0E1 !important;
+    }
+    
+    div[data-baseweb="popover"] div[role="option"] {
+        color: #212121 !important; /* Dark text for the actual options */
+    }
+    
+    /* Highlight color when hovering an option */
+    div[data-baseweb="popover"] div[role="option"]:hover,
+    div[data-baseweb="popover"] div[role="option"][aria-selected="true"] {
+        background-color: #E0F7FA !important;
+        color: #006064 !important;
     }
 
 
