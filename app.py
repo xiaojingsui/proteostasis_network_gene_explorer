@@ -2,6 +2,8 @@ import streamlit as st
 import pandas as pd
 import io
 import textwrap
+import requests
+import math
 
 # 1. Page Config (Must be the first command)
 st.set_page_config(page_title="Human PN Database", layout="wide")
@@ -23,7 +25,7 @@ def load_data():
     try:
         df = pd.read_excel(file_path, sheet_name='MAIN')
         df = df.dropna(subset=['Gene Symbol', 'UniProt ID'])
-        # Fill NaN in hierarchy columns with empty strings to avoid dropdown errors
+        # Fill NaN in hierarchy columns with empty strings
         hierarchy_cols = ['Branch', 'Class', 'Group', 'Type', 'Subtype']
         for col in hierarchy_cols:
             if col in df.columns:
@@ -32,7 +34,7 @@ def load_data():
     except Exception as e:
         return pd.DataFrame()
 
-# 3. HELPER FUNCTIONS FOR LINKS
+# 3. HELPER FUNCTIONS
 def format_links(df_input):
     """Applies HTML formatting to specific columns for display"""
     df_copy = df_input.copy()
@@ -53,72 +55,118 @@ def format_links(df_input):
             except:
                 return f'<a href="https://www.ncbi.nlm.nih.gov/gene/?term={val}" target="_blank">{val}</a>'
         df_copy['Gene ID'] = df_copy['Gene ID'].apply(create_ncbi_link)
-
-    # Interpro Links
-    if 'Interpro Domains' in df_copy.columns:
-        def create_interpro_links(val):
-            if pd.isna(val) or str(val).strip() == "" or "(none noted)" in str(val):
-                return val
-            domains = [d.strip() for d in str(val).split(';')]
-            linked_domains = []
-            for d in domains:
-                if d.startswith('IPR'):
-                    url = f"https://www.ebi.ac.uk/interpro/entry/InterPro/{d}"
-                    linked_domains.append(f'<a href="{url}" target="_blank">{d}</a>')
-                else:
-                    linked_domains.append(d)
-            return ", ".join(linked_domains)
-        df_copy['Interpro Domains'] = df_copy['Interpro Domains'].apply(create_interpro_links)
         
     return df_copy
+
+@st.cache_data(show_spinner=False)
+def fetch_protein_names_from_api(uniprot_ids):
+    """
+    Fetches protein names for a list of UniProt IDs using the UniProt REST API.
+    Batches requests to avoid URL length limits.
+    """
+    if not uniprot_ids:
+        return {}
+
+    mapping = {}
+    # Chunk IDs to avoid URL too long errors (UniProt URL limit is approx 2000 chars)
+    chunk_size = 50 
+    chunks = [uniprot_ids[i:i + chunk_size] for i in range(0, len(uniprot_ids), chunk_size)]
+
+    for chunk in chunks:
+        # Construct query: accession:ID1 OR accession:ID2 ...
+        query_parts = [f"accession:{uid}" for uid in chunk]
+        query = " OR ".join(query_parts)
+        
+        url = "https://rest.uniprot.org/uniprotkb/search"
+        params = {
+            "query": query,
+            "fields": "accession,protein_name",
+            "format": "json",
+            "size": 500
+        }
+        
+        try:
+            r = requests.get(url, params=params)
+            if r.status_code == 200:
+                data = r.json()
+                for result in data.get('results', []):
+                    acc = result.get('primaryAccession')
+                    # Try to get recommended name, fallback to submitted name
+                    try:
+                        name = result['proteinDescription']['recommendedName']['fullName']['value']
+                    except KeyError:
+                        try:
+                            name = result['proteinDescription']['submissionNames'][0]['fullName']['value']
+                        except:
+                            name = "Name not found"
+                    mapping[acc] = name
+        except Exception as e:
+            # Silently fail on API errors to keep app running
+            pass
+            
+    return mapping
+
+def enrich_with_protein_names(df_input):
+    """
+    Checks if 'Protein Name' exists. If not, fetches it from UniProt
+    for the specific rows in df_input.
+    """
+    df_out = df_input.copy()
+    
+    # If the Excel already has the column, just ensure it handles NaNs
+    if 'Protein Name' in df_out.columns:
+        return df_out
+
+    # If column missing, fetch data
+    unique_ids = df_out['UniProt ID'].unique().tolist()
+    
+    # Limit fetching to prevent timeouts if result set is huge
+    if len(unique_ids) > 200:
+        df_out['Protein Name'] = "(Too many results to fetch names - Filter further)"
+        return df_out
+
+    with st.spinner("Fetching protein names from UniProt..."):
+        name_map = fetch_protein_names_from_api(unique_ids)
+    
+    df_out['Protein Name'] = df_out['UniProt ID'].map(name_map).fillna('')
+    return df_out
 
 # 4. GLOBAL CSS
 st.markdown("""
     <style>
     /* --- GLOBAL FONTS & MAIN CONTAINER --- */
-    /* Force Arial on everything in the app */
     html, body, [data-testid="stAppViewContainer"], .stApp, p, h1, h2, h3, h4, h5, h6, span, div {
         font-family: Arial, Helvetica, sans-serif !important;
         background-color: #FBFEFF;
         color: #212121 !important;
     }
     
-    /* Remove standard top padding so the navbar sits at the very top */
     .block-container {
         padding-top: 1rem !important;
         padding-bottom: 5rem !important;
     }
 
-    /* Hide standard Streamlit header elements */
     [data-testid="stHeader"] { display: none !important; }
     #MainMenu { visibility: hidden; }
     footer { visibility: hidden; }
 
-    /* --- CUSTOM NAVBAR (STYLING THE RADIO BUTTON) --- */
+    /* --- CUSTOM NAVBAR --- */
     div[role="radiogroup"] {
     position: fixed !important;      
     top: 0 !important;                
     left: 0 !important;               
     width: 100vw !important;          
     z-index: 99999 !important;        
-    
     background-color: #FFFFFF;        
-    
     display: flex !important;
     justify-content: center !important; 
     padding: 10px 0 !important; 
-    
     align-items: center !important; 
     border-bottom: 1px solid #E0E0E0;
     }
 
-    div[role="radiogroup"] label > div:first-child {
-        display: none !important;
-    }
-
-    div[role="radiogroup"] label {
-        margin-right: 0px !important;
-    }
+    div[role="radiogroup"] label > div:first-child { display: none !important; }
+    div[role="radiogroup"] label { margin-right: 0px !important; }
 
     div[role="radiogroup"] p {
         font-family: Arial, Helvetica, sans-serif !important;  
@@ -203,9 +251,7 @@ st.markdown("""
         margin-bottom: 40px;
     }
 
-    /* --- WIDGET STYLING (Inputs & Selectboxes) --- */
-    
-    /* --- TEXT INPUT STYLING --- */
+    /* --- WIDGET STYLING --- */
     div[data-testid="stTextInput"] {
         width: 50% !important;      
         min-width: 300px;
@@ -214,12 +260,6 @@ st.markdown("""
     div[data-testid="stTextInput"] > div {
         height: auto !important;
         min-height: 75px !important; 
-    }
-    div[data-testid="stTextInput"] div[data-baseweb="input"],
-    div[data-testid="stTextInput"] div[data-baseweb="base-input"] {
-        background-color: transparent !important;
-        border: none !important;
-        box-shadow: none !important;
     }
     div[data-testid="stTextInput"] input {
         font-family: Arial, Helvetica, sans-serif !important;
@@ -232,102 +272,40 @@ st.markdown("""
         padding: 22px 25px !important;
         font-size: 15px !important;
     }
-    div[data-testid="stTextInput"] input::placeholder {
-        color: #90A4AE !important;
-        opacity: 1 !important;
-    }
     div[data-testid="stTextInput"] input:focus {
         border-color: #006064 !important;
         box-shadow: none !important;
         outline: none !important;
     }
-    div[data-testid="InputInstructions"] {
-        display: none !important;
-    }
 
-    /* --- SELECTBOX STYLING (DROPDOWNS) --- */
-    
-    div[data-testid="stSelectbox"] * {
-         font-family: Arial, Helvetica, sans-serif !important;
-    }
-    
-    div[data-testid="stSelectbox"] label p {
-        font-size: 14px !important;
-        color: #445550 !important;
-    }
-
-    /* 1. ENABLED/ACTIVE STATE (Black Text) */
-    /* UPDATED: Added :not([aria-disabled="true"]) to ensure this doesn't target disabled boxes */
+    /* --- DROPDOWNS --- */
+    div[data-testid="stSelectbox"] * { font-family: Arial, Helvetica, sans-serif !important; }
     div[data-testid="stSelectbox"] > div > div:not([aria-disabled="true"]) {
         border-color: #E0E0E0 !important; 
         border-width: 1px !important;
         background-color: white !important;
         color: #212121 !important; 
     }
-
-    /* 2. DISABLED STATE (Light Grey Text) */
-    /* Target the wrapper of the disabled box */
-    div[data-testid="stSelectbox"] div[aria-disabled="true"] {
-        border-color: #EEEEEE !important;
-        background-color: #FAFAFA !important;
-        color: #B0BEC5 !important;
-    }
-    
-    /* Target the TEXT content inside the disabled box */
-    div[data-testid="stSelectbox"] div[aria-disabled="true"] * {
-        color: #B0BEC5 !important;  /* Light Grey hex code */
-        -webkit-text-fill-color: #B0BEC5 !important; /* Force override for Webkit browsers */
-        opacity: 1 !important;
-    }
-
-    /* 3. ARROW ICONS */
-    div[data-testid="stSelectbox"] svg {
-        fill: #9E9E9E !important; 
-    }
-    
-    /* Force Arrow to be Light Grey when disabled */
-    div[data-testid="stSelectbox"] div[aria-disabled="true"] svg {
-        fill: #B0BEC5 !important;
-    }
-    
-    /* 4. HOVER & FOCUS (Teal) - Only for Enabled Boxes */
     div[data-testid="stSelectbox"]:not(:has(div[aria-disabled="true"])):hover > div > div, 
     div[data-testid="stSelectbox"]:not(:has(div[aria-disabled="true"])) > div > div:focus-within {
         border-color: #4DD0E1 !important; 
         border-width: 2px !important;
     }
-    
-    div[data-testid="stSelectbox"]:not(:has(div[aria-disabled="true"])):hover svg,
-    div[data-testid="stSelectbox"]:not(:has(div[aria-disabled="true"])) > div > div:focus-within svg {
-        fill: #006064 !important; 
-    }
 
-
-    /* --- BUTTON & DOWNLOAD BUTTON STYLING (Force Light Theme) --- */
-    
+    /* --- BUTTONS --- */
     div.stButton > button, div.stDownloadButton > button {
         background-color: #FFFFFF !important;
         color: #212121 !important;              
-        border: 1px solid #D3D3D3 !important;    
+        border: 1px solid #D3D3D3 !important;     
         transition: all 0.3s ease !important;
     }
-
     div.stButton > button:hover, div.stDownloadButton > button:hover {
         background-color: #F0FBFC !important; 
-        color: #004D40 !important;            
-        border-color: #006064 !important;      
+        color: #004D40 !important;             
+        border-color: #006064 !important;       
     }
 
-    div.stButton > button:active, div.stButton > button:focus,
-    div.stDownloadButton > button:active, div.stDownloadButton > button:focus {
-        background-color: #FFFFFF !important;
-        color: #006064 !important;
-        border-color: #006064 !important;
-        box-shadow: none !important;
-    }
-
-
-    /* Results Table Styling */
+    /* Results Table */
     .result-container {
         font-family: Arial, Helvetica, sans-serif !important;
         background-color: white;
@@ -345,7 +323,6 @@ st.markdown("""
         padding: 15px !important; 
     }
     
-    /* Contact Box Styling */
     .info-box {
         font-family: Arial, Helvetica, sans-serif !important;
         background-color: white;
@@ -432,6 +409,7 @@ if selected_page == "Open Search":
             clean_query = query.strip().lower()
 
             # --- SEARCH STRATEGY DEFINITION ---
+            # Search still works on Interpro, but we won't display it later
             exact_cols = ['Gene Symbol', 'Gene ID', 'UniProt ID', 'Branch', 'Class', 'Group', 'Type', 'Subtype']
             list_cols = ['Interpro Domains']
 
@@ -462,19 +440,22 @@ if selected_page == "Open Search":
             results = df[final_mask].copy()
             
             if not results.empty:
+                # ENRICH RESULTS: Add Protein Name from UniProt if missing
+                results = enrich_with_protein_names(results)
+
                 col_results, col_download = st.columns([7, 1])
                 with col_results:
                     st.markdown(f"#### {len(results)} results found for '{query}'")
                 
                 with col_download:
                     st.markdown('<div style="margin-top: 10px;"></div>', unsafe_allow_html=True)
-                    display_cols = [
-                        'UniProt ID', 'Gene ID', 'Gene Symbol', 'Branch', 
-                        'Class', 'Group', 'Type', 'Subtype', 
-                        'Interpro Domains'
+                    # Define download columns (including Protein Name)
+                    dl_cols = [
+                        'UniProt ID', 'Gene ID', 'Gene Symbol', 'Gene Synonyms', 'Protein Name',
+                        'Branch', 'Class', 'Group', 'Type', 'Subtype'
                     ]
-                    valid_cols = [c for c in display_cols if c in results.columns]
-                    csv = results[valid_cols].to_csv(index=False).encode('utf-8')
+                    valid_dl_cols = [c for c in dl_cols if c in results.columns]
+                    csv = results[valid_dl_cols].to_csv(index=False).encode('utf-8')
                     
                     st.download_button(
                         label="Download CSV",
@@ -483,10 +464,15 @@ if selected_page == "Open Search":
                         mime="text/csv",
                     )
                 
-                # Use Helper to format links
+                # Format Links
                 results = format_links(results)
                 
-                display_cols = ['UniProt ID', 'Gene ID', 'Gene Symbol','Gene Synonyms', 'Branch', 'Class', 'Group', 'Type', 'Subtype', 'Interpro Domains']
+                # DEFINED DISPLAY COLUMNS (Removed Interpro, Added Protein Name)
+                display_cols = [
+                    'UniProt ID', 'Gene ID', 'Gene Symbol', 'Gene Synonyms', 
+                    'Protein Name', 
+                    'Branch', 'Class', 'Group', 'Type', 'Subtype'
+                ]
                 available_cols = [c for c in display_cols if c in results.columns]
                 
                 st.write(
@@ -494,8 +480,6 @@ if selected_page == "Open Search":
                     unsafe_allow_html=True
                 )
             else:
-                
-                # REVISED NO RESULTS NOTIFICATION
                 st.markdown(f"""
                     <div style="
                         background-color: #FFFFFF;
@@ -635,6 +619,9 @@ elif selected_page == "Guided Search":
         st.divider()
         
         if sel_branch:
+            # ENRICH RESULTS: Add Protein Name
+            final_df = enrich_with_protein_names(final_df)
+
             col_res_header, col_res_dl = st.columns([7, 1])
             with col_res_header:
                 st.markdown(f"#### Found {len(final_df)} entries")
@@ -647,8 +634,12 @@ elif selected_page == "Guided Search":
 
             with col_res_dl:
                 st.markdown('<div style="margin-top: 10px;"></div>', unsafe_allow_html=True)
-                display_cols = ['UniProt ID', 'Gene ID', 'Gene Symbol', 'Gene Synonyms','Branch', 'Class', 'Group', 'Type', 'Subtype', 'Interpro Domains']
-                valid_cols = [c for c in display_cols if c in final_df.columns]
+                dl_cols = [
+                    'UniProt ID', 'Gene ID', 'Gene Symbol', 'Gene Synonyms', 
+                    'Protein Name', 
+                    'Branch', 'Class', 'Group', 'Type', 'Subtype'
+                ]
+                valid_cols = [c for c in dl_cols if c in final_df.columns]
                 csv = final_df[valid_cols].to_csv(index=False).encode('utf-8')
                 st.download_button(
                     label="Download CSV",
@@ -659,6 +650,13 @@ elif selected_page == "Guided Search":
 
             # Apply Link Formatting
             display_df = format_links(final_df)
+            
+            # DEFINED DISPLAY COLUMNS (Removed Interpro, Added Protein Name)
+            display_cols = [
+                'UniProt ID', 'Gene ID', 'Gene Symbol', 'Gene Synonyms', 
+                'Protein Name',
+                'Branch', 'Class', 'Group', 'Type', 'Subtype'
+            ]
             available_cols = [c for c in display_cols if c in display_df.columns]
             
             st.write(
@@ -666,7 +664,6 @@ elif selected_page == "Guided Search":
                 unsafe_allow_html=True
             )
         else:
-            # Styled info box to match Arial theme
             st.markdown("""
                 <div style="background-color: #E1F5FE; padding: 15px; border-radius: 8px; color: #0277BD; border: 1px solid #B3E5FC;">
                     Please select a <b>Branch</b> to begin the guided search.
@@ -865,7 +862,7 @@ The <b>Open Search</b> page is designed for quick retrieval of specific genes or
 <b>Keywords:</b> You can search for functional terms found in the hierarchy, such as "Chaperone", "Translation", or "PN regulation", etc.
 </li>
 <li>
-<b>InterPro Domains:</b> The engine searches within the domain lists. You can search for specific domain IDs (e.g., <i>IPR001234</i>).
+<b>InterPro Domains:</b> The engine searches within the domain lists (though these are not displayed in the table). You can search for specific domain IDs (e.g., <i>IPR001234</i>).
 </li>
 <li>
 <b>Exact vs. Partial:</b> The search is case-insensitive. For Gene Symbols, IDs and functional terms, it prioritizes exact matches, but will also scan lists (like domains) for the presence of your query.
@@ -906,9 +903,6 @@ Both search modes generate a standard results table containing the following int
 </li>
 <li>
 <span class="term-highlight">Gene ID</span>: Clicking this value opens the NCBI Gene database entry.
-</li>
-<li>
-<span class="term-highlight">InterPro Domains</span>: Specific domains listed (starting with IPR) are hyperlinked to the EBI InterPro database for structural analysis.
 </li>
 </ul>
 
