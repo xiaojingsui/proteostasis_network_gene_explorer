@@ -80,6 +80,7 @@ st.markdown("""
     html, body, [data-testid="stAppViewContainer"], .stApp, p, h1, h2, h3, h4, h5, h6, span, div {
         font-family: Arial, Helvetica, sans-serif !important;
         background-color: #FBFEFF;
+        color: #212121 !important;
     }
     
     /* Remove standard top padding so the navbar sits at the very top */
