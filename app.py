@@ -58,22 +58,32 @@ def format_links(df_input):
         
     return df_copy
 
+# -----------------------------------------------------------------------------
+# UPDATED HELPER FUNCTIONS
+# -----------------------------------------------------------------------------
+
 @st.cache_data(show_spinner=False)
 def fetch_protein_names_from_api(uniprot_ids):
     """
     Fetches protein names for a list of UniProt IDs using the UniProt REST API.
-    Batches requests to avoid URL length limits.
     """
     if not uniprot_ids:
         return {}
 
     mapping = {}
-    # Chunk IDs to avoid URL too long errors (UniProt URL limit is approx 2000 chars)
-    chunk_size = 50 
+    # Increased chunk size to 100 to reduce number of API calls
+    chunk_size = 100 
     chunks = [uniprot_ids[i:i + chunk_size] for i in range(0, len(uniprot_ids), chunk_size)]
 
-    for chunk in chunks:
-        # Construct query: accession:ID1 OR accession:ID2 ...
+    # Create a placeholder for a progress bar
+    progress_bar = st.progress(0, text="Fetching protein names from UniProt...")
+    
+    total_chunks = len(chunks)
+    
+    for idx, chunk in enumerate(chunks):
+        # Update progress bar
+        progress_bar.progress((idx + 1) / total_chunks, text=f"Fetching names... ({idx+1}/{total_chunks} batches)")
+        
         query_parts = [f"accession:{uid}" for uid in chunk]
         query = " OR ".join(query_parts)
         
@@ -86,48 +96,48 @@ def fetch_protein_names_from_api(uniprot_ids):
         }
         
         try:
-            r = requests.get(url, params=params)
+            r = requests.get(url, params=params, timeout=10) # Added timeout
             if r.status_code == 200:
                 data = r.json()
                 for result in data.get('results', []):
                     acc = result.get('primaryAccession')
-                    # Try to get recommended name, fallback to submitted name
                     try:
+                        # Try recommended name
                         name = result['proteinDescription']['recommendedName']['fullName']['value']
                     except KeyError:
                         try:
+                            # Try submitted name
                             name = result['proteinDescription']['submissionNames'][0]['fullName']['value']
                         except:
-                            name = "Name not found"
+                            name = "" # Leave blank if not found
                     mapping[acc] = name
         except Exception as e:
-            # Silently fail on API errors to keep app running
-            pass
+            pass # Skip failed chunks to keep app alive
             
+    progress_bar.empty() # Remove progress bar when done
     return mapping
 
 def enrich_with_protein_names(df_input):
     """
-    Checks if 'Protein Name' exists. If not, fetches it from UniProt
-    for the specific rows in df_input.
+    Checks if 'Protein Name' exists. If not, fetches it.
     """
     df_out = df_input.copy()
     
-    # If the Excel already has the column, just ensure it handles NaNs
+    # If Excel already has the column, use it
     if 'Protein Name' in df_out.columns:
         return df_out
 
-    # If column missing, fetch data
     unique_ids = df_out['UniProt ID'].unique().tolist()
     
-    # Limit fetching to prevent timeouts if result set is huge
-    if len(unique_ids) > 200:
-        df_out['Protein Name'] = "(Too many results to fetch names - Filter further)"
+    # --- CHANGED: Increased limit from 200 to 1000 ---
+    if len(unique_ids) > 1000:
+        df_out['Protein Name'] = "(Result set too large - Filter further to see names)"
         return df_out
 
-    with st.spinner("Fetching protein names from UniProt..."):
-        name_map = fetch_protein_names_from_api(unique_ids)
+    # Call the API
+    name_map = fetch_protein_names_from_api(unique_ids)
     
+    # Map the results
     df_out['Protein Name'] = df_out['UniProt ID'].map(name_map).fillna('')
     return df_out
 
