@@ -59,7 +59,7 @@ def format_links(df_input):
     return df_copy
 
 # -----------------------------------------------------------------------------
-# UPDATED HELPER FUNCTIONS
+# UPDATED HELPER FUNCTIONS (API LOGIC FROM V2)
 # -----------------------------------------------------------------------------
 
 @st.cache_data(show_spinner=False)
@@ -219,7 +219,7 @@ st.markdown("""
     }
     
     .nav-external-link svg {
-        width: 20px !important;   
+        width: 20px !important;    
         height: 20px !important;
         fill: currentColor;
         margin-bottom: -2px;      
@@ -261,31 +261,59 @@ st.markdown("""
         margin-bottom: 40px;
     }
 
-    /* --- WIDGET STYLING --- */
+    /* --- WIDGET STYLING (RESTORED FROM VERSION 1) --- */
+    
+    /* 1. Main Container positioning */
     div[data-testid="stTextInput"] {
         width: 50% !important;      
         min-width: 300px;
         margin: 0 auto -15px !important;
     }
+    
     div[data-testid="stTextInput"] > div {
         height: auto !important;
         min-height: 75px !important; 
     }
+
+    /* 2. THE OUTER WRAPPERS (Make them Invisible) */
+    div[data-testid="stTextInput"] div[data-baseweb="input"],
+    div[data-testid="stTextInput"] div[data-baseweb="base-input"] {
+        background-color: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+    }
+
+    /* 3. THE INNER INPUT (The Actual White Box) */
     div[data-testid="stTextInput"] input {
         font-family: Arial, Helvetica, sans-serif !important;
-        background-color: #FFFFFF !important;   
-        border: 2px solid #4DD0E1 !important;   
+        background-color: #FFFFFF !important;   /* Force White Background */
+        border: 2px solid #4DD0E1 !important;   /* Force Teal Border */
         border-radius: 12px !important;
-        color: #006064 !important;              
-        caret-color: #006064 !important;        
+        
+        color: #006064 !important;              /* Force Teal Text */
+        caret-color: #006064 !important;        /* Teal Cursor */
+        
         box-sizing: border-box !important; 
         padding: 22px 25px !important;
         font-size: 15px !important;
     }
+
+    /* 4. Placeholder Text */
+    div[data-testid="stTextInput"] input::placeholder {
+        color: #90A4AE !important;
+        opacity: 1 !important;
+    }
+
+    /* 5. Focus State */
     div[data-testid="stTextInput"] input:focus {
         border-color: #006064 !important;
         box-shadow: none !important;
         outline: none !important;
+    }
+
+    /* 6. HIDE INSTRUCTION TEXT (Press Enter to Apply) */
+    div[data-testid="InputInstructions"] {
+        display: none !important;
     }
 
     /* --- DROPDOWNS --- */
@@ -306,13 +334,13 @@ st.markdown("""
     div.stButton > button, div.stDownloadButton > button {
         background-color: #FFFFFF !important;
         color: #212121 !important;              
-        border: 1px solid #D3D3D3 !important;     
+        border: 1px solid #D3D3D3 !important;       
         transition: all 0.3s ease !important;
     }
     div.stButton > button:hover, div.stDownloadButton > button:hover {
         background-color: #F0FBFC !important; 
-        color: #004D40 !important;             
-        border-color: #006064 !important;       
+        color: #004D40 !important;              
+        border-color: #006064 !important;        
     }
 
     /* Results Table */
