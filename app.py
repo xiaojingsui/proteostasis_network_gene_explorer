@@ -978,7 +978,7 @@ The search is case-insensitive.
 <b>Hyperlinks:</b> Clicking the inhibitor name (e.g., <i>rapamycin</i>) opens its full profile on the Chemical Probes Portal for detailed potency data.
 </li>
 <li>
-<b>Multiple Entries:</b> If a target has several common inhibitors, they are listed and separated by a semicolon (;).
+<b>Multiple Entries:</b> If a target has several inhibitors, they are listed and separated by a semicolon (;).
 </li>
 </ul>
 
