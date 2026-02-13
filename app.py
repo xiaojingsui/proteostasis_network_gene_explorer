@@ -205,122 +205,111 @@ st.markdown("""
 
     /* --- WIDGET STYLING (Inputs & Selectboxes) --- */
     
-    /* --- TEXT INPUT STYLING (Final "Input-Only" Fix) --- */
-
-    /* 1. Main Container positioning */
+    /* --- TEXT INPUT STYLING --- */
     div[data-testid="stTextInput"] {
         width: 50% !important;      
         min-width: 300px;
         margin: 0 auto -15px !important;
     }
-    
     div[data-testid="stTextInput"] > div {
         height: auto !important;
         min-height: 75px !important; 
     }
-
-    /* 2. THE OUTER WRAPPERS (Make them Invisible) */
     div[data-testid="stTextInput"] div[data-baseweb="input"],
     div[data-testid="stTextInput"] div[data-baseweb="base-input"] {
         background-color: transparent !important;
         border: none !important;
         box-shadow: none !important;
     }
-
-    /* 3. THE INNER INPUT (The Actual White Box) */
     div[data-testid="stTextInput"] input {
         font-family: Arial, Helvetica, sans-serif !important;
-        background-color: #FFFFFF !important;   /* Force White Background */
-        border: 2px solid #4DD0E1 !important;   /* Force Teal Border */
+        background-color: #FFFFFF !important;   
+        border: 2px solid #4DD0E1 !important;   
         border-radius: 12px !important;
-        
-        color: #006064 !important;              /* Force Teal Text */
-        caret-color: #006064 !important;        /* Teal Cursor */
-        
+        color: #006064 !important;              
+        caret-color: #006064 !important;        
         box-sizing: border-box !important; 
         padding: 22px 25px !important;
         font-size: 15px !important;
     }
-
-    /* 4. Placeholder Text */
     div[data-testid="stTextInput"] input::placeholder {
         color: #90A4AE !important;
         opacity: 1 !important;
     }
-
-    /* 5. Focus State */
     div[data-testid="stTextInput"] input:focus {
         border-color: #006064 !important;
         box-shadow: none !important;
         outline: none !important;
     }
-
-    /* Hide Instruction Text */
     div[data-testid="InputInstructions"] {
         display: none !important;
     }
 
     /* --- SELECTBOX STYLING (DROPDOWNS) --- */
-    /* Force Arial on everything */
+    
     div[data-testid="stSelectbox"] * {
          font-family: Arial, Helvetica, sans-serif !important;
     }
     
-    /* Label styling */
     div[data-testid="stSelectbox"] label p {
         font-size: 14px !important;
         color: #445550 !important;
     }
 
-    /* Dropdown menu items */
-    div[role="listbox"] * {
-         font-family: Arial, Helvetica, sans-serif !important;
-    }
-
-    /* 1. DEFAULT STATE (Grey - for Disabled/Inactive look) */
+    /* 1. ENABLED/ACTIVE STATE (Black Text) */
     div[data-testid="stSelectbox"] > div > div {
-        border-color: #E0E0E0 !important; /* Light Grey Border by default */
+        border-color: #E0E0E0 !important; 
         border-width: 1px !important;
         background-color: white !important;
-        color: #757575 !important;
+        color: #212121 !important; /* ENABLED BOX = BLACK TEXT */
     }
 
-    /* 2. ARROW COLOR (Grey by default) */
+    /* 2. DISABLED STATE (Grey Text - For "Select Branch First") */
+    /* This overrides the black text for any box that is disabled */
+    div[data-testid="stSelectbox"] div[aria-disabled="true"] {
+        color: #9E9E9E !important; 
+        opacity: 0.8 !important;
+    }
+    
+    /* Force internal text of disabled box to be grey */
+    div[data-testid="stSelectbox"] div[aria-disabled="true"] * {
+        color: #9E9E9E !important; 
+        -webkit-text-fill-color: #9E9E9E !important;
+    }
+
+    /* 3. ARROW ICONS */
     div[data-testid="stSelectbox"] svg {
-        fill: #9E9E9E !important; /* Grey Triangle */
+        fill: #9E9E9E !important; /* Grey Triangle Default */
     }
-
-    /* 3. HOVER & FOCUS STATE (Teal - Only when interacting) */
-    div[data-testid="stSelectbox"]:hover > div > div, 
-    div[data-testid="stSelectbox"] > div > div:focus-within {
-        border-color: #4DD0E1 !important; /* Teal Border */
+    
+    /* 4. HOVER & FOCUS (Teal) - Only for Enabled Boxes */
+    div[data-testid="stSelectbox"]:not(:has(div[aria-disabled="true"])):hover > div > div, 
+    div[data-testid="stSelectbox"]:not(:has(div[aria-disabled="true"])) > div > div:focus-within {
+        border-color: #4DD0E1 !important; 
         border-width: 2px !important;
     }
     
-    div[data-testid="stSelectbox"]:hover svg,
-    div[data-testid="stSelectbox"] > div > div:focus-within svg {
-        fill: #006064 !important; /* Teal Triangle */
+    div[data-testid="stSelectbox"]:not(:has(div[aria-disabled="true"])):hover svg,
+    div[data-testid="stSelectbox"]:not(:has(div[aria-disabled="true"])) > div > div:focus-within svg {
+        fill: #006064 !important; 
     }
 
 
     /* --- BUTTON & DOWNLOAD BUTTON STYLING (Force Light Theme) --- */
     
-    /* 1. Normal State (Idle) */
     div.stButton > button, div.stDownloadButton > button {
         background-color: #FFFFFF !important;
-        color: #212121 !important;              /* Dark text */
-        border: 1px solid #D3D3D3 !important;   /* Light grey border */
+        color: #212121 !important;              
+        border: 1px solid #D3D3D3 !important;   
         transition: all 0.3s ease !important;
     }
 
-    /* 2. Hover State */
     div.stButton > button:hover, div.stDownloadButton > button:hover {
-        background-color: #F0FBFC !important; /* Very light teal tint */
-        color: #004D40 !important;            /* Darker Teal text */
-        border-color: #006064 !important;      /* Darker border */
+        background-color: #F0FBFC !important; 
+        color: #004D40 !important;            
+        border-color: #006064 !important;      
     }
 
-    /* 3. Active/Focus State (When clicked) */
     div.stButton > button:active, div.stButton > button:focus,
     div.stDownloadButton > button:active, div.stDownloadButton > button:focus {
         background-color: #FFFFFF !important;
