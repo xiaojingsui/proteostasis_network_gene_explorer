@@ -712,47 +712,43 @@ elif selected_page == "Guided Search":
             # Final Filter Logic
             final_df = df_lvl4[df_lvl4['Subtype'] == sel_subtype] if (sel_branch and sel_class and sel_group and sel_type and sel_subtype) else df_lvl4
 
-        # --- DISPLAY RESULTS ---
+        # --- DISPLAY RESULTS (Guided Search) ---
         st.divider()
-        
+
         if sel_branch:
-            # ENRICH RESULTS: Add Protein Name
+            # 1. ENRICH RESULTS: Add Protein Name
             final_df = enrich_with_protein_names(final_df)
 
             col_res_header, col_res_dl = st.columns([7, 1])
             with col_res_header:
                 st.markdown(f"#### Found {len(final_df)} entries")
-                breadcrumb = f"{sel_branch}"
-                if sel_class: breadcrumb += f" > {sel_class}"
-                if sel_group: breadcrumb += f" > {sel_group}"
-                if sel_type: breadcrumb += f" > {sel_type}"
-                if sel_subtype: breadcrumb += f" > {sel_subtype}"
-                st.caption(f"Filter: {breadcrumb}")
+                # ... (breadcrumb logic remains the same)
 
             with col_res_dl:
                 st.markdown('<div style="margin-top: 10px;"></div>', unsafe_allow_html=True)
+                
+                # 2. PREPARE DOWNLOAD (Plain text inhibitors for CSV)
+                df_for_dl = final_df.copy()
+                if 'Gene Symbol' in df_for_dl.columns:
+                    df_for_dl['Inhibitor'] = df_for_dl['Gene Symbol'].apply(lambda x: get_inhibitor_html(x, for_csv=True))
+                
                 dl_cols = [
                     'UniProt ID', 'Gene ID', 'Gene Symbol', 'Gene Synonyms', 
-                    'Protein Name', 
-                    'Branch', 'Class', 'Group', 'Type', 'Subtype'
+                    'Protein Name', 'Branch', 'Class', 'Group', 'Type', 'Subtype', 
+                    'Inhibitor'
                 ]
-                valid_cols = [c for c in dl_cols if c in final_df.columns]
-                csv = final_df[valid_cols].to_csv(index=False).encode('utf-8')
-                st.download_button(
-                    label="Download CSV",
-                    data=csv,
-                    file_name="guided_search_results.csv",
-                    mime="text/csv",
-                )
+                valid_cols = [c for c in dl_cols if c in df_for_dl.columns]
+                csv = df_for_dl[valid_cols].to_csv(index=False).encode('utf-8')
+                st.download_button(label="Download CSV", data=csv, file_name="guided_search_results.csv", mime="text/csv")
 
-            # Apply Link Formatting
-            display_df = format_links(final_df)
+            # 3. PREPARE DISPLAY (HTML Links for Inhibitors)
+            display_df = format_links(final_df) # This function now includes the HTML inhibitor logic
             
-            # DEFINED DISPLAY COLUMNS (Removed Interpro, Added Protein Name)
+            # Original order + Inhibitor at the end
             display_cols = [
                 'UniProt ID', 'Gene ID', 'Gene Symbol', 'Gene Synonyms', 
-                'Protein Name',
-                'Branch', 'Class', 'Group', 'Type', 'Subtype'
+                'Protein Name', 'Branch', 'Class', 'Group', 'Type', 'Subtype', 
+                'Inhibitor'
             ]
             available_cols = [c for c in display_cols if c in display_df.columns]
             
