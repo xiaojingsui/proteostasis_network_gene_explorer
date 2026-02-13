@@ -18,42 +18,25 @@ if "page" not in st.session_state:
 def update_search(new_query):
     st.session_state.search_key = new_query
 
-
-
-# --- HELPER FOR INHIBITOR HTML ---
-def get_inhibitor_html(symbol, for_csv=False):
-    inhibitors = INHIBITOR_MAP.get(symbol, [])
-    if not inhibitors:
-        return ""
-    if for_csv:
-        return "; ".join([name for name, url in inhibitors])
-    # HTML links joined by ;
-    return "; ".join([f'<a href="{url}" target="_blank">{name}</a>' for name, url in inhibitors])
-
-# Initialize session state
-if "search_key" not in st.session_state:
-    st.session_state.search_key = ""
-if "page" not in st.session_state:
-    st.session_state.page = "Open Search"
-
-def update_search(new_query):
-    st.session_state.search_key = new_query
-
+# 2. LOAD DATA
 @st.cache_data
 def load_data():
     file_path = 'Human Proteostasis Network 4.1 - 2026-0127.xlsx'
     try:
         df = pd.read_excel(file_path, sheet_name='MAIN')
         df = df.dropna(subset=['Gene Symbol', 'UniProt ID'])
+        # Fill NaN in hierarchy columns with empty strings
         hierarchy_cols = ['Branch', 'Class', 'Group', 'Type', 'Subtype']
         for col in hierarchy_cols:
             if col in df.columns:
                 df[col] = df[col].fillna('')
         return df
-    except Exception:
+    except Exception as e:
         return pd.DataFrame()
 
+# 3. HELPER FUNCTIONS
 def format_links(df_input):
+    """Applies HTML formatting to specific columns for display"""
     df_copy = df_input.copy()
     
     # UniProt Link
@@ -72,10 +55,6 @@ def format_links(df_input):
             except:
                 return f'<a href="https://www.ncbi.nlm.nih.gov/gene/?term={val}" target="_blank">{val}</a>'
         df_copy['Gene ID'] = df_copy['Gene ID'].apply(create_ncbi_link)
-        
-    # NEW: Inhibitor Column (HTML Version)
-    if 'Gene Symbol' in df_copy.columns:
-        df_copy['Inhibitor'] = df_copy['Gene Symbol'].apply(lambda x: get_inhibitor_html(x, for_csv=False))
         
     return df_copy
 
