@@ -59,7 +59,7 @@ def format_links(df_input):
     return df_copy
 
 # -----------------------------------------------------------------------------
-# UPDATED HELPER FUNCTIONS (ROBUST API LOGIC)
+# FINALIZED HELPER FUNCTIONS (HANDLES RNA GENES + ROBUST API)
 # -----------------------------------------------------------------------------
 
 @st.cache_data(show_spinner=False)
@@ -71,7 +71,7 @@ def fetch_protein_names_from_api(uniprot_ids):
         return {}
 
     mapping = {}
-    chunk_size = 50  # Reduced chunk size slightly to be safer
+    chunk_size = 50 
     chunks = [uniprot_ids[i:i + chunk_size] for i in range(0, len(uniprot_ids), chunk_size)]
 
     progress_bar = st.progress(0, text="Fetching protein names from UniProt...")
@@ -123,32 +123,35 @@ def fetch_protein_names_from_api(uniprot_ids):
 def enrich_with_protein_names(df_input):
     """
     Checks if 'Protein Name' exists. If not, fetches it.
+    Skips internal IDs like '(RNA gene 11)'.
     """
     df_out = df_input.copy()
     
-    # 1. Get unique IDs
     if 'UniProt ID' not in df_out.columns:
         return df_out
 
     unique_ids = df_out['UniProt ID'].unique().tolist()
     
-    # 2. CRITICAL FIX: Filter out NaNs, None, and empty strings
-    # This prevents sending bad queries like "accession: OR accession:P12345"
-    clean_ids = [str(x).strip() for x in unique_ids if pd.notna(x) and str(x).strip() != '']
+    # --- LOGIC UPDATE: Filter out RNA genes and invalid formats ---
+    clean_ids = []
+    for uid in unique_ids:
+        s_uid = str(uid).strip()
+        # 1. Must not be empty
+        # 2. Must not start with '(' (which covers your "(RNA gene ...)" cases)
+        if s_uid and not s_uid.startswith('('):
+            clean_ids.append(s_uid)
 
-    # 3. Check Limit
     if len(clean_ids) > 2500:
         df_out['Protein Name'] = "(Result set too large - Filter further to see names)"
         return df_out
 
-    # 4. Call the API with clean IDs
+    # Call API only with valid real IDs
     name_map = fetch_protein_names_from_api(clean_ids)
     
-    # 5. Map the results (safely handle missing keys)
+    # Apply map. If it's an RNA gene, it won't be in the map, so it returns ""
     df_out['Protein Name'] = df_out['UniProt ID'].apply(lambda x: name_map.get(str(x).strip(), ""))
     
     return df_out
-
 
 
 # 4. GLOBAL CSS
