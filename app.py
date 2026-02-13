@@ -576,7 +576,9 @@ if selected_page == "Open Search":
                 results_formatted = format_links(results) # Apply the formatting with inhibitors
 
                 # UPDATE THIS LIST
-                display_cols = ['Gene Symbol', 'Protein Name', 'Inhibitor', 'UniProt ID', 'Branch', 'Class', 'Group']
+                display_cols = ['UniProt ID', 'Gene ID', 'Gene Symbol', 'Gene Synonyms', 
+                'Protein Name', 'Branch', 'Class', 'Group', 'Type', 'Subtype', 
+                'Inhibitor']
                 available_cols = [c for c in display_cols if c in results_formatted.columns]
 
                 st.write(
