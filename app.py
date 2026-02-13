@@ -205,53 +205,53 @@ st.markdown("""
 
     /* --- WIDGET STYLING (Inputs & Selectboxes) --- */
     
-    /* --- TEXT INPUT STYLING --- */
+    /* --- TEXT INPUT STYLING (The "Wrapper" Fix) --- */
 
-    /* 1. Main Container positioning (Unchanged) */
+    /* 1. Main Position (Unchanged) */
     div[data-testid="stTextInput"] {
         width: 50% !important;      
         min-width: 300px;
         margin: 0 auto -15px !important;
     }
+    
     div[data-testid="stTextInput"] > div {
         height: auto !important;
         min-height: 75px !important; 
     }
 
-    /* 2. The Wrapper (THE FIX): Force it to be transparent and borderless */
-    /* This removes the "Black Box" behind your input in Dark Mode */
+    /* 2. THE OUTER WRAPPER (The Box) - We style THIS to be white/teal */
+    /* This overrides the black background/border that was showing through */
     div[data-testid="stTextInput"] div[data-baseweb="input"] {
-        background-color: transparent !important;
-        border: none !important;
-        box-shadow: none !important;
+        background-color: #FFFFFF !important;   /* Force Container White */
+        border: 2px solid #4DD0E1 !important;   /* Force Container Border */
+        border-radius: 12px !important;
+        box-shadow: none !important;            /* Kill default shadows */
     }
 
-    /* 3. The Actual Input Field styling (Unchanged but ensured colors) */
+    /* 3. THE INNER INPUT (The Text) - We make this see-through */
     div[data-testid="stTextInput"] input {
         font-family: Arial, Helvetica, sans-serif !important;
-        border-radius: 12px !important;
+        background-color: transparent !important; /* Transparent so white wrapper shows */
+        border: none !important;                  /* No double borders */
+        color: #006064 !important;                /* Teal Text */
+        caret-color: #006064 !important;          /* Teal Cursor */
+        
+        /* Spacing/Sizing matches your previous design */
         box-sizing: border-box !important; 
         padding: 22px 25px !important;
         font-size: 15px !important;
-        border: 2px solid #4DD0E1 !important; 
-        background-color: #FFFFFF !important;  /* Force White Background */
-        color: #006064 !important;             /* Force Teal Text */
-        caret-color: #006064 !important;       /* Teal typing cursor */
+        height: 100% !important;
     }
 
-    /* 4. Focus States (Unchanged) */
-    div[data-testid="stTextInput"] input:focus {
-        outline: none !important;
-        box-shadow: none !important;
+    /* 4. Focus State */
+    /* When you click inside, we keep the border teal and remove default glows */
+    div[data-testid="stTextInput"] div[data-baseweb="input"]:focus-within {
         border: 2px solid #4DD0E1 !important;
-    }
-
-    div[data-testid="stTextInput"] > div[data-baseweb="input"]:focus-within {
-        border: none !important;
+        background-color: #FFFFFF !important;
         box-shadow: none !important;
         outline: none !important;
     }
-
+    
     div[data-testid="InputInstructions"] {
         display: none !important;
     }
