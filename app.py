@@ -825,7 +825,7 @@ Explanatory details about the fine structure of the annotation will be published
     st.caption("Data source: Human Proteostasis Network v4.1")
 
 # ==========================================
-# PAGE 4: GUIDES
+# PAGE 4: GUIDES - UPDATED (NO INDENTATION)
 # ==========================================
 elif selected_page == "Guides":
     # Hero Section
@@ -838,82 +838,87 @@ elif selected_page == "Guides":
     st.markdown("""
 <style>
 .guide-container {
-max-width: 900px;
-margin: 0 auto;
-font-family: Arial, Helvetica, sans-serif !important;
-font-size: 16px;
-line-height: 1.6;
-color: #212121;
-padding-bottom: 50px;
+    max-width: 900px;
+    margin: 0 auto;
+    font-family: Arial, Helvetica, sans-serif !important;
+    font-size: 16px;
+    line-height: 1.6;
+    color: #212121;
+    padding-bottom: 50px;
 }
 .guide-header {
-font-size: 22px;
-font-weight: bold;
-color: #006064;
-margin-top: 40px;
-margin-bottom: 15px;
-border-bottom: 2px solid #E0F7FA;
-padding-bottom: 5px;
+    font-size: 22px;
+    font-weight: bold;
+    color: #006064;
+    margin-top: 40px;
+    margin-bottom: 15px;
+    border-bottom: 2px solid #E0F7FA;
+    padding-bottom: 5px;
 }
 .guide-subheader {
-font-size: 18px;
-font-weight: bold;
-color: #00838F;
-margin-top: 20px;
-margin-bottom: 10px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #00838F;
+    margin-top: 20px;
+    margin-bottom: 10px;
 }
 .term-highlight {
-font-weight: bold;
-color: #00838F;
-background-color: #E0F7FA;
-padding: 2px 6px;
-border-radius: 4px;
+    font-weight: bold;
+    color: #00838F;
+    background-color: #E0F7FA;
+    padding: 2px 6px;
+    border-radius: 4px;
 }
+.code-highlight {
+    font-family: monospace;
+    background-color: #F0F0F0;
+    padding: 2px 4px;
+    border-radius: 4px;
+    color: #B71C1C;
+}
+/* REMOVED INDENTATION HERE */
 .guide-list {
-padding-left: 20px;
-margin-bottom: 15px;
+    padding-left: 0px; 
+    margin-left: 0px;
+    list-style-type: none; /* Removes bullets for a completely flush look */
+    margin-bottom: 15px;
 }
 .guide-list li {
-margin-bottom: 10px;
+    margin-bottom: 12px;
 }
 .step-box {
-background-color: #FAFAFA;
-border-left: 4px solid #4DD0E1;
-padding: 15px;
-margin: 15px 0;
-border-radius: 0 4px 4px 0;
+    background-color: #FAFAFA;
+    border-left: 4px solid #4DD0E1;
+    padding: 15px;
+    margin: 15px 0;
+    border-radius: 0 4px 4px 0;
 }
 </style>
 
 <div class="guide-container">
 <p>
 This application provides an interactive interface to the Human Proteostasis Network. 
-Below are detailed instructions on how to utilize the search functions and interpret the data hierarchy.
+Below are specific instructions on how the search engine processes your queries.
 </p>
 
-<div class="guide-header">1. Using Open Search</div>
+<div class="guide-header">1. Open Search Rules</div>
 <p>
-The <b>Open Search</b> page is designed for quick retrieval of specific genes or broad exploration of functional terms.
+To balance ease of discovery with precision, the <b>Open Search</b> follows these logic rules:
 </p>
 
-<div class="guide-subheader">Search Logic</div>
+<div class="guide-subheader">Partial vs. Exact Matching</div>
 <ul class="guide-list">
 <li>
-<b>Identifiers:</b> You can search directly by <span class="term-highlight">Gene Symbol</span> (e.g., <i>HSPA1A</i>) or <span class="term-highlight">UniProt ID</span> (e.g., <i>P0DMV8</i>).
+<b>Gene Symbols & Synonyms (Partial):</b> These allow partial matches. Searching for <span class="term-highlight">HSP</span> will return <i>HSPA1A</i>, <i>HSPB1</i>, and any gene containing those letters.
 </li>
 <li>
-<b>Keywords:</b> You can search for functional terms found in the hierarchy, such as "Chaperone", "Translation", or "PN regulation", etc.
-</li>
-<li>
-<b>InterPro Domains:</b> The engine searches within the domain lists (though these are not displayed in the table). You can search for specific domain IDs (e.g., <i>IPR001234</i>).
-</li>
-<li>
-<b>Exact vs. Partial:</b> The search is case-insensitive. For Gene Symbols, IDs and functional terms, it prioritizes exact matches, but will also scan lists (like domains) for the presence of your query.
+<b>Functional Terms & IDs (Exact):</b> Terms like <span class="term-highlight">Branch</span>, <span class="term-highlight">Class</span>, or <span class="term-highlight">UniProt ID</span> require an exact match. 
+Searching for <i>"ER"</i> will return genes in the ER Branch, but will <u>not</u> return every gene that happens to have "er" in its symbol.
 </li>
 </ul>
 
 <div class="step-box">
-<b>Tip:</b> If you would like to explore based on PN function, try switching to <b>Guided Search</b> to filter.
+<b>Forced Exact Match:</b> If you want to find <i>only</i> a specific gene symbol and ignore all other partial hits, wrap your query in single quotes: <span class="code-highlight">'HSPA1A'</span>.
 </div>
 
 <div class="guide-header">2. Using Guided Search</div>
@@ -923,41 +928,21 @@ selecting an option in the first box updates the available options in the subseq
 </p>
 
 <div class="guide-subheader">The Hierarchy Levels</div>
-
 <ul class="guide-list">
-<li><b> Branch:</b> Refers to a component’s localization or membership in an overarching pathway. There are nine Branch categories: cytonuclear proteostasis, ER proteostasis, mitochondrial proteostasis, nuclear proteostasis, PN regulation, translation, extracellular proteostasis, the autophagy-lysosome pathway, and the ubiquitin-proteasome system.</li>
-<li><b> Class:</b> Refers to a component’s function in proteostasis (e.g., chaperones, protein transport, etc.) in most Branches of the PN. In the ALP it refers to the stage of autophagy in which the component participates.</li>
-<li><b> Group:</b> Provide increasingly specific descriptors of proteostasis functions within a Class.</li>
-<li><b> Type:</b> Provide increasingly specific descriptors of proteostasis functions within a Group.</li>
-<li><b> Subtype:</b> Provide increasingly specific descriptors of proteostasis functions within a Type.</li>
+<li><b>Branch:</b> Overarching pathway or localization (e.g., UPS, ALP, ER).</li>
+<li><b>Class:</b> Functional role within that branch (e.g., Chaperones, Proteasome).</li>
+<li><b>Group/Type/Subtype:</b> Increasingly specific functional descriptors.</li>
 </ul>
 
-<div class="step-box">
-<b>Note:</b> Not all genes have data for Type or Subtype. These dropdowns are marked "Optional" and may remain empty for certain branches.
-</div>
-
-<div class="guide-header">3. Interpreting Results & External Links</div>
+<div class="guide-header">3. Exporting Data</div>
 <p>
-Both search modes generate a standard results table containing the following interactive features:
+You can export your results at any time:
 </p>
 <ul class="guide-list">
-<li>
-<span class="term-highlight">UniProt ID</span>: Clicking this value opens the official UniProtKB entry in a new tab.
-</li>
-<li>
-<span class="term-highlight">Gene ID</span>: Clicking this value opens the NCBI Gene database entry.
-</li>
+<li>1. Perform your search or apply your filters.</li>
+<li>2. Click the <b>"Download CSV"</b> button located above the results table.</li>
+<li>3. The file will save with your query name for easy reference.</li>
 </ul>
-
-<div class="guide-header">4. Exporting Data</div>
-<p>
-You can export the results of any search (Open or Guided) for offline analysis.
-</p>
-<ol class="guide-list">
-<li>Perform your search or apply your filters.</li>
-<li>Locate the <b>"Download CSV"</b> button in the top right corner of the results area.</li>
-<li>The file will save automatically with a relevant filename (e.g., <i>search_results_HSPA1A.csv</i>).</li>
-</ol>
 </div>
 """, unsafe_allow_html=True)
 
