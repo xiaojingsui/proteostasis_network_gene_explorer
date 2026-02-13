@@ -875,8 +875,7 @@ Explanatory details about the fine structure of the annotation will be published
     st.caption("Data source: Human Proteostasis Network v4.1")
 
 # ==========================================
-# ==========================================
-# PAGE 4: GUIDES - UPDATED WITH INHIBITORS
+# PAGE 4: GUIDES - REVISED HIERARCHY
 # ==========================================
 elif selected_page == "Guides":
     # Hero Section
@@ -948,13 +947,10 @@ elif selected_page == "Guides":
 <div class="guide-container">
 <p>
 This application provides an interactive interface to the Human Proteostasis Network. 
-Below are specific instructions on how the search engine processes your queries and how to interpret the results.
+Below are specific instructions on how the search engine processes your queries and how the results are annotated.
 </p>
 
 <div class="guide-header">1. Open Search Rules</div>
-<p>
-To balance ease of discovery with precision, the <b>Open Search</b> follows these logic rules:
-</p>
 
 <div class="guide-subheader">Partial vs. Exact Matching</div>
 <ul class="guide-list">
@@ -973,30 +969,40 @@ The search is case-insensitive.
 <b>Forced Exact Match:</b> If you want to find <i>only</i> a specific gene symbol and ignore all other partial hits, wrap your query in single quotes: <span class="code-highlight">'HSPA1A'</span>.
 </div>
 
-<div class="guide-header">2. Chemical Probes & Inhibitors</div>
-<p>
-Selected protein targets in the database are cross-referenced with high-quality chemical probes.
-</p>
+<div class="guide-subheader">Chemical Inhibitors</div>
 <ul class="guide-list">
-<li><b>The Inhibitor Column:</b> This column appears at the far right of the results table. If a validated chemical probe exists for the target (e.g., HSP90, mTOR, p97), the inhibitor name will appear as a clickable link.</li>
-<li><b>External Resources:</b> Clicking an inhibitor name will take you directly to its profile on the <span class="term-highlight">Chemical Probes Portal</span> for detailed potency and selectivity data.</li>
-<li><b>Multiple Probes:</b> If a target has multiple validated inhibitors, they are separated by a semicolon (;).</li>
+<li>
+<b>Inhibitor Column:</b> Targets with validated small-molecule inhibitors feature a clickable entry in the <span class="term-highlight">Inhibitor</span> column at the far right.
+</li>
+<li>
+<b>Hyperlinks:</b> Clicking the inhibitor name (e.g., <i>rapamycin</i>) opens its full profile on the Chemical Probes Portal for detailed potency data.
+</li>
+<li>
+<b>Multiple Entries:</b> If a target has several common inhibitors, they are listed and separated by a semicolon (;).
+</li>
 </ul>
 
-<div class="guide-header">3. Using Guided Search</div>
+<div class="guide-header">2. Using Guided Search</div>
 <p>
 The <b>Guided Search</b> page allows you to drill down into the network taxonomy. The filters are hierarchical; 
-selecting an option in the first box updates the available options in the subsequent boxes. Inhibitor information is also automatically populated for results in this view.
+selecting an option in the first box updates the available options in the subsequent boxes.
 </p>
 
-<div class="guide-header">4. Exporting Data</div>
+<div class="guide-subheader">The Hierarchy Levels</div>
+<ul class="guide-list">
+<li><b>Branch:</b> Overarching pathway or localization (e.g., UPS, ALP).</li>
+<li><b>Class:</b> Functional role within that branch (e.g., chaperone, protein transport).</li>
+<li><b>Group/Type/Subtype:</b> Increasingly specific functional descriptors.</li>
+</ul>
+
+<div class="guide-header">3. Exporting Data</div>
 <p>
-You can export your results (including the Inhibitor data) at any time:
+You can export your results at any time:
 </p>
 <ul class="guide-list">
 <li>1. Perform your search or apply your filters.</li>
 <li>2. Click the <b>"Download CSV"</b> button located above the results table.</li>
-<li>3. The exported file includes a plain-text <span class="code-highlight">Inhibitor</span> column for use in spreadsheet software like Excel.</li>
+<li>3. The file will save with your query name for easy reference. Inhibitors are included as plain text.</li>
 </ul>
 </div>
 """, unsafe_allow_html=True)
