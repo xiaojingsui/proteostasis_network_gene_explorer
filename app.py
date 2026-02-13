@@ -291,6 +291,13 @@ st.markdown("""
         border-width: 2px !important;
     }
 
+    /* This overrides the global dark text color for disabled selectboxes */
+    div[data-testid="stSelectbox"] div[aria-disabled="true"] * {
+        color: #90A4AE !important; /* Nice distinct grey */
+        -webkit-text-fill-color: #90A4AE !important; /* Safari/Chrome fix */
+        cursor: not-allowed !important;
+    }
+
 
     /* --- BUTTON & DOWNLOAD BUTTON STYLING (Force Light Theme) --- */
     
