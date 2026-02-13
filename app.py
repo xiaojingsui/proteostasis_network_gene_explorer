@@ -431,7 +431,7 @@ if selected_page == "Open Search":
     # Updated Placeholder to reflect new rules
     st.text_input(
         "", 
-        placeholder="Search Gene (partial) or 'Exact Gene'. Functional terms (Class, Group) require exact matches...", 
+        placeholder="Search by Gene Symbol, UniProt ID, Branch, Class, Group, Type, Subtype, or InterPro Domain...", 
         label_visibility="collapsed",
         key="search_key" 
     )
