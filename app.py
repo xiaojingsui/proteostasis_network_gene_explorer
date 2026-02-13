@@ -123,14 +123,17 @@ def enrich_with_protein_names(df_input):
     """
     df_out = df_input.copy()
     
-    # If Excel already has the column, use it
-    if 'Protein Name' in df_out.columns:
-        return df_out
+    # --- REVISION 1: Comment out or remove this block ---
+    # The original code skipped fetching if the column header existed, 
+    # which caused empty names if your source file had the header but no data.
+    # if 'Protein Name' in df_out.columns:
+    #     return df_out
 
     unique_ids = df_out['UniProt ID'].unique().tolist()
     
-    # --- CHANGED: Increased limit from 200 to 1000 ---
-    if len(unique_ids) > 1000:
+    # --- REVISION 2: Increased limit from 1000 to 2500 ---
+    # This allows the UPS group (1702 entries) to load successfully.
+    if len(unique_ids) > 2500:
         df_out['Protein Name'] = "(Result set too large - Filter further to see names)"
         return df_out
 
