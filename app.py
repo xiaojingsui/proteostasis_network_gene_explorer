@@ -913,7 +913,7 @@ To balance ease of discovery with precision, the <b>Open Search</b> follows thes
 </li>
 <li>
 <b>Functional Terms & IDs (Exact):</b> Terms like <span class="term-highlight">Branch</span>, <span class="term-highlight">Class</span>, or <span class="term-highlight">UniProt ID</span> require an exact match. 
-.
+
 </li>
 </ul>
 
