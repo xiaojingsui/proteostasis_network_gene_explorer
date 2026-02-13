@@ -59,7 +59,7 @@ def format_links(df_input):
     return df_copy
 
 # -----------------------------------------------------------------------------
-# UPDATED HELPER FUNCTIONS (API LOGIC FROM V2)
+# UPDATED HELPER FUNCTIONS (ROBUST API LOGIC)
 # -----------------------------------------------------------------------------
 
 @st.cache_data(show_spinner=False)
@@ -71,20 +71,21 @@ def fetch_protein_names_from_api(uniprot_ids):
         return {}
 
     mapping = {}
-    # Increased chunk size to 100 to reduce number of API calls
-    chunk_size = 100 
+    chunk_size = 50  # Reduced chunk size slightly to be safer
     chunks = [uniprot_ids[i:i + chunk_size] for i in range(0, len(uniprot_ids), chunk_size)]
 
-    # Create a placeholder for a progress bar
     progress_bar = st.progress(0, text="Fetching protein names from UniProt...")
-    
     total_chunks = len(chunks)
     
     for idx, chunk in enumerate(chunks):
-        # Update progress bar
         progress_bar.progress((idx + 1) / total_chunks, text=f"Fetching names... ({idx+1}/{total_chunks} batches)")
         
-        query_parts = [f"accession:{uid}" for uid in chunk]
+        # Double-check: ensure no empty strings in this chunk
+        valid_chunk = [x for x in chunk if x and str(x).strip()]
+        if not valid_chunk:
+            continue
+
+        query_parts = [f"accession:{uid}" for uid in valid_chunk]
         query = " OR ".join(query_parts)
         
         url = "https://rest.uniprot.org/uniprotkb/search"
@@ -96,25 +97,27 @@ def fetch_protein_names_from_api(uniprot_ids):
         }
         
         try:
-            r = requests.get(url, params=params, timeout=10) # Added timeout
+            r = requests.get(url, params=params, timeout=10)
             if r.status_code == 200:
                 data = r.json()
                 for result in data.get('results', []):
                     acc = result.get('primaryAccession')
+                    name = ""
                     try:
-                        # Try recommended name
                         name = result['proteinDescription']['recommendedName']['fullName']['value']
                     except KeyError:
                         try:
-                            # Try submitted name
                             name = result['proteinDescription']['submissionNames'][0]['fullName']['value']
                         except:
-                            name = "" # Leave blank if not found
+                            name = ""
                     mapping[acc] = name
+            else:
+                print(f"API Error {r.status_code} for batch {idx}")
         except Exception as e:
-            pass # Skip failed chunks to keep app alive
+            print(f"Connection Error for batch {idx}: {e}")
+            pass
             
-    progress_bar.empty() # Remove progress bar when done
+    progress_bar.empty()
     return mapping
 
 def enrich_with_protein_names(df_input):
@@ -123,26 +126,30 @@ def enrich_with_protein_names(df_input):
     """
     df_out = df_input.copy()
     
-    # --- REVISION 1: Comment out or remove this block ---
-    # The original code skipped fetching if the column header existed, 
-    # which caused empty names if your source file had the header but no data.
-    # if 'Protein Name' in df_out.columns:
-    #     return df_out
+    # 1. Get unique IDs
+    if 'UniProt ID' not in df_out.columns:
+        return df_out
 
     unique_ids = df_out['UniProt ID'].unique().tolist()
     
-    # --- REVISION 2: Increased limit from 1000 to 2500 ---
-    # This allows the UPS group (1702 entries) to load successfully.
-    if len(unique_ids) > 2500:
+    # 2. CRITICAL FIX: Filter out NaNs, None, and empty strings
+    # This prevents sending bad queries like "accession: OR accession:P12345"
+    clean_ids = [str(x).strip() for x in unique_ids if pd.notna(x) and str(x).strip() != '']
+
+    # 3. Check Limit
+    if len(clean_ids) > 2500:
         df_out['Protein Name'] = "(Result set too large - Filter further to see names)"
         return df_out
 
-    # Call the API
-    name_map = fetch_protein_names_from_api(unique_ids)
+    # 4. Call the API with clean IDs
+    name_map = fetch_protein_names_from_api(clean_ids)
     
-    # Map the results
-    df_out['Protein Name'] = df_out['UniProt ID'].map(name_map).fillna('')
+    # 5. Map the results (safely handle missing keys)
+    df_out['Protein Name'] = df_out['UniProt ID'].apply(lambda x: name_map.get(str(x).strip(), ""))
+    
     return df_out
+
+
 
 # 4. GLOBAL CSS
 st.markdown("""
