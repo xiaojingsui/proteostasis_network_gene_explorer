@@ -257,7 +257,8 @@ st.markdown("""
     }
 
     /* 1. ENABLED/ACTIVE STATE (Black Text) */
-    div[data-testid="stSelectbox"] > div > div {
+    /* UPDATED: Added :not([aria-disabled="true"]) to ensure this doesn't target disabled boxes */
+    div[data-testid="stSelectbox"] > div > div:not([aria-disabled="true"]) {
         border-color: #E0E0E0 !important; 
         border-width: 1px !important;
         background-color: white !important;
@@ -269,6 +270,7 @@ st.markdown("""
     div[data-testid="stSelectbox"] div[aria-disabled="true"] {
         border-color: #EEEEEE !important;
         background-color: #FAFAFA !important;
+        color: #B0BEC5 !important;
     }
     
     /* Target the TEXT content inside the disabled box */
@@ -306,7 +308,7 @@ st.markdown("""
     div.stButton > button, div.stDownloadButton > button {
         background-color: #FFFFFF !important;
         color: #212121 !important;              
-        border: 1px solid #D3D3D3 !important;   
+        border: 1px solid #D3D3D3 !important;    
         transition: all 0.3s ease !important;
     }
 
