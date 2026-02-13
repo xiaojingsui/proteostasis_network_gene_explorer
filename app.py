@@ -910,6 +910,7 @@ To balance ease of discovery with precision, the <b>Open Search</b> follows thes
 <ul class="guide-list">
 <li>
 <b>The search is case-insensitive. 
+</li>
 <b>Gene Symbols & Synonyms (Partial):</b> These allow partial matches. Searching for <span class="term-highlight">HSP</span> will return <i>HSPA1A</i>, <i>HSPB1</i>, and any gene containing those letters.
 </li>
 <li>
