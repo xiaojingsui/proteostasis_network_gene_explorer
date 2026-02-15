@@ -97,7 +97,7 @@ def format_links(df_input):
     
     # NEW: Add Inhibitor Column
     if 'Gene Symbol' in df_copy.columns:
-        df_copy['Inhibitor'] = df_copy['Gene Symbol'].apply(lambda x: get_inhibitor_html(x, for_csv=False))
+        df_copy['Chemical Probes'] = df_copy['Gene Symbol'].apply(lambda x: get_inhibitor_html(x, for_csv=False))
         
     return df_copy
 
@@ -564,11 +564,11 @@ if selected_page == "Open Search":
                     # Prepare a version for CSV with plain text inhibitors
                     results_csv = results.copy()
                     if 'Gene Symbol' in results_csv.columns:
-                        results_csv['Inhibitor'] = results_csv['Gene Symbol'].apply(lambda x: get_inhibitor_html(x, for_csv=True))
+                        results_csv['Chemical Probes'] = results_csv['Gene Symbol'].apply(lambda x: get_inhibitor_html(x, for_csv=True))
                     
                     dl_cols = ['UniProt ID', 'Gene ID', 'Gene Symbol', 'Gene Synonyms', 
                 'Protein Name', 'Branch', 'Class', 'Group', 'Type', 'Subtype', 
-                'Inhibitor']
+                'Chemical Probes']
                     valid_dl_cols = [c for c in dl_cols if c in results_csv.columns]
                     csv = results_csv[valid_dl_cols].to_csv(index=False).encode('utf-8')
                     st.download_button("Download CSV", data=csv, file_name=f"search_{query}.csv", mime="text/csv")
@@ -580,7 +580,7 @@ if selected_page == "Open Search":
                 # UPDATE THIS LIST
                 display_cols = ['UniProt ID', 'Gene ID', 'Gene Symbol', 'Gene Synonyms', 
                 'Protein Name', 'Branch', 'Class', 'Group', 'Type', 'Subtype', 
-                'Inhibitor']
+                'Chemical Probes']
                 available_cols = [c for c in display_cols if c in results_formatted.columns]
 
                 st.write(
@@ -730,12 +730,12 @@ elif selected_page == "Guided Search":
                 # 2. PREPARE DOWNLOAD (Plain text inhibitors for CSV)
                 df_for_dl = final_df.copy()
                 if 'Gene Symbol' in df_for_dl.columns:
-                    df_for_dl['Inhibitor'] = df_for_dl['Gene Symbol'].apply(lambda x: get_inhibitor_html(x, for_csv=True))
+                    df_for_dl['Chemical Probes'] = df_for_dl['Gene Symbol'].apply(lambda x: get_inhibitor_html(x, for_csv=True))
                 
                 dl_cols = [
                     'UniProt ID', 'Gene ID', 'Gene Symbol', 'Gene Synonyms', 
                     'Protein Name', 'Branch', 'Class', 'Group', 'Type', 'Subtype', 
-                    'Inhibitor'
+                    'Chemical Probe'
                 ]
                 valid_cols = [c for c in dl_cols if c in df_for_dl.columns]
                 csv = df_for_dl[valid_cols].to_csv(index=False).encode('utf-8')
@@ -748,7 +748,7 @@ elif selected_page == "Guided Search":
             display_cols = [
                 'UniProt ID', 'Gene ID', 'Gene Symbol', 'Gene Synonyms', 
                 'Protein Name', 'Branch', 'Class', 'Group', 'Type', 'Subtype', 
-                'Inhibitor'
+                'Chemical Probe'
             ]
             available_cols = [c for c in display_cols if c in display_df.columns]
             
@@ -969,16 +969,16 @@ The search is case-insensitive.
 <b>Forced Exact Match:</b> If you want to find <i>only</i> a specific gene symbol and ignore all other partial hits, wrap your query in single quotes: <span class="code-highlight">'HSPA1A'</span>.
 </div>
 
-<div class="guide-subheader">Chemical Inhibitors</div>
+<div class="guide-subheader">Chemical Probes</div>
 <ul class="guide-list">
 <li>
-<b>Inhibitor Column:</b> Targets with validated small-molecule inhibitors feature a clickable entry in the <span class="term-highlight">Inhibitor</span> column at the far right.
+<b>Chemical Probes Column:</b> Targets with validated small-molecule probes feature a clickable entry in the <span class="term-highlight">Chemical Probes</span> column at the far right.
 </li>
 <li>
-<b>Hyperlinks:</b> Clicking the inhibitor name (e.g., <i>rapamycin</i>) opens its full profile on the Chemical Probes Portal for detailed potency data.
+<b>Hyperlinks:</b> Clicking the probe name (e.g., <i>rapamycin</i>) opens its full profile on the Chemical Probes Portal for detailed potency data.
 </li>
 <li>
-<b>Multiple Entries:</b> If a target has several inhibitors, they are listed and separated by a semicolon (;).
+<b>Multiple Entries:</b> If a target has several probes, they are listed and separated by a semicolon (;).
 </li>
 </ul>
 
@@ -1002,7 +1002,7 @@ You can export your results at any time:
 <ul class="guide-list">
 <li>1. Perform your search or apply your filters.</li>
 <li>2. Click the <b>"Download CSV"</b> button located above the results table.</li>
-<li>3. The file will save with your query name for easy reference. Inhibitors are included as plain text.</li>
+<li>3. The file will save with your query name for easy reference. Chemical Probes are included as plain text.</li>
 </ul>
 </div>
 """, unsafe_allow_html=True)
