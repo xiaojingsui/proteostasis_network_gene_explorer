@@ -45,7 +45,7 @@ def get_inhibitor_html(symbol, for_csv=False):
 
 
 # 1. Page Config (Must be the first command)
-st.set_page_config(page_title="Human PN Database", layout="wide")
+st.set_page_config(page_title="Human PN Annotation", layout="wide")
 
 # Initialize session state variables
 if "search_key" not in st.session_state:
@@ -468,8 +468,8 @@ if selected_page == "Open Search":
 
     # Hero Section
     st.markdown('<div class="hero-section">', unsafe_allow_html=True)
-    st.markdown('<p class="hero-title">HUMAN Proteostasis Network Database</p>', unsafe_allow_html=True)
-    st.markdown('<p class="hero-subtitle">The comprehensive knowledgebase for human proteostasis network genes</p>', unsafe_allow_html=True)
+    st.markdown('<p class="hero-title">HUMAN Proteostasis Network Annotation</p>', unsafe_allow_html=True)
+    st.markdown('<p class="hero-subtitle">The comprehensive annotation for human proteostasis network genes</p>', unsafe_allow_html=True)
 
     # Updated Placeholder to reflect new rules
     st.text_input(
@@ -881,7 +881,7 @@ elif selected_page == "Guides":
     # Hero Section
     st.markdown('<div class="hero-section">', unsafe_allow_html=True)
     st.markdown('<p class="hero-title">User Guides</p>', unsafe_allow_html=True)
-    st.markdown('<p class="hero-subtitle">Navigating the Human Proteostasis Network Database</p>', unsafe_allow_html=True)
+    st.markdown('<p class="hero-subtitle">Navigating the Human Proteostasis Network Annotation</p>', unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
 
     # HTML Block
