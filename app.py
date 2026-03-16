@@ -627,7 +627,7 @@ if selected_page == "Open Search":
                     1. A Comprehensive Enumeration of the Human Proteostasis Network. 1. Components of Translation, Protein Folding, and Organelle-Specific Systems 
                     <a href="https://doi.org/10.1101/2022.08.30.505920" target="_blank">doi:10.1101/2022.08.30.505920</a>
                 </p>
-                <p style="margin-bottom: 0; font-size: 0.9em;">
+                <p style="margin-bottom: 10px; font-size: 0.9em;">
                     2. A Comprehensive Enumeration of the Human Proteostasis Network. 2. Components of the Autophagy-Lysosome Pathway 
                     <a href="https://doi.org/10.1101/2023.03.22.533675" target="_blank">doi:10.1101/2023.03.22.533675</a>
                 </p>
