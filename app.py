@@ -633,7 +633,7 @@ if selected_page == "Open Search":
                 </p>
                 <p style="margin-bottom: 0; font-size: 0.9em;">
                     3. Survey of the human proteostasis network: the ubiquitin-proteasome system. 
-                    <a href="oi: https://doi.org/10.64898/2026.03.13.711689" target="_blank">doi:10.64898/2026.03.13.711689</a>
+                    <a href="https://doi.org/10.64898/2026.03.13.711689" target="_blank">doi:10.64898/2026.03.13.711689</a>
                 </p>
             </div>
         """, unsafe_allow_html=True)
