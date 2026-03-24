@@ -1011,5 +1011,5 @@ You can export your results at any time:
 </div>
 """, unsafe_allow_html=True)
 
-    st.markdown("<br><hr>", unsafe_allow_html=True)
+    #st.markdown("<br><hr>", unsafe_allow_html=True)
     #st.caption("Data source: Human Proteostasis Network v4.3")
