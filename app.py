@@ -875,8 +875,8 @@ Explanatory details about the fine structure of the annotation will be published
 </div>
 """, unsafe_allow_html=True)
 
-    st.markdown("<br><br><hr>", unsafe_allow_html=True)
-    st.caption("Data source: Human Proteostasis Network v4.3")
+    #st.markdown("<br><br><hr>", unsafe_allow_html=True)
+    #st.caption("Data source: Human Proteostasis Network v4.3")
 
 # ==========================================
 # PAGE 4: GUIDES - REVISED HIERARCHY
