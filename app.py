@@ -1053,7 +1053,7 @@ You can export your results at any time:
 <ul class="guide-list">
 <li>1. Perform your search or apply your filters.</li>
 <li>2. Click the <b>"Download CSV"</b> button located above the results table.</li>
-<li>3. The file will save with your query name for easy reference. Chemical Probes are included as plain text.</li>
+<li>3. The file will save with your query name for easy reference.</li>
 </ul>
 </div>
 """, unsafe_allow_html=True)
