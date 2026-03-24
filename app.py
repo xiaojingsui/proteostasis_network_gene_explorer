@@ -60,7 +60,7 @@ def update_search(new_query):
 # 2. LOAD DATA
 @st.cache_data
 def load_data():
-    file_path = 'Human Proteostasis Network 4.1 - 2026-0127.xlsx'
+    file_path = 'Human Proteostasis Network 4.3.xlsx'
     try:
         df = pd.read_excel(file_path, sheet_name='MAIN')
         df = df.dropna(subset=['Gene Symbol', 'UniProt ID'])
@@ -638,7 +638,7 @@ if selected_page == "Open Search":
             </div>
         """, unsafe_allow_html=True)
     st.markdown("<br><br><hr>", unsafe_allow_html=True)
-    st.caption("Data source: Human Proteostasis Network v4.1")
+    st.caption("Data source: Human Proteostasis Network v4.3")
 
 
 # ==========================================
@@ -769,7 +769,7 @@ elif selected_page == "Guided Search":
 
     # Footer
     st.markdown("<br><br><hr>", unsafe_allow_html=True)
-    st.caption("Data source: Human Proteostasis Network v4.1")
+    st.caption("Data source: Human Proteostasis Network v4.3")
 
 
 # ==========================================
@@ -876,7 +876,7 @@ Explanatory details about the fine structure of the annotation will be published
 """, unsafe_allow_html=True)
 
     st.markdown("<br><br><hr>", unsafe_allow_html=True)
-    st.caption("Data source: Human Proteostasis Network v4.1")
+    st.caption("Data source: Human Proteostasis Network v4.3")
 
 # ==========================================
 # PAGE 4: GUIDES - REVISED HIERARCHY
@@ -1012,4 +1012,5 @@ You can export your results at any time:
 """, unsafe_allow_html=True)
 
     st.markdown("<br><hr>", unsafe_allow_html=True)
-    st.caption("Data source: Human Proteostasis Network v4.1")
+    st.caption("Data source: Human Proteostasis Network v4.3
+        ")
