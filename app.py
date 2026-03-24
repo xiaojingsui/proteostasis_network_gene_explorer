@@ -639,7 +639,7 @@ if selected_page == "Open Search":
             </div>
         """, unsafe_allow_html=True)
     st.markdown("<br><br><hr>", unsafe_allow_html=True)
-    
+
     file_path = 'Human Proteostasis Network v4.3.xlsx'
     
     try:
@@ -654,7 +654,7 @@ if selected_page == "Open Search":
                 <a href="data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,{b64}" 
                    download="Human_Proteostasis_Network_v4.3.xlsx" 
                    style="font-size: 14px; color: #00838F; font-weight: bold; text-decoration: underline;">
-                   Data source: Human Proteostasis Network v4.3 (Click to download original file)
+                   Data source: Human Proteostasis Network v4.3 (Click to bulk download)
                 </a>
             </div>
         '''
