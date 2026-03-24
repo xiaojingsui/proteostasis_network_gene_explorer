@@ -639,6 +639,7 @@ if selected_page == "Open Search":
             </div>
         """, unsafe_allow_html=True)
     st.markdown("<br><br><hr>", unsafe_allow_html=True)
+    
     file_path = 'Human Proteostasis Network v4.3.xlsx'
     
     try:
@@ -647,19 +648,21 @@ if selected_page == "Open Search":
             
         b64 = base64.b64encode(file_data).decode()
         
+        
         download_link = f'''
-            <div style="margin-top: 10px; text-align: center;">
+            <div style="margin-top: 10px; text-align: left;">
                 <a href="data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,{b64}" 
                    download="Human_Proteostasis_Network_v4.3.xlsx" 
-                   style="font-size: 14px; color: #00838F; font-weight: bold; text-decoration: none;">
-                   Data source: Human Proteostasis Network v4.3 (Click to bulk download)
+                   style="font-size: 14px; color: #00838F; font-weight: bold; text-decoration: underline;">
+                   Data source: Human Proteostasis Network v4.3 (Click to download original file)
                 </a>
             </div>
         '''
         st.markdown(download_link, unsafe_allow_html=True)
         
     except FileNotFoundError:
-        st.caption("Data source: Human Proteostasis Network v4.3")
+        
+        st.markdown('<p style="color: #888; font-size: 14px;">Data source: Human Proteostasis Network v4.3 (File not found)</p>', unsafe_allow_html=True)
 
 
 # ==========================================
