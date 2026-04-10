@@ -1119,6 +1119,21 @@ elif selected_page == "Submission":
         }
 
         /* 4. Text Area Styling */
+        
+        /* Kill Streamlit's default wrapper borders and focus rings (the red line) */
+        div[data-testid="stTextArea"] > div > div {
+            border: none !important;
+            box-shadow: none !important;
+            background-color: transparent !important;
+        }
+        
+        div[data-testid="stTextArea"] > div:focus-within {
+            box-shadow: none !important;
+            outline: none !important;
+            border: none !important;
+        }
+
+        /* Style the actual text area box */
         div[data-testid="stTextArea"] textarea {
             background-color: #FFFFFF !important; 
             border: 1px solid #4DD0E1 !important; /* Default border color */
@@ -1128,13 +1143,7 @@ elif selected_page == "Submission":
             font-size: 15px !important; 
         }
 
-        
-        div[data-testid="stTextArea"] > div:focus-within {
-            box-shadow: none !important;
-            outline: none !important;
-        }
-
-        /* Apply your custom teal border to the actual text box */
+        /* Apply your custom dark teal/black border when clicked */
         div[data-testid="stTextArea"] textarea:focus { 
             border: 2px solid #006064 !important; 
             box-shadow: none !important; 
