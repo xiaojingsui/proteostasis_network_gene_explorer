@@ -1149,6 +1149,21 @@ elif selected_page == "Submission":
             box-shadow: none !important; 
             outline: none !important; 
         }
+
+        /* 5. Custom White Alert Boxes */
+        div[data-testid="stAlert"] {
+            background-color: #FFFFFF !important;
+            border: 1px solid #4DD0E1 !important; /* Matches your custom input borders */
+            border-radius: 8px !important;
+        }
+        
+        /* Force all inner layers to be white so no conflicting boxes appear */
+        div[data-testid="stAlert"] > div,
+        div[data-testid="stAlert"] [data-testid="stMarkdownContainer"],
+        div[data-testid="stAlert"] p {
+            background-color: #FFFFFF !important;
+            color: #006064 !important; /* Text color to match your theme */
+        }
     </style>
     """, unsafe_allow_html=True)
 
