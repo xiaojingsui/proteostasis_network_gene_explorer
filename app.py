@@ -1072,7 +1072,12 @@ elif selected_page == "Submission":
     <style>
         /* 1. Ensure inputs take up the full width of their columns */
         div[data-testid="stTextInput"] { width: 100% !important; min-width: 100% !important; margin: 0 !important; }
-        div[data-testid="stTextInput"] > div { min-height: auto !important; }
+        
+        /* FIX: Allow the parent wrapper to expand to fit the 50px input without clipping */
+        div[data-testid="stTextInput"] > div { 
+            min-height: 50px !important; 
+            height: 50px !important; 
+        }
         
         /* 2. Clean Text Input Styling */
         div[data-testid="stTextInput"] input { 
@@ -1090,6 +1095,11 @@ elif selected_page == "Submission":
             box-shadow: none !important; 
         }
         div[data-testid="InputInstructions"] { display: none !important; }
+
+        /* FIX: Ensure the selectbox parent wrapper also has enough room */
+        div[data-testid="stSelectbox"] > div {
+            min-height: 50px !important;
+        }
 
         /* 3. Matching Dropdown (Selectbox) Styling */
         div[data-testid="stSelectbox"] * { font-family: Arial, Helvetica, sans-serif !important; }
