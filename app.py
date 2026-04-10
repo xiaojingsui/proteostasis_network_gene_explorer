@@ -1147,7 +1147,9 @@ elif selected_page == "Submission":
                     protein_name = st.text_input("Gene Symbol / UniProt ID *", placeholder="Ex: HSPA1A")
                 with c2:
                     # Dropdown for all available branches
-                    branch_options = ["", "CY", "ER", "MI", "NU", "PN", "TR", "EX", "ALP", "UPS"]
+                    branch_options = ["", "cytonuclear proteostasis", "ER proteostasis", "mitochondrial proteostasis", 
+                    "nuclear proteostasis", "PN regulation", "translation", "extracellular proteostasis", 
+                    "autophagy-lysosome pathway", "ubiquitin-proteasome system",'others']
                     branch = st.selectbox("Branch *", options=branch_options)
 
                 # Text areas
