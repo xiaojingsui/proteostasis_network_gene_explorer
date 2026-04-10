@@ -1110,7 +1110,7 @@ elif selected_page == "Submission":
                 st.markdown("<hr style='border: 1px solid #F0F0F0; margin: 15px 0;'>", unsafe_allow_html=True)
                 
                 # Contact info
-                st.markdown("<p style='font-family: Arial; font-size: 16px; font-weight: bold; color: #212121;'>Contact Information (optional)</p>", unsafe_allow_html=True)
+                st.markdown("<p style='font-family: Arial, Helvetica, sans-serif; font-size: 16px; font-weight: bold; color: #212121;'>Contact Information (optional)</p>", unsafe_allow_html=True)
                 
                 c3, c4 = st.columns(2)
                 with c3:
