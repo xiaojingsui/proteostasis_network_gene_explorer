@@ -1091,8 +1091,9 @@ elif selected_page == "Submission":
                 with c1:
                     protein_name = st.text_input("Gene Symbol / UniProt ID *", placeholder="Ex: HSPA1A")
                 with c2:
-                    # Adapted Organism Type from the mockup to UniProt ID for the PN context
-                    uniprot_id = st.text_input("UniProt ID *", placeholder="Ex: P0DMV8")
+                    # Dropdown for all available branches
+                    branch_options = ["", "CY", "ER", "MI", "NU", "PN", "TR", "EX", "ALP", "UPS"]
+                    branch = st.selectbox("Branch *", options=branch_options)
 
                 # Text areas
                 description = st.text_area(
@@ -1123,10 +1124,10 @@ elif selected_page == "Submission":
                 # The submit button inside a form automatically prevents page reloads until clicked
                 submit_button = st.form_submit_button("Submit Information", use_container_width=True)
                 
-                # Basic validation logic
+                # Basic validation logic updated to check for 'branch'
                 if submit_button:
-                    if not protein_name or not uniprot_id or not description or not evidence:
+                    if not protein_name or not branch or not description or not evidence:
                         st.error("Please fill in all the required fields marked with an asterisk (*).")
                     else:
                         st.success(f"Thank you! The information for {protein_name} has been submitted for curation.")
-                        st.balloons() # Optional: A little celebration animation upon success
+                        st.balloons()
