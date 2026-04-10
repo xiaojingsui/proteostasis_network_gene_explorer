@@ -1089,7 +1089,7 @@ elif selected_page == "Submission":
                 # Top row inputs
                 c1, c2 = st.columns(2)
                 with c1:
-                    protein_name = st.text_input("Protein Name / Gene Symbol *", placeholder="Ex: HSPA1A")
+                    protein_name = st.text_input("Gene Symbol *", placeholder="Ex: HSPA1A")
                 with c2:
                     # Adapted Organism Type from the mockup to UniProt ID for the PN context
                     uniprot_id = st.text_input("UniProt ID *", placeholder="Ex: P0DMV8")
@@ -1097,7 +1097,7 @@ elif selected_page == "Submission":
                 # Text areas
                 description = st.text_area(
                     "Protein Description *", 
-                    placeholder="Briefly describe the protein, its function and characteristics in the proteostasis network",
+                    placeholder="Briefly describe the protein, its function in the proteostasis network",
                     help="Include relevant information about the function and characteristics of the protein."
                 )
                 
