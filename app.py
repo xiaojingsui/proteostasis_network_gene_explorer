@@ -1117,6 +1117,22 @@ elif selected_page == "Submission":
         div[data-testid="stSelectbox"]:not(:has(div[aria-disabled="true"])) > div > div:focus-within {
             border: 2px solid #006064 !important; 
         }
+
+        /* 4. Text Area Styling */
+        div[data-testid="stTextArea"] textarea {
+            background-color: #FFFFFF !important; 
+            border: 1px solid #4DD0E1 !important; /* Default border color */
+            border-radius: 8px !important; 
+            color: #006064 !important; 
+            padding: 10px 15px !important; 
+            font-size: 15px !important; 
+        }
+
+        
+        div[data-testid="stTextArea"] textarea:focus { 
+            border: 2px solid #006064 !important; /* Change this hex code for a different focus color */
+            box-shadow: none !important; /* Removes Streamlit's default glowing ring */
+        }
     </style>
     """, unsafe_allow_html=True)
 
