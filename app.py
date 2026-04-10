@@ -1129,9 +1129,16 @@ elif selected_page == "Submission":
         }
 
         
+        div[data-testid="stTextArea"] > div:focus-within {
+            box-shadow: none !important;
+            outline: none !important;
+        }
+
+        /* Apply your custom teal border to the actual text box */
         div[data-testid="stTextArea"] textarea:focus { 
-            border: 2px solid #006064 !important; /* Change this hex code for a different focus color */
-            box-shadow: none !important; /* Removes Streamlit's default glowing ring */
+            border: 2px solid #006064 !important; 
+            box-shadow: none !important; 
+            outline: none !important; 
         }
     </style>
     """, unsafe_allow_html=True)
