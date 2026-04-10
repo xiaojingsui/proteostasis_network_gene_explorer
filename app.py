@@ -1153,7 +1153,7 @@ elif selected_page == "Submission":
         /* 5. Custom White Alert Boxes */
         div[data-testid="stAlert"] {
             background-color: #FFFFFF !important;
-            border: 1px solid #4DD0E1 !important; /* Matches your custom input borders */
+            border: 1px solid #FFFFFF !important; /* Matches your custom input borders */
             border-radius: 8px !important;
         }
         
