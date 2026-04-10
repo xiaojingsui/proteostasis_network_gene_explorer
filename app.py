@@ -1162,7 +1162,7 @@ elif selected_page == "Submission":
         div[data-testid="stAlert"] [data-testid="stMarkdownContainer"],
         div[data-testid="stAlert"] p {
             background-color: #FFFFFF !important;
-            color: #006064 !important; /* Text color to match your theme */
+            color: #4DD0E1 !important; /* Text color to match your theme */
         }
     </style>
     """, unsafe_allow_html=True)
