@@ -1070,13 +1070,43 @@ elif selected_page == "Submission":
 
     st.markdown("""
     <style>
-        div[data-testid="stTextInput"] { width: 50% !important; min-width: 300px; margin: 0 auto -15px !important; }
-        div[data-testid="stTextInput"] > div { height: auto !important; min-height: 25px !important; }
-        div[data-testid="stTextInput"] div[data-baseweb="input"], div[data-testid="stTextInput"] div[data-baseweb="base-input"] { background-color: transparent !important; border: none !important; box-shadow: none !important; }
-        div[data-testid="stTextInput"] input { background-color: #FFFFFF !important; border: 2px solid #4DD0E1 !important; border-radius: 12px !important; color: #006064 !important; caret-color: #006064 !important; box-sizing: border-box !important; padding: 22px 25px !important; font-size: 15px !important; }
-        div[data-testid="stTextInput"] input::placeholder { color: #90A4AE !important; opacity: 1 !important; }
-        div[data-testid="stTextInput"] input:focus { border-color: #006064 !important; box-shadow: none !important; outline: none !important; }
+        /* 1. Ensure inputs take up the full width of their columns */
+        div[data-testid="stTextInput"] { width: 100% !important; min-width: 100% !important; margin: 0 !important; }
+        div[data-testid="stTextInput"] > div { min-height: auto !important; }
+        
+        /* 2. Clean Text Input Styling */
+        div[data-testid="stTextInput"] input { 
+            height: 50px !important; /* Fixed height */
+            background-color: #FFFFFF !important; 
+            border: 1px solid #4DD0E1 !important; 
+            border-radius: 8px !important; 
+            color: #006064 !important; 
+            padding: 10px 15px !important; 
+            font-size: 15px !important; 
+            box-sizing: border-box !important;
+        }
+        div[data-testid="stTextInput"] input:focus { 
+            border: 2px solid #006064 !important; 
+            box-shadow: none !important; 
+        }
         div[data-testid="InputInstructions"] { display: none !important; }
+
+        /* 3. Matching Dropdown (Selectbox) Styling */
+        div[data-testid="stSelectbox"] * { font-family: Arial, Helvetica, sans-serif !important; }
+        div[data-testid="stSelectbox"] > div > div:not([aria-disabled="true"]) {
+            height: 50px !important; /* Exact same height as Text Input */
+            min-height: 50px !important;
+            border: 1px solid #4DD0E1 !important; 
+            border-radius: 8px !important;
+            background-color: #FFFFFF !important;
+            color: #006064 !important; 
+            font-size: 15px !important;
+            align-items: center !important;
+        }
+        div[data-testid="stSelectbox"]:not(:has(div[aria-disabled="true"])):hover > div > div, 
+        div[data-testid="stSelectbox"]:not(:has(div[aria-disabled="true"])) > div > div:focus-within {
+            border: 2px solid #006064 !important; 
+        }
     </style>
     """, unsafe_allow_html=True)
 
