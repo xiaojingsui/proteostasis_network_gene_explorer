@@ -1067,8 +1067,8 @@ You can export your results at any time:
 elif selected_page == "Submission":
     # Hero Section
     st.markdown('<div class="hero-section">', unsafe_allow_html=True)
-    st.markdown('<p class="hero-title">Submitting new Information to PN</p>', unsafe_allow_html=True)
-    st.markdown('<p class="hero-subtitle">Help expand the Human Proteostasis Network</p>', unsafe_allow_html=True)
+    st.markdown('<p class="hero-title">Submitting new Information to Human PN</p>', unsafe_allow_html=True)
+    
     st.markdown('</div>', unsafe_allow_html=True)
 
     # Introductory text matching the mockup style
