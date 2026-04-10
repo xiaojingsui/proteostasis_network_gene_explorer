@@ -1074,7 +1074,7 @@ elif selected_page == "Submission":
     # Introductory text matching the mockup style
     st.markdown("""
         <div style="max-width: 800px; margin: 0 auto 20px auto; font-family: Arial, Helvetica, sans-serif; font-size: 16px; color: #445550; background-color: #F0FBFC; padding: 20px; border-radius: 8px; border: 1px solid #E0F7FA;">
-            New proteins and components involved in the human proteostasis network are welcome. To this end, fill in the form below with a brief summary of the new protein information and evidence. After curating that information, we will add the new proteins/information to our annotation.
+            New components involved in the human PN are welcome. To this end, fill in the form below with a brief summary of the new component information and evidence. After curating that information, we will add the new information to our annotation.
         </div>
     """, unsafe_allow_html=True)
 
