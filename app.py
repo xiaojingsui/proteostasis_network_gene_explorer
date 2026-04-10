@@ -1130,7 +1130,7 @@ elif selected_page == "Submission":
 
         
         div[data-testid="stTextArea"] textarea:focus { 
-            border: 2px solid #006064 !important; /* Change this hex code for a different focus color */
+            border: 1px solid #006064 !important; /* Change this hex code for a different focus color */
             box-shadow: none !important; /* Removes Streamlit's default glowing ring */
         }
     </style>
