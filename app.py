@@ -320,17 +320,7 @@ st.markdown("""
 
     /* --- WIDGET STYLING (RESTORED FROM VERSION 1) --- */
     
-    /* 1. Main Container positioning */
-    div[data-testid="stTextInput"] {
-        width: 50% !important;      
-        min-width: 300px;
-        margin: 0 auto -15px !important;
-    }
     
-    div[data-testid="stTextInput"] > div {
-        height: auto !important;
-        min-height: 75px !important; 
-    }
 
     /* 2. THE OUTER WRAPPERS (Make them Invisible) */
     div[data-testid="stTextInput"] div[data-baseweb="input"],
@@ -464,6 +454,18 @@ selected_page = selected_nav
 # PAGE 1: OPEN SEARCH - REVISED LOGIC
 # ==========================================
 if selected_page == "Open Search":
+
+    st.markdown("""
+    <style>
+        div[data-testid="stTextInput"] { width: 50% !important; min-width: 300px; margin: 0 auto -15px !important; }
+        div[data-testid="stTextInput"] > div { height: auto !important; min-height: 75px !important; }
+        div[data-testid="stTextInput"] div[data-baseweb="input"], div[data-testid="stTextInput"] div[data-baseweb="base-input"] { background-color: transparent !important; border: none !important; box-shadow: none !important; }
+        div[data-testid="stTextInput"] input { background-color: #FFFFFF !important; border: 2px solid #4DD0E1 !important; border-radius: 12px !important; color: #006064 !important; caret-color: #006064 !important; box-sizing: border-box !important; padding: 22px 25px !important; font-size: 15px !important; }
+        div[data-testid="stTextInput"] input::placeholder { color: #90A4AE !important; opacity: 1 !important; }
+        div[data-testid="stTextInput"] input:focus { border-color: #006064 !important; box-shadow: none !important; outline: none !important; }
+        div[data-testid="InputInstructions"] { display: none !important; }
+    </style>
+    """, unsafe_allow_html=True)
 
     df = load_data()
 
