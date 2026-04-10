@@ -1070,27 +1070,13 @@ elif selected_page == "Submission":
 
     st.markdown("""
     <style>
-        /* 1. Container Fixes: Force the wrappers to match the 50px height and prevent clipping */
-        div[data-testid="stTextInput"] { 
-            width: 100% !important; 
-            min-width: 100% !important; 
-            margin: 0 !important; 
-        }
-        
-        div[data-testid="stTextInput"] > div, 
-        div[data-testid="stTextInput"] div[data-baseweb="input"], 
-        div[data-testid="stTextInput"] div[data-baseweb="base-input"] { 
-            min-height: 50px !important; 
-            height: 50px !important;
-            background-color: transparent !important; 
-            border: none !important; 
-            box-shadow: none !important; 
-            overflow: visible !important; /* This is the magic line that reveals the bottom border */
-        }
+        /* 1. Ensure inputs take up the full width of their columns */
+        div[data-testid="stTextInput"] { width: 100% !important; min-width: 100% !important; margin: 0 !important; }
+        div[data-testid="stTextInput"] > div { min-height: auto !important; }
         
         /* 2. Clean Text Input Styling */
         div[data-testid="stTextInput"] input { 
-            height: 50px !important; 
+            height: 50px !important; /* Fixed height */
             background-color: #FFFFFF !important; 
             border: 1px solid #4DD0E1 !important; 
             border-radius: 8px !important; 
@@ -1098,21 +1084,17 @@ elif selected_page == "Submission":
             padding: 10px 15px !important; 
             font-size: 15px !important; 
             box-sizing: border-box !important;
-            line-height: normal !important;
         }
-        
         div[data-testid="stTextInput"] input:focus { 
             border: 2px solid #006064 !important; 
             box-shadow: none !important; 
         }
-        
         div[data-testid="InputInstructions"] { display: none !important; }
 
         /* 3. Matching Dropdown (Selectbox) Styling */
         div[data-testid="stSelectbox"] * { font-family: Arial, Helvetica, sans-serif !important; }
-        
         div[data-testid="stSelectbox"] > div > div:not([aria-disabled="true"]) {
-            height: 50px !important; 
+            height: 50px !important; /* Exact same height as Text Input */
             min-height: 50px !important;
             border: 1px solid #4DD0E1 !important; 
             border-radius: 8px !important;
@@ -1121,12 +1103,12 @@ elif selected_page == "Submission":
             font-size: 15px !important;
             align-items: center !important;
         }
-        
         div[data-testid="stSelectbox"]:not(:has(div[aria-disabled="true"])):hover > div > div, 
         div[data-testid="stSelectbox"]:not(:has(div[aria-disabled="true"])) > div > div:focus-within {
             border: 2px solid #006064 !important; 
         }
     </style>
+    """, unsafe_allow_html=True)
 
     # Hero Section
     st.markdown('<div class="hero-section">', unsafe_allow_html=True)
