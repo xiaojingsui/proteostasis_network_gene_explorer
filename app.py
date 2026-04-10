@@ -1165,7 +1165,7 @@ elif selected_page == "Submission":
                     help="Include references to publications, experiments or annotations that support the information."
                 )
                 
-                st.markdown("<hr style='border: 1px solid #F0F0F0; margin: 15px 0;'>", unsafe_allow_html=True)
+                st.markdown("<hr style='border: 1px solid #212121; margin: 15px 0;'>", unsafe_allow_html=True)
                 
                 # Contact info
                 st.markdown("<p style='font-family: Arial, Helvetica, sans-serif; font-size: 16px; font-weight: bold; color: #212121;'>Contact Information (optional)</p>", unsafe_allow_html=True)
