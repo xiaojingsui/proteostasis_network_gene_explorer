@@ -447,7 +447,7 @@ st.markdown("""
 
 
 # --- TOP NAVBAR ---
-NAV_OPTIONS = ["Open Search", "Guided Search", "About", "Guides"]
+NAV_OPTIONS = ["Open Search", "Guided Search", "About", "Guides","Submission"]
 
 selected_nav = st.radio(
     "Navigation", 
@@ -1060,3 +1060,73 @@ You can export your results at any time:
 
     #st.markdown("<br><hr>", unsafe_allow_html=True)
     #st.caption("Data source: Human Proteostasis Network v4.3")
+
+# ==========================================
+# PAGE 5: SUBMISSION
+# ==========================================
+elif selected_page == "Submission":
+    # Hero Section
+    st.markdown('<div class="hero-section">', unsafe_allow_html=True)
+    st.markdown('<p class="hero-title">Submitting new Information to PN</p>', unsafe_allow_html=True)
+    st.markdown('<p class="hero-subtitle">Help expand the Human Proteostasis Network</p>', unsafe_allow_html=True)
+    st.markdown('</div>', unsafe_allow_html=True)
+
+    # Introductory text matching the mockup style
+    st.markdown("""
+        <div style="max-width: 800px; margin: 0 auto 20px auto; font-family: Arial, Helvetica, sans-serif; font-size: 16px; color: #445550; background-color: #F0FBFC; padding: 20px; border-radius: 8px; border: 1px solid #E0F7FA;">
+            New proteins and components involved in the human proteostasis network are welcome. To this end, fill in the form below with a brief summary of the new protein information and evidence. After curating that information, we will add the new proteins/information to our annotation.
+        </div>
+    """, unsafe_allow_html=True)
+
+    # Form Container
+    with st.container():
+        # Center the form using columns
+        _, col_form, _ = st.columns([1, 4, 1])
+        
+        with col_form:
+            with st.form("protein_submission_form", border=True):
+                
+                # Top row inputs
+                c1, c2 = st.columns(2)
+                with c1:
+                    protein_name = st.text_input("Protein Name / Gene Symbol *", placeholder="Ex: HSPA1A")
+                with c2:
+                    # Adapted Organism Type from the mockup to UniProt ID for the PN context
+                    uniprot_id = st.text_input("UniProt ID *", placeholder="Ex: P0DMV8")
+
+                # Text areas
+                description = st.text_area(
+                    "Protein Description *", 
+                    placeholder="Briefly describe the protein, its function and characteristics in the proteostasis network",
+                    help="Include relevant information about the function and characteristics of the protein."
+                )
+                
+                evidence = st.text_area(
+                    "Evidence *", 
+                    placeholder="Provide scientific evidence, references or publications",
+                    help="Include references to publications, experiments or annotations that support the information."
+                )
+                
+                st.markdown("<hr style='border: 1px solid #F0F0F0; margin: 15px 0;'>", unsafe_allow_html=True)
+                
+                # Contact info
+                st.markdown("<p style='font-family: Arial; font-size: 16px; font-weight: bold; color: #212121;'>Contact Information (optional)</p>", unsafe_allow_html=True)
+                
+                c3, c4 = st.columns(2)
+                with c3:
+                    contact_name = st.text_input("Name", placeholder="Your name")
+                with c4:
+                    contact_email = st.text_input("Email", placeholder="your.email@example.com")
+                
+                st.markdown("<br>", unsafe_allow_html=True)
+                
+                # The submit button inside a form automatically prevents page reloads until clicked
+                submit_button = st.form_submit_button("Submit Information", use_container_width=True)
+                
+                # Basic validation logic
+                if submit_button:
+                    if not protein_name or not uniprot_id or not description or not evidence:
+                        st.error("Please fill in all the required fields marked with an asterisk (*).")
+                    else:
+                        st.success(f"Thank you! The information for {protein_name} has been submitted for curation.")
+                        st.balloons() # Optional: A little celebration animation upon success
