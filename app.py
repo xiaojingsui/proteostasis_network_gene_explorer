@@ -1098,7 +1098,7 @@ elif selected_page == "Submission":
                 description = st.text_area(
                     "Protein Description *", 
                     placeholder="Briefly describe the protein, its function in the proteostasis network",
-                    help="Include relevant information about the function and characteristics of the protein."
+                    help="Include relevant information about the function of the protein."
                 )
                 
                 evidence = st.text_area(
