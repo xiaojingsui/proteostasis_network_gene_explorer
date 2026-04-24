@@ -1202,7 +1202,7 @@ elif selected_page == "Feedback":
                 # Text areas
                 description = st.text_area(
                     "Protein Description *", 
-                    placeholder="Briefly describe the protein, its function in the proteostasis network",
+                    placeholder="Briefly describe the protein and its proposed function in the proteostasis network",
                     help="Include relevant information about the function of the protein."
                 )
                 
