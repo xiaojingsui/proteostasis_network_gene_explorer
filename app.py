@@ -1169,7 +1169,7 @@ elif selected_page == "Feedback":
 
     # Hero Section
     st.markdown('<div class="hero-section">', unsafe_allow_html=True)
-    st.markdown('<p class="hero-title">Submitting new Information to Human PN</p>', unsafe_allow_html=True)
+    st.markdown('<p class="hero-title">Feedback and Submission of new Information to Human PN</p>', unsafe_allow_html=True)
     
     st.markdown('</div>', unsafe_allow_html=True)
 
