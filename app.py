@@ -1219,11 +1219,11 @@ elif selected_page == "Feedback":
                 
                 c3, c4, c5 = st.columns(3)
                 with c3:
-                    contact_name = st.text_input("Full Name", placeholder="Your name")
+                    contact_name = st.text_input("Full Name *", placeholder="Your name")
                 with c4:
-                    contact_org = st.text_input("Organization", placeholder="Your organization")
+                    contact_org = st.text_input("Organization *", placeholder="Your organization")
                 with c5:
-                    contact_email = st.text_input("Email", placeholder="your.email@example.com")
+                    contact_email = st.text_input("Email *", placeholder="your.email@example.com")
                 
                 st.markdown("<br>", unsafe_allow_html=True)
                 
