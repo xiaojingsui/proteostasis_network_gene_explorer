@@ -437,7 +437,7 @@ st.markdown("""
 
 
 # --- TOP NAVBAR ---
-NAV_OPTIONS = ["Open Search", "Guided Search", "About", "Guides","Submission"]
+NAV_OPTIONS = ["Open Search", "Guided Search", "About", "Guides","Feedback"]
 
 selected_nav = st.radio(
     "Navigation", 
@@ -1064,9 +1064,9 @@ You can export your results at any time:
     #st.caption("Data source: Human Proteostasis Network v4.3")
 
 # ==========================================
-# PAGE 5: SUBMISSION
+# PAGE 5: Feedback
 # ==========================================
-elif selected_page == "Submission":
+elif selected_page == "Feedback":
 
     st.markdown("""
     <style>
