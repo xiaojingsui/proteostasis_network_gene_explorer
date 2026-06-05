@@ -642,7 +642,7 @@ if selected_page == "Open Search":
         """, unsafe_allow_html=True)
     st.markdown("<br><br><hr>", unsafe_allow_html=True)
 
-    file_path = 'Human Proteostasis Network v4.3.xlsx'
+    file_path = 'Survey of the Human Proteostasis Network 4.3.2.xlsx'
     
     try:
         with open(file_path, "rb") as f:
@@ -656,7 +656,7 @@ if selected_page == "Open Search":
                 <a href="data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,{b64}" 
                    download="Human_Proteostasis_Network_v4.3.xlsx" 
                    style="font-size: 14px; color: #00838F; font-weight: bold; text-decoration: underline;">
-                   Data source: Human Proteostasis Network v4.3 (Click to bulk download)
+                   Data source: Survey of the Human Proteostasis Network 4.3.2 (Click to bulk download)
                 </a>
             </div>
         '''
@@ -664,7 +664,7 @@ if selected_page == "Open Search":
         
     except FileNotFoundError:
         
-        st.markdown('<p style="color: #888; font-size: 14px;">Data source: Human Proteostasis Network v4.3 (File not found)</p>', unsafe_allow_html=True)
+        st.markdown('<p style="color: #888; font-size: 14px;">Data source: Survey of the Human Proteostasis Network 4.3.2 (File not found)</p>', unsafe_allow_html=True)
 
 
 # ==========================================
@@ -795,7 +795,7 @@ elif selected_page == "Guided Search":
 
     # Footer
     st.markdown("<br><br><hr>", unsafe_allow_html=True)
-    file_path = 'Human Proteostasis Network v4.3.xlsx'
+    file_path = 'Survey of the Human Proteostasis Network 4.3.2.xlsx'
     
     try:
         with open(file_path, "rb") as f:
@@ -809,7 +809,7 @@ elif selected_page == "Guided Search":
                 <a href="data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,{b64}" 
                    download="Human_Proteostasis_Network_v4.3.xlsx" 
                    style="font-size: 14px; color: #00838F; font-weight: bold; text-decoration: underline;">
-                   Data source: Human Proteostasis Network v4.3 (Click to bulk download)
+                   Data source: Survey of the Human Proteostasis Network 4.3.2 (Click to bulk download)
                 </a>
             </div>
         '''
@@ -817,7 +817,8 @@ elif selected_page == "Guided Search":
         
     except FileNotFoundError:
         
-        st.markdown('<p style="color: #888; font-size: 14px;">Data source: Human Proteostasis Network v4.3 (File not found)</p>', unsafe_allow_html=True)
+        st.markdown('<p style="color: #888; font-size: 14px;">Data source: Survey of the Human Proteostasis Network 4.3.2 (File not found)</p>', unsafe_allow_html=True)
+
 
 
 
@@ -925,7 +926,7 @@ Explanatory details about the fine structure of the annotation will be published
 """, unsafe_allow_html=True)
 
     #st.markdown("<br><br><hr>", unsafe_allow_html=True)
-    #st.caption("Data source: Human Proteostasis Network v4.3")
+    #st.caption("Data source: Survey of the Human Proteostasis Network 4.3.2")
 
 # ==========================================
 # PAGE 4: GUIDES - REVISED HIERARCHY
@@ -1061,7 +1062,7 @@ You can export your results at any time:
 """, unsafe_allow_html=True)
 
     #st.markdown("<br><hr>", unsafe_allow_html=True)
-    #st.caption("Data source: Human Proteostasis Network v4.3")
+    #st.caption("Data source: Survey of the Human Proteostasis Network 4.3.2")
 
 # ==========================================
 # PAGE 5: Feedback
