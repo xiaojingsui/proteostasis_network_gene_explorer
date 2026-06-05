@@ -61,7 +61,7 @@ def update_search(new_query):
 # 2. LOAD DATA
 @st.cache_data
 def load_data():
-    file_path = 'Human Proteostasis Network v4.3.xlsx'
+    file_path = 'Survey of the Human Proteostasis Network 4.3.2.xlsx'
     try:
         df = pd.read_excel(file_path, sheet_name='MAIN')
         df = df.dropna(subset=['Gene Symbol', 'UniProt ID'])
