@@ -8,7 +8,7 @@ import base64
 import os
 from datetime import datetime
 
-
+FILE_NAME = 'human_pn_submissions.csv'
 # --- NEW: INHIBITOR DATA MAPPING ---
 # Maps Gene Symbols to lists of (Name, URL)
 INHIBITOR_MAP = {
@@ -1070,8 +1070,6 @@ You can export your results at any time:
 # PAGE 5: Feedback
 # ==========================================
 
-FILE_NAME = 'human_pn_submissions.csv'
-
 elif selected_page == "Feedback":
 
 
@@ -1292,4 +1290,3 @@ with col_admin:
             
         else:
             st.info("No submissions have been made yet. The file will appear here once someone submits the form.")        
-        
