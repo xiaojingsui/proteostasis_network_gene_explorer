@@ -8,7 +8,12 @@ import base64
 import os
 from datetime import datetime
 
-FILE_NAME = 'human_pn_submissions.csv'
+# Get the absolute path of the directory containing this script
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+
+# Join that directory with your desired filename
+FILE_NAME = os.path.join(SCRIPT_DIR, 'human_pn_submissions.csv')
+
 # --- NEW: INHIBITOR DATA MAPPING ---
 # Maps Gene Symbols to lists of (Name, URL)
 INHIBITOR_MAP = {
