@@ -1210,7 +1210,7 @@ elif selected_page == "Feedback":
                 evidence = st.text_area(
                     "Evidence *", 
                     placeholder="""An example for the protein TAB2: 
-                    TAB2 and TAB3 bind to BECN to inhibit autophagy. TAB2 also interacts with ATG13 and is phosphorylated by ULK1.""",
+                TAB2 and TAB3 bind to BECN to inhibit autophagy. TAB2 also interacts with ATG13 and is phosphorylated by ULK1.""",
                     help="Include references to publications, experiments or annotations that support the information."
                 )
                 
