@@ -5,6 +5,8 @@ import textwrap
 import requests
 import math
 import base64
+import os
+from datetime import datetime
 
 
 # --- NEW: INHIBITOR DATA MAPPING ---
@@ -1067,7 +1069,12 @@ You can export your results at any time:
 # ==========================================
 # PAGE 5: Feedback
 # ==========================================
+
+FILE_NAME = 'human_pn_submissions.csv'
+
 elif selected_page == "Feedback":
+
+
 
     st.markdown("""
     <style>
@@ -1234,8 +1241,55 @@ elif selected_page == "Feedback":
                 
                 # Basic validation logic updated to check for 'branch'
                 if submit_button:
-                    if not protein_name or not branch or not description or not evidence:
+                    if not protein_name or not branch or not description or not evidence or not contact_name or not contact_org or not contact_email:
                         st.error("Please fill in all the required fields marked with an asterisk (*).")
                     else:
+                        # 1. Package the data into a dictionary
+                        new_data = {
+                            "Timestamp": [datetime.now().strftime("%Y-%m-%d %H:%M:%S")],
+                            "Gene Symbol": [protein_name],
+                            "Branch": [branch],
+                            "Description": [description],
+                            "Evidence": [evidence],
+                            "Name": [contact_name],
+                            "Organization": [contact_org],
+                            "Email": [contact_email]
+                        }
+                        
+                        # 2. Convert to a pandas DataFrame
+                        df = pd.DataFrame(new_data)
+                        
+                        # 3. Save to CSV (Append if exists, write new if it doesn't)
+                        if os.path.exists(FILE_NAME):
+                            df.to_csv(FILE_NAME, mode='a', header=False, index=False)
+                        else:
+                            df.to_csv(FILE_NAME, mode='w', header=True, index=False)
+                            
                         st.success(f"Thank you! The information for {protein_name} has been submitted for curation.")
                         st.balloons()
+# ==========================================
+# ADMIN SECTION: Download the Data
+# ==========================================
+st.markdown("<br><br>", unsafe_allow_html=True)
+_, col_admin, _ = st.columns([1, 4, 1])
+
+with col_admin:
+    with st.expander("Admin: Download Submissions"):
+        if os.path.exists(FILE_NAME):
+            # Read the file and create a download button
+            with open(FILE_NAME, "rb") as file:
+                st.download_button(
+                    label="📥 Download All Submissions (CSV)",
+                    data=file,
+                    file_name="human_pn_submissions.csv",
+                    mime="text/csv",
+                    use_container_width=True
+                )
+            
+            # Optional: Show a quick preview of how many submissions there are
+            df_preview = pd.read_csv(FILE_NAME)
+            st.caption(f"Total submissions collected: {len(df_preview)}")
+            
+        else:
+            st.info("No submissions have been made yet. The file will appear here once someone submits the form.")        
+        
