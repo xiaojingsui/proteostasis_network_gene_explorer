@@ -1265,28 +1265,3 @@ elif selected_page == "Feedback":
                             
                         st.success(f"Thank you! The information for {protein_name} has been submitted for curation.")
                         st.balloons()
-# ==========================================
-# ADMIN SECTION: Download the Data
-# ==========================================
-st.markdown("<br><br>", unsafe_allow_html=True)
-_, col_admin, _ = st.columns([1, 4, 1])
-
-with col_admin:
-    with st.expander("Admin: Download Submissions"):
-        if os.path.exists(FILE_NAME):
-            # Read the file and create a download button
-            with open(FILE_NAME, "rb") as file:
-                st.download_button(
-                    label="Download All Submissions (CSV)",
-                    data=file,
-                    file_name="human_pn_submissions.csv",
-                    mime="text/csv",
-                    use_container_width=True
-                )
-            
-            # Optional: Show a quick preview of how many submissions there are
-            df_preview = pd.read_csv(FILE_NAME)
-            st.caption(f"Total submissions collected: {len(df_preview)}")
-            
-        else:
-            st.info("No submissions have been made yet. The file will appear here once someone submits the form.")        
