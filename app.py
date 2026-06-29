@@ -1277,7 +1277,7 @@ with col_admin:
             # Read the file and create a download button
             with open(FILE_NAME, "rb") as file:
                 st.download_button(
-                    label="📥 Download All Submissions (CSV)",
+                    label="Download All Submissions (CSV)",
                     data=file,
                     file_name="human_pn_submissions.csv",
                     mime="text/csv",
