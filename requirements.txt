@@ -1,8 +1,4 @@
-streamlit
-pandas
-openpyxl
-stmol
-py3Dmol
-requests
-ipywidgets
-ipython_genutils
+streamlit==1.44.1
+pandas==2.2.3
+openpyxl==3.1.5
+requests==2.32.3
