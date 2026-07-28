@@ -1203,6 +1203,40 @@ elif selected_page == "Feedback":
             border: 2px solid #006064 !important; 
         }
 
+        /* 3b. Multiselect (Branch) — match input styling and tag appearance */
+        div[data-testid="stMultiSelect"] * { font-family: Arial, Helvetica, sans-serif !important; }
+        /* The outer box: same border/rounding as the other inputs, auto-height so tags wrap */
+        div[data-testid="stMultiSelect"] > div > div {
+            min-height: 50px !important;
+            border: 1px solid #4DD0E1 !important;
+            border-radius: 8px !important;
+            background-color: #FFFFFF !important;
+        }
+        div[data-testid="stMultiSelect"] > div > div:focus-within {
+            border: 2px solid #006064 !important;
+        }
+        /* The selected tags: soft teal, rounded, no hard red square */
+        div[data-testid="stMultiSelect"] span[data-baseweb="tag"] {
+            background-color: #E0F7FA !important;
+            color: #006064 !important;
+            border-radius: 8px !important;
+            border: 1px solid #4DD0E1 !important;
+        }
+        /* Show the full branch name — no truncation / ellipsis */
+        div[data-testid="stMultiSelect"] span[data-baseweb="tag"] span {
+            max-width: none !important;
+            overflow: visible !important;
+            text-overflow: clip !important;
+            white-space: normal !important;
+            color: #006064 !important;
+        }
+        /* The little 'x' remove button: tint it to match, not red */
+        div[data-testid="stMultiSelect"] span[data-baseweb="tag"] span[role="presentation"],
+        div[data-testid="stMultiSelect"] span[data-baseweb="tag"] svg {
+            color: #006064 !important;
+            fill: #006064 !important;
+        }
+
         /* 4. Text Area Styling */
         
         /* Kill Streamlit's default wrapper borders and focus rings (the red line) */
