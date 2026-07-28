@@ -1215,26 +1215,34 @@ elif selected_page == "Feedback":
         div[data-testid="stMultiSelect"] > div > div:focus-within {
             border: 2px solid #006064 !important;
         }
-        /* The selected tags: soft teal, rounded, no hard red square */
-        div[data-testid="stMultiSelect"] span[data-baseweb="tag"] {
+        /* The selected tags: soft teal, rounded, no hard red square.
+           Target the tag AND every child so the theme's red can't win. */
+        div[data-testid="stMultiSelect"] span[data-baseweb="tag"],
+        div[data-testid="stMultiSelect"] span[data-baseweb="tag"] > div,
+        div[data-testid="stMultiSelect"] span[data-baseweb="tag"] > span {
             background-color: #E0F7FA !important;
+            background: #E0F7FA !important;
             color: #006064 !important;
             border-radius: 8px !important;
+        }
+        div[data-testid="stMultiSelect"] span[data-baseweb="tag"] {
             border: 1px solid #4DD0E1 !important;
         }
-        /* Show the full branch name — no truncation / ellipsis */
-        div[data-testid="stMultiSelect"] span[data-baseweb="tag"] span {
+        /* Show the full branch name — no truncation / ellipsis. BaseWeb caps the
+           text span with a max-width + ellipsis; override every text descendant. */
+        div[data-testid="stMultiSelect"] span[data-baseweb="tag"] * {
             max-width: none !important;
             overflow: visible !important;
             text-overflow: clip !important;
-            white-space: normal !important;
+            white-space: nowrap !important;
             color: #006064 !important;
         }
-        /* The little 'x' remove button: tint it to match, not red */
-        div[data-testid="stMultiSelect"] span[data-baseweb="tag"] span[role="presentation"],
-        div[data-testid="stMultiSelect"] span[data-baseweb="tag"] svg {
+        /* The little 'x' remove button: tint it to match, not red/white-on-red */
+        div[data-testid="stMultiSelect"] span[data-baseweb="tag"] svg,
+        div[data-testid="stMultiSelect"] span[data-baseweb="tag"] svg * {
             color: #006064 !important;
             fill: #006064 !important;
+            background: transparent !important;
         }
 
         /* 4. Text Area Styling */
