@@ -1278,11 +1278,12 @@ elif selected_page == "Feedback":
                 with c1:
                     protein_name = st.text_input("Gene Symbol / UniProt ID *", placeholder="Ex: HSPA1A")
                 with c2:
-                    # Dropdown for all available branches
-                    branch_options = ["", "cytonuclear proteostasis", "ER proteostasis", "mitochondrial proteostasis", 
+                    # Multi-select for all available branches (submitter may pick more than one)
+                    branch_options = ["cytonuclear proteostasis", "ER proteostasis", "mitochondrial proteostasis", 
                     "nuclear proteostasis", "PN regulation", "translation", "extracellular proteostasis", 
-                    "autophagy-lysosome pathway", "ubiquitin-proteasome system",'others']
-                    branch = st.selectbox("Branch *", options=branch_options)
+                    "autophagy-lysosome pathway", "ubiquitin-proteasome system", 'others']
+                    branch = st.multiselect("Branch *", options=branch_options,
+                        placeholder="Select one or more branches")
 
                 # Text areas
                 description = st.text_area(
@@ -1325,7 +1326,7 @@ elif selected_page == "Feedback":
                         new_data = {
                             "Timestamp": [datetime.now().strftime("%Y-%m-%d %H:%M:%S")],
                             "Gene Symbol": [protein_name],
-                            "Branch": [branch],
+                            "Branch": ["; ".join(branch)],
                             "Description": [description],
                             "Evidence": [evidence],
                             "Name": [contact_name],
