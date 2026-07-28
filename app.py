@@ -1347,7 +1347,7 @@ elif selected_page == "Feedback":
     # Introductory text matching the mockup style
     st.markdown("""
         <div style="max-width: 800px; margin: 0 auto 20px auto; font-family: Arial, Helvetica, sans-serif; font-size: 16px; color: #445550; background-color: #F0FBFC; padding: 20px; border-radius: 8px; border: 1px solid #E0F7FA;">
-            New components involved in the human PN are welcome. To this end, fill in the form below with a brief summary of the new component information and evidence. Every annotation in this resource reflects a deliberate, evidence-based decision about each gene, so please support each suggestion with a <b>PMID</b> and a citation of the <b>specific figure(s)</b> that establish the claim. A characteristic <b>InterPro domain</b> may be cited in place of a figure. Figure-level citations let us verify real evidence and are the surest way to distinguish it from unsupported or AI-generated claims. After curating that information, we will add the new information to our annotation.
+            New components involved in the human PN are welcome. To this end, fill in the form below with a brief summary of the new component information and evidence. Every annotation in this resource reflects a deliberate, evidence-based decision about each gene, so please support each suggestion with a <b>PMID</b> and a citation of the <b>specific figure(s)</b> that establish the claim. A characteristic <b>InterPro domain</b> may be cited in place of a figure. After curating that information, we will add the new information to our annotation.
         </div>
     """, unsafe_allow_html=True)
 
