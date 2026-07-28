@@ -459,16 +459,27 @@ st.markdown("""
     }
 
     /* --- BUTTONS --- */
-    div.stButton > button, div.stDownloadButton > button {
+    div.stButton > button, div.stDownloadButton > button,
+    div[data-testid="stFormSubmitButton"] > button {
         background-color: #FFFFFF !important;
         color: #212121 !important;              
         border: 1px solid #D3D3D3 !important;       
         transition: all 0.3s ease !important;
     }
-    div.stButton > button:hover, div.stDownloadButton > button:hover {
+    div.stButton > button:hover, div.stDownloadButton > button:hover,
+    div[data-testid="stFormSubmitButton"] > button:hover {
         background-color: #F0FBFC !important; 
         color: #004D40 !important;              
         border-color: #006064 !important;        
+    }
+    /* Kill the default red focus/active ring on the form submit button */
+    div[data-testid="stFormSubmitButton"] > button:focus,
+    div[data-testid="stFormSubmitButton"] > button:focus-visible,
+    div[data-testid="stFormSubmitButton"] > button:active {
+        border: 1px solid #006064 !important;
+        box-shadow: none !important;
+        outline: none !important;
+        color: #004D40 !important;
     }
 
     /* Results Table */
