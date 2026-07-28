@@ -1382,7 +1382,7 @@ elif selected_page == "Feedback":
                 evidence = st.text_area(
                     "Supporting Evidence *", 
                     placeholder="""For each claim, cite a PMID AND the specific figure(s)/panel(s) that support it. A characteristic InterPro domain may be cited in place of a figure.
-Example (TAB2): TAB2 binds BECN1 to inhibit autophagy (PMID 21976705, Figure X B-D); TAB2 interacts with ATG13 and is phosphorylated by ULK1 (PMID 21976705, Figure Y C).""",
+Example format: <Protein> <does something> (PMID XXXXXXXX, Figure X B-D); <Protein> <does something else> (PMID YYYYYYYY, Figure Y C).""",
                     help="Support each suggestion with a PMID and the specific figure(s) that establish the claim, or a characteristic InterPro domain (e.g. IPR000719). Figure-level citations let us verify each claim."
                 )
                 
