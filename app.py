@@ -1210,17 +1210,27 @@ elif selected_page == "Feedback":
            validation/focus ring can't show through. */
         div[data-testid="stMultiSelect"] > div > div,
         div[data-testid="stMultiSelect"] div[data-baseweb="select"] > div,
+        div[data-testid="stMultiSelect"] div[data-baseweb="base-input"],
         div[data-testid="stMultiSelect"] div[data-baseweb="input"] {
             min-height: 50px !important;
-            border-color: #4DD0E1 !important;
+            border: 1px solid #4DD0E1 !important;
             border-radius: 8px !important;
             background-color: #FFFFFF !important;
             box-shadow: none !important;
+            outline: none !important;
         }
-        div[data-testid="stMultiSelect"] > div > div:focus-within,
-        div[data-testid="stMultiSelect"] div[data-baseweb="select"] > div:focus-within {
-            border-color: #006064 !important;
+        /* Focus state driven from the container so the red ring can't show through,
+           whichever descendant BaseWeb paints it on. */
+        div[data-testid="stMultiSelect"]:focus-within > div > div,
+        div[data-testid="stMultiSelect"]:focus-within div[data-baseweb="select"] > div {
+            border: 2px solid #006064 !important;
             box-shadow: none !important;
+            outline: none !important;
+        }
+        /* Kill any residual red border/shadow on every inner div, both states. */
+        div[data-testid="stMultiSelect"] div[data-baseweb="select"] * {
+            box-shadow: none !important;
+            outline: none !important;
         }
         /* The selected tags: soft teal, rounded, no hard red square.
            Target the tag AND every child so the theme's red can't win. */
