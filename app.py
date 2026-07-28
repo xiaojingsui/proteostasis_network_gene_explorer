@@ -483,6 +483,20 @@ st.markdown("""
         box-shadow: none !important;
         outline: none !important;
     }
+    /* The label text sits in an inner markdown/p wrapper that carries its own
+       white background — force it transparent so only the button fill shows. */
+    div[data-testid="stFormSubmitButton"] > button *,
+    div[data-testid="stFormSubmitButton"] > button p,
+    div[data-testid="stFormSubmitButton"] > button div,
+    div[data-testid="stFormSubmitButton"] > button span {
+        background-color: transparent !important;
+        background: transparent !important;
+    }
+    /* Keep label readable in each state */
+    div[data-testid="stFormSubmitButton"] > button:focus *,
+    div[data-testid="stFormSubmitButton"] > button:active * {
+        color: #FFFFFF !important;
+    }
 
     /* Results Table */
     .result-container {
