@@ -6,6 +6,7 @@ import requests
 import math
 import base64
 import os
+import re
 from datetime import datetime
 
 # Get the absolute path of the directory containing this script
@@ -65,9 +66,11 @@ def send_submission_email(record):
         "subject": f"[Human PN] New submission: {record.get('Gene Symbol', '(unknown)')}",
         "text": body,
     }
-    # Let the curator reply straight to the submitter
-    if record.get("Email"):
-        payload["reply_to"] = record["Email"]
+    # Let the curator reply straight to the submitter — but only if the submitted
+    # address is a valid email; Resend rejects the whole request on a malformed reply_to.
+    submitter = str(record.get("Email", "")).strip()
+    if re.match(r"^[^@\s]+@[^@\s]+\.[^@\s]+$", submitter):
+        payload["reply_to"] = submitter
 
     try:
         resp = requests.post(
