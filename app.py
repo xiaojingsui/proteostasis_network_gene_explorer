@@ -472,14 +472,16 @@ st.markdown("""
         color: #004D40 !important;              
         border-color: #006064 !important;        
     }
-    /* Kill the default red focus/active ring on the form submit button */
+    /* Focused / clicked submit button: solid teal fill so it reads as pressed,
+       not a washed-out near-white box. No red ring. */
     div[data-testid="stFormSubmitButton"] > button:focus,
     div[data-testid="stFormSubmitButton"] > button:focus-visible,
     div[data-testid="stFormSubmitButton"] > button:active {
+        background-color: #006064 !important;
         border: 1px solid #006064 !important;
+        color: #FFFFFF !important;
         box-shadow: none !important;
         outline: none !important;
-        color: #004D40 !important;
     }
 
     /* Results Table */
