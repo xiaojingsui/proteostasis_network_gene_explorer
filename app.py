@@ -1358,5 +1358,6 @@ elif selected_page == "Feedback":
                                 "but the email notification could not be sent. Please contact "
                                 "the curation team directly if you do not hear back."
                             )
-                            # Surface the reason in the server logs for debugging
+                            # Surface the reason for debugging (temporary — remove once email is confirmed working)
+                            st.caption(f"Debug: {email_msg}")
                             print(f"[Human PN feedback] {email_msg}")
