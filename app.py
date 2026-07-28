@@ -1347,7 +1347,7 @@ elif selected_page == "Feedback":
     # Introductory text matching the mockup style
     st.markdown("""
         <div style="max-width: 800px; margin: 0 auto 20px auto; font-family: Arial, Helvetica, sans-serif; font-size: 16px; color: #445550; background-color: #F0FBFC; padding: 20px; border-radius: 8px; border: 1px solid #E0F7FA;">
-            New components involved in the human PN are welcome. To this end, fill in the form below with a brief summary of the new component information and evidence. After curating that information, we will add the new information to our annotation.
+            New components involved in the human PN are welcome. To this end, fill in the form below with a brief summary of the new component information and evidence. Every annotation in this resource reflects a deliberate, evidence-based decision about each gene, so please support each suggestion with a <b>PMID</b> and a citation of the <b>specific figure(s)</b> that establish the claim. A characteristic <b>InterPro domain</b> may be cited in place of a figure. Figure-level citations let us verify real evidence and are the surest way to distinguish it from unsupported or AI-generated claims. After curating that information, we will add the new information to our annotation.
         </div>
     """, unsafe_allow_html=True)
 
@@ -1362,7 +1362,7 @@ elif selected_page == "Feedback":
                 # Top row inputs
                 c1, c2 = st.columns(2)
                 with c1:
-                    protein_name = st.text_input("Gene Symbol / UniProt ID *", placeholder="Ex: HSPA1A")
+                    protein_name = st.text_input("Official Gene Symbol / UniProt ID *", placeholder="Ex: HSPA1A")
                 with c2:
                     # Multi-select for all available branches (submitter may pick more than one)
                     branch_options = ["cytonuclear proteostasis", "ER proteostasis", "mitochondrial proteostasis", 
@@ -1379,10 +1379,11 @@ elif selected_page == "Feedback":
                 )
                 
                 evidence = st.text_area(
-                    "Evidence *", 
-                    placeholder="""An example for the protein TAB2: 
-                TAB2 and TAB3 bind to BECN to inhibit autophagy. TAB2 also interacts with ATG13 and is phosphorylated by ULK1. PMID: 21976705""",
-                    help="Include references to publications, experiments or annotations that support the information."
+                    "Supporting Evidence *", 
+                    placeholder="""For each claim, cite a PMID AND the specific figure(s)/panel(s) that support it. A characteristic InterPro domain may be cited in place of a figure.
+
+Example (TAB2): TAB2 binds BECN1 to inhibit autophagy (PMID 21976705, Fig 2C-E); TAB2 interacts with ATG13 and is phosphorylated by ULK1 (PMID 21976705, Fig 4A).""",
+                    help="Support each suggestion with a PMID and the specific figure(s) that establish the claim, or a characteristic InterPro domain (e.g. IPR000719). Figure-level citations let us verify each claim."
                 )
                 
                 st.markdown("<hr style='border: 1px solid #F0F0F0; margin: 15px 0;'>", unsafe_allow_html=True)
