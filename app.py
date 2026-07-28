@@ -14,6 +14,77 @@ SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 # Join that directory with your desired filename
 FILE_NAME = os.path.join(SCRIPT_DIR, 'human_pn_submissions.csv')
 
+
+# ==========================================
+# EMAIL NOTIFICATION FOR FEEDBACK SUBMISSIONS
+# ==========================================
+def send_submission_email(record):
+    """Email a feedback/submission ticket to the curation inbox via the Resend API.
+
+    Credentials are read from st.secrets['email'] (never hard-coded), which on
+    Streamlit Community Cloud is set in the app's Settings -> Secrets panel and
+    locally in .streamlit/secrets.toml. Expected keys:
+        [email]
+        resend_api_key = "re_xxxxxxxx"           # from resend.com -> API Keys
+        recipient      = "xiaojing.sui@northwestern.edu"
+        sender         = "onboarding@resend.dev" # optional; defaults to Resend's shared test sender
+                                                 # (change to an address on YOUR verified domain once set up)
+
+    Returns (success: bool, message: str).
+    """
+    try:
+        cfg = st.secrets["email"]
+        api_key = cfg["resend_api_key"]
+        recipient = cfg["recipient"]
+        sender = cfg.get("sender", "onboarding@resend.dev")
+    except Exception:
+        return False, "Email is not configured (missing st.secrets['email'])."
+
+    body = "\n".join([
+        "A new submission was received through the Human PN feedback form.",
+        "",
+        f"Timestamp:    {record.get('Timestamp', '')}",
+        f"Gene Symbol:  {record.get('Gene Symbol', '')}",
+        f"Branch:       {record.get('Branch', '')}",
+        "",
+        "Description:",
+        record.get("Description", ""),
+        "",
+        "Evidence:",
+        record.get("Evidence", ""),
+        "",
+        "--- Contact ---",
+        f"Name:         {record.get('Name', '')}",
+        f"Organization: {record.get('Organization', '')}",
+        f"Email:        {record.get('Email', '')}",
+    ])
+
+    payload = {
+        "from": f"Human PN Feedback <{sender}>",
+        "to": [recipient],
+        "subject": f"[Human PN] New submission: {record.get('Gene Symbol', '(unknown)')}",
+        "text": body,
+    }
+    # Let the curator reply straight to the submitter
+    if record.get("Email"):
+        payload["reply_to"] = record["Email"]
+
+    try:
+        resp = requests.post(
+            "https://api.resend.com/emails",
+            headers={
+                "Authorization": f"Bearer {api_key}",
+                "Content-Type": "application/json",
+            },
+            json=payload,
+            timeout=20,
+        )
+        if resp.status_code in (200, 201):
+            return True, "Email sent."
+        return False, f"Email delivery failed: HTTP {resp.status_code} {resp.text}"
+    except Exception as e:
+        return False, f"Email delivery failed: {e}"
+
 # --- NEW: INHIBITOR DATA MAPPING ---
 # Maps Gene Symbols to lists of (Name, URL)
 INHIBITOR_MAP = {
@@ -1262,11 +1333,30 @@ elif selected_page == "Feedback":
                         # 2. Convert to a pandas DataFrame
                         df = pd.DataFrame(new_data)
                         
-                        # 3. Save to CSV (Append if exists, write new if it doesn't)
-                        if os.path.exists(FILE_NAME):
-                            df.to_csv(FILE_NAME, mode='a', header=False, index=False)
+                        # 3. Save to CSV as a local backup. NOTE: on Streamlit
+                        #    Community Cloud the filesystem is ephemeral, so this
+                        #    file does NOT persist across restarts. Email (below)
+                        #    is the reliable delivery path.
+                        try:
+                            if os.path.exists(FILE_NAME):
+                                df.to_csv(FILE_NAME, mode='a', header=False, index=False)
+                            else:
+                                df.to_csv(FILE_NAME, mode='w', header=True, index=False)
+                        except Exception:
+                            pass  # never let a read-only filesystem block the submission
+
+                        # 4. Email the ticket to the curation inbox
+                        record = {k: v[0] for k, v in new_data.items()}
+                        email_ok, email_msg = send_submission_email(record)
+
+                        if email_ok:
+                            st.success(f"Thank you! The information for {protein_name} has been submitted for curation.")
+                            st.balloons()
                         else:
-                            df.to_csv(FILE_NAME, mode='w', header=True, index=False)
-                            
-                        st.success(f"Thank you! The information for {protein_name} has been submitted for curation.")
-                        st.balloons()
+                            st.warning(
+                                f"Thank you! The information for {protein_name} was recorded, "
+                                "but the email notification could not be sent. Please contact "
+                                "the curation team directly if you do not hear back."
+                            )
+                            # Surface the reason in the server logs for debugging
+                            print(f"[Human PN feedback] {email_msg}")

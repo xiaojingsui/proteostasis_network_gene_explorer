@@ -1,0 +1,11 @@
+# Streamlit secrets — never commit credentials
+.streamlit/secrets.toml
+secrets.toml
+
+# Local submission backup (ephemeral on Cloud anyway)
+human_pn_submissions.csv
+
+# Python
+__pycache__/
+*.pyc
+.DS_Store
