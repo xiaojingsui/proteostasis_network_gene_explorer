@@ -1205,15 +1205,22 @@ elif selected_page == "Feedback":
 
         /* 3b. Multiselect (Branch) — match input styling and tag appearance */
         div[data-testid="stMultiSelect"] * { font-family: Arial, Helvetica, sans-serif !important; }
-        /* The outer box: same border/rounding as the other inputs, auto-height so tags wrap */
-        div[data-testid="stMultiSelect"] > div > div {
+        /* The outer box: same border/rounding as the other inputs, auto-height so tags wrap.
+           Target the BaseWeb control at every nesting level so the default red
+           validation/focus ring can't show through. */
+        div[data-testid="stMultiSelect"] > div > div,
+        div[data-testid="stMultiSelect"] div[data-baseweb="select"] > div,
+        div[data-testid="stMultiSelect"] div[data-baseweb="input"] {
             min-height: 50px !important;
-            border: 1px solid #4DD0E1 !important;
+            border-color: #4DD0E1 !important;
             border-radius: 8px !important;
             background-color: #FFFFFF !important;
+            box-shadow: none !important;
         }
-        div[data-testid="stMultiSelect"] > div > div:focus-within {
-            border: 2px solid #006064 !important;
+        div[data-testid="stMultiSelect"] > div > div:focus-within,
+        div[data-testid="stMultiSelect"] div[data-baseweb="select"] > div:focus-within {
+            border-color: #006064 !important;
+            box-shadow: none !important;
         }
         /* The selected tags: soft teal, rounded, no hard red square.
            Target the tag AND every child so the theme's red can't win. */
@@ -1404,6 +1411,5 @@ elif selected_page == "Feedback":
                                 "but the email notification could not be sent. Please contact "
                                 "the curation team directly if you do not hear back."
                             )
-                            # Surface the reason for debugging (temporary — remove once email is confirmed working)
-                            st.caption(f"Debug: {email_msg}")
+                            # Log the reason server-side for debugging (not shown to users)
                             print(f"[Human PN feedback] {email_msg}")
