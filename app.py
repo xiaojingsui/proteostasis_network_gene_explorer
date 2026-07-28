@@ -1354,7 +1354,7 @@ elif selected_page == "Feedback":
             # Introductory text matching the mockup style
             st.markdown("""
                 <div style="margin: 0 0 20px 0; font-family: Arial, Helvetica, sans-serif; font-size: 16px; color: #445550; background-color: #F0FBFC; padding: 20px; border-radius: 8px; border: 1px solid #E0F7FA;">
-                    New components involved in the human PN are welcome. To this end, fill in the form below with a brief summary of the new component information and evidence. Every annotation in this resource reflects a deliberate, evidence-based decision about each gene, so please support each suggestion with a <b>PMID</b> and a citation of the <b>specific figure(s)</b> that establish the claim. A characteristic <b>InterPro domain</b> may be cited in place of a figure. After curating that information, we will add the new information to our annotation.
+                    Proposals for new components to be included in the human PN are welcome. To this end, please fill in the form below with a brief justification for including the proposed component in the human PN. Every annotation in this resource reflects a deliberate, evidence-based decision about each gene, so please support each suggestion with a <b>PMID</b> and a citation of the <b>specific figure(s)</b> that establish the claim. A characteristic <b>InterPro domain</b> may be cited in place of a figure.
                 </div>
             """, unsafe_allow_html=True)
 
@@ -1382,7 +1382,7 @@ elif selected_page == "Feedback":
                 evidence = st.text_area(
                     "Supporting Evidence *", 
                     placeholder="""For each claim, cite a PMID AND the specific figure(s)/panel(s) that support it. A characteristic InterPro domain may be cited in place of a figure.
-Example format: <Protein> <does something> (PMID XXXXXXXX, Figure X B-D); <Protein> <does something else> (PMID YYYYYYYY, Figure Y C).""",
+Example (TAB2): TAB2 binds BECN1 to inhibit autophagy (PMID 21976705, Figures 1 and 2); TAB2 interacts with ATG13 and is phosphorylated by ULK1 (PMID 21976705, Figure 6).""",
                     help="Support each suggestion with a PMID and the specific figure(s) that establish the claim, or a characteristic InterPro domain (e.g. IPR000719). Figure-level citations let us verify each claim."
                 )
                 
