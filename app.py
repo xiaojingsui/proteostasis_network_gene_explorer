@@ -12,7 +12,7 @@ from datetime import datetime
 # Get the absolute path of the directory containing this script
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 
-# Join that directory with your desired filename
+# Join that directory with the desired filename
 FILE_NAME = os.path.join(SCRIPT_DIR, 'human_pn_submissions.csv')
 
 
@@ -22,14 +22,7 @@ FILE_NAME = os.path.join(SCRIPT_DIR, 'human_pn_submissions.csv')
 def send_submission_email(record):
     """Email a feedback/submission ticket to the curation inbox via the Resend API.
 
-    Credentials are read from st.secrets['email'] (never hard-coded), which on
-    Streamlit Community Cloud is set in the app's Settings -> Secrets panel and
-    locally in .streamlit/secrets.toml. Expected keys:
-        [email]
-        resend_api_key = "re_xxxxxxxx"           # from resend.com -> API Keys
-        recipient      = "xiaojing.sui@northwestern.edu"
-        sender         = "onboarding@resend.dev" # optional; defaults to Resend's shared test sender
-                                                 # (change to an address on YOUR verified domain once set up)
+    
 
     Returns (success: bool, message: str).
     """
@@ -66,8 +59,7 @@ def send_submission_email(record):
         "subject": f"[Human PN] New submission: {record.get('Gene Symbol', '(unknown)')}",
         "text": body,
     }
-    # Let the curator reply straight to the submitter — but only if the submitted
-    # address is a valid email; Resend rejects the whole request on a malformed reply_to.
+    
     submitter = str(record.get("Email", "")).strip()
     if re.match(r"^[^@\s]+@[^@\s]+\.[^@\s]+$", submitter):
         payload["reply_to"] = submitter
@@ -126,7 +118,7 @@ def get_inhibitor_html(symbol, for_csv=False):
 
 
 
-# 1. Page Config (Must be the first command)
+# 1. Page Config 
 st.set_page_config(page_title="Human PN Annotation", layout="wide")
 
 # Initialize session state variables
@@ -1424,10 +1416,8 @@ Example (TAB2): TAB2 binds BECN1 to inhibit autophagy (PMID 21976705, Figures 1 
                         # 2. Convert to a pandas DataFrame
                         df = pd.DataFrame(new_data)
                         
-                        # 3. Save to CSV as a local backup. NOTE: on Streamlit
-                        #    Community Cloud the filesystem is ephemeral, so this
-                        #    file does NOT persist across restarts. Email (below)
-                        #    is the reliable delivery path.
+                        # 3. 
+                        #    
                         try:
                             if os.path.exists(FILE_NAME):
                                 df.to_csv(FILE_NAME, mode='a', header=False, index=False)

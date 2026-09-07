@@ -1,0 +1,8 @@
+streamlit
+pandas
+openpyxl
+stmol
+py3Dmol
+requests
+ipywidgets
+ipython_genutils
