@@ -1,5 +1,4 @@
 import streamlit as st
-import streamlit.components.v1 as components
 import pandas as pd
 import io
 import textwrap
@@ -121,53 +120,6 @@ def get_inhibitor_html(symbol, for_csv=False):
 
 # 1. Page Config 
 st.set_page_config(page_title="Human PN Annotation", layout="wide")
-
-# ------------------------------------------------------------------
-# FORCE DESKTOP LAYOUT ON PHONES / TABLETS
-# Streamlit's index.html ships <meta name="viewport" content="width=device-width">,
-# which makes phones report a ~390px viewport; Streamlit then stacks every
-# st.columns row vertically and the fixed navbar wraps.  Rewriting that tag
-# to a fixed desktop width makes the phone render the page exactly as a
-# desktop browser would (scaled down to fit, pinch-to-zoom to read), the same
-# behaviour as a browser's "Request Desktop Site".  Change the constant below
-# to make the phone view larger (smaller number) or smaller (larger number).
-# The script runs inside a same-origin component iframe, so it can reach the
-# parent document.  Harmless on desktop: the layout viewport already exceeds
-# DESKTOP_VIEWPORT_WIDTH there, so nothing visible changes.
-# ------------------------------------------------------------------
-DESKTOP_VIEWPORT_WIDTH = 1100
-
-components.html(
-    f"""
-    <script>
-    (function () {{
-        try {{
-            var doc = window.parent.document;
-            var meta = doc.querySelector('meta[name="viewport"]');
-            if (!meta) {{
-                meta = doc.createElement('meta');
-                meta.name = 'viewport';
-                doc.head.appendChild(meta);
-            }}
-            var desired = 'width={DESKTOP_VIEWPORT_WIDTH}';
-            if (meta.getAttribute('content') !== desired) {{
-                meta.setAttribute('content', desired);
-            }}
-        }} catch (e) {{ /* cross-origin embed: silently leave the default viewport */ }}
-    }})();
-    </script>
-    """,
-    height=0,
-)
-# The zero-height component iframe still occupies a small block in the flow;
-# collapse it so it does not add blank space above the navbar.
-st.markdown(
-    """<style>
-    div[data-testid="stElementContainer"]:has(> iframe[height="0"]) { display: none !important; }
-    iframe[height="0"] { display: none !important; }
-    </style>""",
-    unsafe_allow_html=True,
-)
 
 # Initialize session state variables
 if "search_key" not in st.session_state:
@@ -569,14 +521,6 @@ st.markdown("""
     a { color: #00838F !important; font-weight: bold; text-decoration: none; }
     a:hover { text-decoration: underline; }
 
-    /* Horizontal-scroll wrapper for wide result tables (used on every screen size;
-       only matters when the table is wider than the viewport). */
-    .table-scroll {
-        width: 100%;
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-    }
-
     </style>
     """, unsafe_allow_html=True)
 
@@ -640,6 +584,7 @@ if selected_page == "Open Search":
     st.markdown('</div>', unsafe_allow_html=True)
 
     # Chip/Button Section
+    st.markdown('<div style="display: flex; justify-content: center; align-items: center; gap: 10px; margin-bottom: 0px;">', unsafe_allow_html=True)
     _, c_label, c1, c2, c3, _ = st.columns([1.5, 1.2, 0.5, 0.5, 0.6, 2])
 
     with c_label:
@@ -650,6 +595,7 @@ if selected_page == "Open Search":
         st.button("P0DMV8", on_click=update_search, args=("P0DMV8",))
     with c3:
         st.button("Chaperone", on_click=update_search, args=("Chaperone",))
+    st.markdown('</div>', unsafe_allow_html=True)
 
     # --- REVISED SEARCH LOGIC ---
     query = st.session_state.search_key
@@ -740,14 +686,13 @@ if selected_page == "Open Search":
                 'Chemical Probes']
                 available_cols = [c for c in display_cols if c in results_formatted.columns]
 
-                table_html = results_formatted[available_cols].to_html(escape=False, index=False, border=0, classes='result-container')
                 st.write(
-                    f'<div class="table-scroll">{table_html}</div>', 
+                    results_formatted[available_cols].to_html(escape=False, index=False, border=0, classes='result-container'), 
                     unsafe_allow_html=True
                 )
             else:
                 st.markdown(f"""
-                    <div style="background-color: #FFFFFF; padding: 20px; border-radius: 8px; color: #E65100; border: 1px solid #FFE082; text-align: center; margin: 20px auto; width: min(100%, max(33%, 300px)); box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+                    <div style="background-color: #FFFFFF; padding: 20px; border-radius: 8px; color: #E65100; border: 1px solid #FFE082; text-align: center; margin: 20px auto; width: 33%; min-width: 300px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
                         <span style="font-size: 16px; font-weight: bold;">No results found for '{query}'</span><br>
                         <span style="font-size: 14px; color: #8D6E63;">Try using 'single quotes' for exact symbol matching.</span>
                     </div>
@@ -937,9 +882,8 @@ elif selected_page == "Guided Search":
             ]
             available_cols = [c for c in display_cols if c in display_df.columns]
             
-            table_html = display_df[available_cols].to_html(escape=False, index=False, border=0, classes='result-container')
             st.write(
-                f'<div class="table-scroll">{table_html}</div>', 
+                display_df[available_cols].to_html(escape=False, index=False, border=0, classes='result-container'), 
                 unsafe_allow_html=True
             )
         else:
