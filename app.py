@@ -134,7 +134,7 @@ def update_search(new_query):
 # 2. LOAD DATA
 @st.cache_data
 def load_data():
-    file_path = 'Survey of the Human Proteostasis Network 4.3.2.xlsx'
+    file_path = 'Table S1. Proteostasis Network Annotation 4.3.4.xlsx'
     try:
         df = pd.read_excel(file_path, sheet_name='MAIN')
         df = df.dropna(subset=['Gene Symbol', 'UniProt ID'])
@@ -742,7 +742,7 @@ if selected_page == "Open Search":
         """, unsafe_allow_html=True)
     st.markdown("<br><br><hr>", unsafe_allow_html=True)
 
-    file_path = 'Survey of the Human Proteostasis Network 4.3.2.xlsx'
+    file_path = 'Table S1. Proteostasis Network Annotation 4.3.4.xlsx'
     
     try:
         with open(file_path, "rb") as f:
@@ -754,9 +754,9 @@ if selected_page == "Open Search":
         download_link = f'''
             <div style="margin-top: 10px; text-align: left;">
                 <a href="data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,{b64}" 
-                   download="Human_Proteostasis_Network_v4.3.xlsx" 
+                   download="Human_Proteostasis_Network_v4.3.4.xlsx" 
                    style="font-size: 14px; color: #00838F; font-weight: bold; text-decoration: underline;">
-                   Data source: Survey of the Human Proteostasis Network 4.3.2 (Click to bulk download)
+                   Data source: Survey of the Human Proteostasis Network 4.3.4 (Click to bulk download)
                 </a>
             </div>
         '''
@@ -764,7 +764,7 @@ if selected_page == "Open Search":
         
     except FileNotFoundError:
         
-        st.markdown('<p style="color: #888; font-size: 14px;">Data source: Survey of the Human Proteostasis Network 4.3.2 (File not found)</p>', unsafe_allow_html=True)
+        st.markdown('<p style="color: #888; font-size: 14px;">Data source: Survey of the Human Proteostasis Network 4.3.4 (File not found)</p>', unsafe_allow_html=True)
 
 
 # ==========================================
@@ -895,7 +895,7 @@ elif selected_page == "Guided Search":
 
     # Footer
     st.markdown("<br><br><hr>", unsafe_allow_html=True)
-    file_path = 'Survey of the Human Proteostasis Network 4.3.2.xlsx'
+    file_path = 'Table S1. Proteostasis Network Annotation 4.3.4.xlsx'
     
     try:
         with open(file_path, "rb") as f:
@@ -907,9 +907,9 @@ elif selected_page == "Guided Search":
         download_link = f'''
             <div style="margin-top: 10px; text-align: left;">
                 <a href="data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,{b64}" 
-                   download="Human_Proteostasis_Network_v4.3.xlsx" 
+                   download="Human_Proteostasis_Network_v4.3.4.xlsx" 
                    style="font-size: 14px; color: #00838F; font-weight: bold; text-decoration: underline;">
-                   Data source: Survey of the Human Proteostasis Network 4.3.2 (Click to bulk download)
+                   Data source: Survey of the Human Proteostasis Network 4.3.4 (Click to bulk download)
                 </a>
             </div>
         '''
@@ -917,7 +917,7 @@ elif selected_page == "Guided Search":
         
     except FileNotFoundError:
         
-        st.markdown('<p style="color: #888; font-size: 14px;">Data source: Survey of the Human Proteostasis Network 4.3.2 (File not found)</p>', unsafe_allow_html=True)
+        st.markdown('<p style="color: #888; font-size: 14px;">Data source: Survey of the Human Proteostasis Network 4.3.4 (File not found)</p>', unsafe_allow_html=True)
 
 
 
@@ -1026,7 +1026,7 @@ Explanatory details about the fine structure of the annotation will be published
 """, unsafe_allow_html=True)
 
     #st.markdown("<br><br><hr>", unsafe_allow_html=True)
-    #st.caption("Data source: Survey of the Human Proteostasis Network 4.3.2")
+    #st.caption("Data source: Survey of the Human Proteostasis Network 4.3.4")
 
 # ==========================================
 # PAGE 4: GUIDES - REVISED HIERARCHY
@@ -1162,7 +1162,7 @@ You can export your results at any time:
 """, unsafe_allow_html=True)
 
     #st.markdown("<br><hr>", unsafe_allow_html=True)
-    #st.caption("Data source: Survey of the Human Proteostasis Network 4.3.2")
+    #st.caption("Data source: Survey of the Human Proteostasis Network 4.3.4")
 
 # ==========================================
 # PAGE 5: Feedback
