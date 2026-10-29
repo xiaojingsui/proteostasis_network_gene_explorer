@@ -727,16 +727,16 @@ if selected_page == "Open Search":
             <div class="info-box" style="border-left: 5px solid #00838F; padding: 15px; border-radius: 5px;">
                 <p style="margin-bottom: 10px; font-weight: bold;">If you use this resource, please cite:</p>
                 <p style="margin-bottom: 10px; font-size: 0.9em;">
-                    1. A Comprehensive Enumeration of the Human Proteostasis Network. 1. Components of Translation, Protein Folding, and Organelle-Specific Systems 
-                    <a href="https://doi.org/10.1101/2022.08.30.505920" target="_blank">doi:10.1101/2022.08.30.505920</a>
+                    1. Survey of the human proteostasis network: translation, protein folding, and organelle-specific systems. <i>Autophagy</i> (2026). 
+                    <a href="https://doi.org/10.1080/15548627.2026.2741033" target="_blank">doi:10.1080/15548627.2026.2741033</a>
                 </p>
                 <p style="margin-bottom: 10px; font-size: 0.9em;">
-                    2. A Comprehensive Enumeration of the Human Proteostasis Network. 2. Components of the Autophagy-Lysosome Pathway 
-                    <a href="https://doi.org/10.1101/2023.03.22.533675" target="_blank">doi:10.1101/2023.03.22.533675</a>
+                    2. Survey of the human proteostasis network: the autophagy-lysosome pathway. <i>Autophagy</i> (2026). 
+                    <a href="https://doi.org/10.1080/15548627.2026.2741038" target="_blank">doi:10.1080/15548627.2026.2741038</a>
                 </p>
                 <p style="margin-bottom: 0; font-size: 0.9em;">
-                    3. Survey of the human proteostasis network: the ubiquitin-proteasome system. 
-                    <a href="https://doi.org/10.64898/2026.03.13.711689" target="_blank">doi:10.64898/2026.03.13.711689</a>
+                    3. Survey of the human proteostasis network: the ubiquitin-proteasome system. <i>Autophagy</i> (2026). 
+                    <a href="https://doi.org/10.1080/15548627.2026.2741092" target="_blank">doi:10.1080/15548627.2026.2741092</a>
                 </p>
             </div>
         """, unsafe_allow_html=True)
